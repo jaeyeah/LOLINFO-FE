@@ -4,11 +4,11 @@ import './index.css'
 import App from './App.jsx'
 
 //axios
-// import "./utils/axios/index.js"
+import "./utils/axios/index.js"
 
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <App />
-  </StrictMode>,
+  // </StrictMode>,
 )
