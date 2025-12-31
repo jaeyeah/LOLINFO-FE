@@ -48,21 +48,27 @@ export default function StreamerList() {
                                 <span className="card-title">{streamer.streamerName} </span>
                                 <span className="card-text">{streamer.streamerSoopId}</span>
                             </div>
-                            <div className="row card-body">
+                            <div className="row card-body text-center">
                                 <div className="col">
-                                    <span className="card-title">우승 </span>
+                                    <span className="card-text text-white">우승 </span>
                                     <hr/>
-                                    <span className="card-text">{streamer.streamerSoopId}</span>
+                                    <span className="card-text">
+                                        {/* {streamer.streamerSoopId} */} 00회
+                                    </span>
                                 </div>
                                 <div className="col">
-                                    <span className="card-title">준우승 </span>
+                                    <span className="card-text text-white">준우승 </span>
                                     <hr/>
-                                    <span className="card-text">{streamer.streamerSoopId}</span>
+                                    <span className="card-text">
+                                        {/* {streamer.streamerSoopId} */} 00회
+                                    </span>
                                 </div>
                                 <div className="col">
-                                    <span className="card-title">4강 </span>
+                                    <span className="card-text text-white">4강 </span>
                                     <hr/>
-                                    <span className="card-text">{streamer.streamerSoopId}</span>
+                                    <span className="card-text">
+                                        {/* {streamer.streamerSoopId} */} 00회
+                                    </span>
                                 </div>
                             </div>
                         </div>

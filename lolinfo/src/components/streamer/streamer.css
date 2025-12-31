@@ -9,6 +9,7 @@
 .streamer-card {
   background-color: rgba(46, 46, 46, 0.904) !important;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+  padding: 0.4rem 0.4em;
   border-radius: 1rem;
 }
 
@@ -34,7 +35,8 @@
 
 /* 이름 / 아이디 텍스트 */
 .streamer-wrapper .card-title {
-    color : white;
+  color : white;
+  font-size: 20px !important;
   font-weight: 600;
   font-size: 1rem;
 }

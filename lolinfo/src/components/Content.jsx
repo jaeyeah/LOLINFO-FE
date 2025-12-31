@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 
 
 import StreamerList from "./streamer/streamerList";
+import StreamerInsert from "./streamer/streamerInsert";
 
 
 export default function Content(){
@@ -17,6 +18,7 @@ return (<>
                 <Route path="/" element={<div>홈 화면</div>} />
 
                 <Route path="/streamer" element={<StreamerList />} />
+                <Route path="/streamer/insert" element={<StreamerInsert />} />
 
             </Routes>
         </div>
