@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
-import "./streamer.css";
+import "./Streamer.css";
 
 export default function StreamerList() {
 

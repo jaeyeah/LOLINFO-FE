@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 
 
-import StreamerList from "./streamer/streamerList";
-import StreamerInsert from "./streamer/streamerInsert";
+import StreamerList from "./streamer/StreamerList";
+import StreamerInsert from "./streamer/StreamerInsert";
 
 
 export default function Content(){
