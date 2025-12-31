@@ -25,18 +25,50 @@ export default function StreamerList() {
     return (<>
     
     <div className="row">
-        <div className="col-12">
+        <div className="col-8">
+            <h2>스트리머 목록</h2>
+        </div>
+        <div className="col-4 text-end">
+            <Link to="/streamer/insert" className="btn btn-success">등록</Link>
+        </div>
+    </div>
+
+
+    {/* 스트리머 목록 */}
+    <div className="row mt-2">
+        <div className="col-12 streamer-wrapper">
             {streamerList.map((streamer)=>(
-                <div key={streamer.streamerNo} className="card mb-3">
+                <div key={streamer.streamerNo} className="card streamer-card mb-3">
                     <div className="row g-0">
-                        <div className="col-md-4">
-                            <img src={streamer.streamerProfile} className="streamer-profile img-fluid rounded-start" alt={streamer.name} />
+                        <div className="col-md-2 col-2 d-flex">
+                            <img src={streamer.streamerProfile} className="streamer-profile img-fluid rounded-start"/>
                         </div>
-                        <div className="col-md-8">
+                        <div className="col-md-7 col-7">
                             <div className="card-body">
-                                <span className="card-title">{streamer.streamerName}</span>
+                                <span className="card-title">{streamer.streamerName} </span>
                                 <span className="card-text">{streamer.streamerSoopId}</span>
-                                <Link to={streamer.streamerStation} className="btn btn-primary ms-3" target="_blank" rel="noopener noreferrer">방송국</Link> 
+                            </div>
+                            <div className="row card-body">
+                                <div className="col">
+                                    <span className="card-title">우승 </span>
+                                    <hr/>
+                                    <span className="card-text">{streamer.streamerSoopId}</span>
+                                </div>
+                                <div className="col">
+                                    <span className="card-title">준우승 </span>
+                                    <hr/>
+                                    <span className="card-text">{streamer.streamerSoopId}</span>
+                                </div>
+                                <div className="col">
+                                    <span className="card-title">4강 </span>
+                                    <hr/>
+                                    <span className="card-text">{streamer.streamerSoopId}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-3 col-3 d-flex">
+                            <div className="card-body d-flex align-items-center justify-content-end">
+                                <Link to={streamer.streamerStation} className="btn btn-secondary ms-3" target="_blank" rel="noopener noreferrer">Link</Link> 
                             </div>
                         </div>
                     </div>

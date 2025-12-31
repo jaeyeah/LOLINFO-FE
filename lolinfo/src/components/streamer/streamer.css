@@ -1,4 +1,77 @@
+
+
+.streamer-wrapper {
+  /* 리스트 전체 간격 */
+  padding-bottom: 1rem;
+}
+
+/* 카드 호버 효과 */
+.streamer-card {
+  background-color: rgba(46, 46, 46, 0.904) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border-radius: 1rem;
+}
+
+.streamer-card:hover {
+    background-color: rgba(46, 46, 46, 0.788) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* 프로필 아바타 */
 .streamer-profile{
-    width: 100px;
-    height: auto;
+  width: 100px !important;
+  max-height: 150px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f1f3f5;
+}
+.streamer-profile:hover {
+  transform: translateY(-2px);
+  transform: scale(1.1);
+}
+
+/* 이름 / 아이디 텍스트 */
+.streamer-wrapper .card-title {
+    color : white;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.streamer-wrapper .card-text {
+    color : rgba(255, 255, 255, 0.377);
+  font-size: 0.875rem;
+}
+
+/* 버튼 살짝 둥글게 + 패딩 */
+.streamer-wrapper .btn {
+  border-radius: 999px;
+  padding-inline: 0.7rem;
+}
+
+.streamer-wrapper .btn-secondary {
+    color : rgb(0, 0, 0); 
+    font-weight: 600; 
+    font-size: 0.875rem;
+    background-color: #ffee00;
+    border: none;
+}
+
+.streamer-wrapper hr {
+  margin-top: 0.2em;
+  margin-bottom: 0;
+}
+
+/* 모바일에서 카드 안 요소 정렬 */
+@media (max-width: 576px) {
+  .streamer-card .card-body {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .streamer-avatar {
+    width: 60px;
+    height: 60px;
+  }
 }
