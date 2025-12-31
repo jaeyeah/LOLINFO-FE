@@ -7,14 +7,14 @@
 
 /* 카드 호버 효과 */
 .streamer-card {
-  background-color: rgba(46, 46, 46, 0.904) !important;
+  background-color: rgba(165, 165, 165, 0.404) !important;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   padding: 0.4rem 0.4em;
   border-radius: 1rem;
 }
 
 .streamer-card:hover {
-    background-color: rgba(46, 46, 46, 0.788) !important;
+    background-color: rgba(87, 87, 87, 0.521) !important;
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
