@@ -3,6 +3,8 @@ import { Route, Routes } from "react-router-dom";
 
 import StreamerList from "./streamer/StreamerList";
 import StreamerInsert from "./streamer/StreamerInsert";
+import TournamentList from "./tournament/TournamentList";
+import TournamentDetail from "./tournament/TournamentDetail";
 
 
 export default function Content(){
@@ -17,9 +19,13 @@ return (<>
 
                 <Route path="/" element={<div>홈 화면</div>} />
 
+                {/* 스트리머 */}
                 <Route path="/streamer" element={<StreamerList />} />
                 <Route path="/streamer/insert" element={<StreamerInsert />} />
 
+                {/* 대회 */}
+                <Route path="/tournament" element={<TournamentList />} />
+                <Route path="/tournament/:tournamentId" element={<TournamentDetail />} />
             </Routes>
         </div>
     </div>

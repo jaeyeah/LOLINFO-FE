@@ -1,0 +1,64 @@
+.section-title {
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.tournament-card {
+  border-radius: 16px;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.tournament-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+}
+
+.year-tag {
+  font-size: 1.4rem;
+  font-weight: 800;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #0d6efd;
+  background: #e9f1ff;
+  height: 100%;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+.tournament-top {
+  display: flex;
+  align-items: center;
+}
+
+.tier-text {
+  font-weight: 600;
+  color: #6c757d;
+}
+
+.official-badge {
+  background-color: #0d6efd;
+}
+
+.tournament-title {
+    color : black;
+  font-size: 1.05rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.period-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: 1rem;
+  text-align: center;
+}
+
+.period-text {
+  color: #495057;
+  font-size: 0.9rem;
+}
