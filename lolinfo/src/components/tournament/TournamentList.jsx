@@ -22,6 +22,15 @@ export default function TournamentList(){
     },[]);
 
 
+    function formatDate(value) {
+      const d = new Date(value);
+      const yy = String(d.getFullYear()).slice(2);
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+    return `${yy}년 ${mm}월${dd}일`;
+  }
+
+
     //render
     return(<>
         <h2 className="section-title">대회 목록</h2>
@@ -59,7 +68,7 @@ export default function TournamentList(){
           <div className="col-md-4 col-12 period-box">
             {tournament.tournamentStart && (
               <span className="period-text">
-                📅 {tournament.tournamentStart} ~ {tournament.tournamentEnd}
+                {formatDate(tournament.tournamentStart)} ~ {formatDate(tournament.tournamentEnd)}
               </span>
             )}
           </div>
