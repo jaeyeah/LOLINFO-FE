@@ -207,3 +207,11 @@
   background: #999999;
   width : 50px;
 }
+.btn-link {
+    padding : 0 !important;
+    text-decoration: none !important;
+}
+.team-name {
+    color : rgb(46, 1, 209) !important;
+    font-weight: 700 !important;
+}

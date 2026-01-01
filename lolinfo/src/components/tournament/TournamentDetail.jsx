@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
 
 export default function TournamentDetail(){
@@ -50,35 +50,45 @@ export default function TournamentDetail(){
                 key={team.teamId}>
             {/* 상단 헤더 : 순위 + 팀 이름 */}
             <div className="team-header d-flex align-items-center mb-3">
-                <div>#{team.teamRanking} | {team.teamName} </div>
+                <div>#{team.teamRanking} | <span className="team-name">{team.teamName}</span></div>
             </div>
 
             {/* 선수 목록 */}
             <div className="player-list">
                 <div className="player-row">
                     <span className="badge"> 탑 </span>
-                    <img className="player-profile ms-2"src={buildProfileUrl(team.topId)} alt={team.topName}/>
-                    <span className="player-name">{team.topName}</span>
+                    <Link to={`/streamer/${team.teamTop}`} className="btn btn-link" target="_blank" rel="noopener noreferrer">
+                        <img className="player-profile"src={buildProfileUrl(team.topId)} alt={team.topName}/>
+                        <span className="player-name ms-2">{team.topName}</span>
+                    </Link>
                 </div>
                 <div className="player-row">
                     <span className="badge">정글</span>
-                    <img className="player-profile ms-2"src={buildProfileUrl(team.jugId)} alt={team.jugName}/>
-                    <span className="player-name">{team.jugName}</span>
+                    <Link to={`/streamer/${team.teamJug}`} className="btn btn-link" target="_blank" rel="noopener noreferrer">
+                        <img className="player-profile"src={buildProfileUrl(team.jugId)} alt={team.jugName}/>
+                        <span className="player-name ms-2">{team.jugName}</span>
+                    </Link>
                 </div>
                 <div className="player-row">
                     <span className="badge">미드</span>
-                    <img className="player-profile ms-2"src={buildProfileUrl(team.midId)} alt={team.midName}/>
-                    <span className="player-name">{team.midName}</span>
+                    <Link to={`/streamer/${team.teamMid}`} className="btn btn-link" target="_blank" rel="noopener noreferrer">
+                        <img className="player-profile"src={buildProfileUrl(team.midId)} alt={team.midName}/>
+                        <span className="player-name ms-2">{team.midName}</span>
+                    </Link>
                 </div>
                 <div className="player-row">
                     <span className="badge">원딜</span>
-                    <img className="player-profile ms-2"src={buildProfileUrl(team.adId)} alt={team.adName}/>
-                    <span className="player-name">{team.adName}</span>
+                    <Link to={`/streamer/${team.teamAd}`} className="btn btn-link" target="_blank" rel="noopener noreferrer">
+                        <img className="player-profile"src={buildProfileUrl(team.adId)} alt={team.adName}/>
+                        <span className="player-name ms-2">{team.adName}</span>  
+                    </Link>
                 </div>
                 <div className="player-row">
                     <span className="badge">서폿</span>
-                    <img className="player-profile ms-2"src={buildProfileUrl(team.supId)} alt={team.supName}/>
-                    <span className="player-name">{team.supName}</span>
+                    <Link to={`/streamer/${team.teamSup}`} className="btn btn-link" target="_blank" rel="noopener noreferrer">
+                        <img className="player-profile"src={buildProfileUrl(team.supId)} alt={team.supName}/>
+                        <span className="player-name ms-2">{team.supName}</span>
+                    </Link>
                 </div>
             </div>
             </div>
