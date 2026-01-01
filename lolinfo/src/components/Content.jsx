@@ -5,6 +5,7 @@ import StreamerList from "./streamer/StreamerList";
 import StreamerInsert from "./streamer/StreamerInsert";
 import TournamentList from "./tournament/TournamentList";
 import TournamentDetail from "./tournament/TournamentDetail";
+import StreamerDetail from "./streamer/StreamerDetail";
 
 
 export default function Content(){
@@ -22,6 +23,7 @@ return (<>
                 {/* 스트리머 */}
                 <Route path="/streamer" element={<StreamerList />} />
                 <Route path="/streamer/insert" element={<StreamerInsert />} />
+                <Route path="/streamer/:streamerId" element={<StreamerDetail />} /> 
 
                 {/* 대회 */}
                 <Route path="/tournament" element={<TournamentList />} />

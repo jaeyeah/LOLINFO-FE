@@ -36,7 +36,7 @@
 /* 이름 / 아이디 텍스트 */
 .streamer-wrapper .card-title {
   color : white;
-  font-size: 20px !important;
+  font-size: 24px !important;
   font-weight: 600;
   font-size: 1rem;
 }
@@ -56,8 +56,18 @@
     color : rgb(0, 0, 0); 
     font-weight: 600; 
     font-size: 0.875rem;
-    background-color: #ffee00;
+    background-color: #ffee00cc;
     border: none;
+}
+.streamer-wrapper .btn-station {
+    color : rgb(255, 255, 255); 
+    font-weight: 600; 
+    font-size: 0.875rem;
+    background-color: #5659f1;
+    border: none;
+}
+.streamer-wrapper .btn-station:hover {
+    background-color: #8385ff;
 }
 
 .streamer-wrapper hr {
@@ -76,4 +86,10 @@
     width: 60px;
     height: 60px;
   }
+}
+
+.streamer-link {
+  display: block;        
+  text-decoration: none;  
+  color: inherit;          
 }
