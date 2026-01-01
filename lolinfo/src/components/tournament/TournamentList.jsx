@@ -34,7 +34,7 @@ export default function TournamentList(){
         key={tournament.tournamentId}
         className="card tournament-card mb-3"
       >
-        <div className="row g-0 align-items-center">
+        <div className="row g-0 tournament-row">
           {/* 연도 */}
           <div className="col-md-2 col-3 year-tag">{tournament.tournamentYear}</div>
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
+import { buildProfileUrl } from "../../utils/profileUrl";
 
 export default function TournamentDetail(){
     const {tournamentId} = useParams();
@@ -35,37 +35,54 @@ export default function TournamentDetail(){
     },[]);
 
 
+    
+
+
     //render
     return(<>
         <h2>대회 상세</h2>
         <div> 대회 : {tournament.tournamentName}</div>
 
-        <div className="team-list">
-            {team.map((team) => (
-                <div className="team-card" key={team.teamId}>
-                <div className="team-header">
-                     {team.teamRanking} | {team.teamName}
-                </div>
-
-                <div className="player-grid-2row">
-
-                    {/* 1️⃣ 포지션 라벨 */}
-                    <div className="row-label">탑</div>
-                    <div className="row-label">정글</div>
-                    <div className="row-label">미드</div>
-                    <div className="row-label">원딜</div>
-                    <div className="row-label">서폿</div>
-
-                    {/* 2️⃣ 포지션별 선수 이름 */}
-                    <div className="row-value">{team.topName}</div>
-                    <div className="row-value">{team.jugName}</div>
-                    <div className="row-value">{team.midName}</div>
-                    <div className="row-value">{team.adName}</div>
-                    <div className="row-value">{team.supName}</div>
-
-                </div>
-                </div>
-            ))}
+        <div className="team-list mt-4">
+        {team.map((team) => (
+            <div className={`team-card
+                ${team.teamRanking === "우승" ? "is-champion" : ""}
+                ${team.teamRanking === "준우승" ? "is-second" : ""}`}
+                key={team.teamId}>
+            {/* 상단 헤더 : 순위 + 팀 이름 */}
+            <div className="team-header d-flex align-items-center mb-3">
+                <div>#{team.teamRanking} | {team.teamName} </div>
             </div>
-    </>)
-}
+
+            {/* 선수 목록 */}
+            <div className="player-list">
+                <div className="player-row">
+                    <span className="badge"> 탑 </span>
+                    <img className="player-profile ms-2"src={buildProfileUrl(team.topId)} alt={team.topName}/>
+                    <span className="player-name">{team.topName}</span>
+                </div>
+                <div className="player-row">
+                    <span className="badge">정글</span>
+                    <img className="player-profile ms-2"src={buildProfileUrl(team.jugId)} alt={team.jugName}/>
+                    <span className="player-name">{team.jugName}</span>
+                </div>
+                <div className="player-row">
+                    <span className="badge">미드</span>
+                    <img className="player-profile ms-2"src={buildProfileUrl(team.midId)} alt={team.midName}/>
+                    <span className="player-name">{team.midName}</span>
+                </div>
+                <div className="player-row">
+                    <span className="badge">원딜</span>
+                    <img className="player-profile ms-2"src={buildProfileUrl(team.adId)} alt={team.adName}/>
+                    <span className="player-name">{team.adName}</span>
+                </div>
+                <div className="player-row">
+                    <span className="badge">서폿</span>
+                    <img className="player-profile ms-2"src={buildProfileUrl(team.supId)} alt={team.supName}/>
+                    <span className="player-name">{team.supName}</span>
+                </div>
+            </div>
+            </div>
+        ))}
+        </div>
+</>)}
