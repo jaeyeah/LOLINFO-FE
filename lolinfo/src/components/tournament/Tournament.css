@@ -68,17 +68,36 @@
 
 .period-box {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-right: 1rem;
-  text-align: center;
+  flex-direction: column;
+  background-color: #b7d8fd42;     /* 전체 노란 박스 */
+  border-radius: 0 12px 12px 0;  /* 카드 모양 맞춰서 조정 */
+  overflow: hidden;              /* 안쪽 요소 튀어나오는 것 방지 */
 }
 
+/* 상단 '우승' 띠 */
+.period-box-header {
+  background-color: #a0cbfc; 
+  text-align: center;
+  font-weight: 700;
+  padding: 0.4rem 1rem;
+}
+
+/* 아래쪽 선수들 영역 */
+.period-box-body {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+}
 .period-text {
   color: #495057;
   font-size: 0.9rem;
 }
-
+/* 각 플레이어 칸 */
+.player {
+  text-align: center;
+  max-width: 70px;
+}
 
 
 /* 팀 목록 스타일 */
@@ -108,6 +127,7 @@
   padding-bottom: 8px;
   border-bottom: 1px solid #e9e9e9;
 }
+
 
 .player-grid-2row {
   display: grid;

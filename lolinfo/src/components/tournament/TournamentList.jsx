@@ -2,7 +2,7 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Tournament.css";
-
+import { buildProfileUrl } from "../../utils/profileUrl";
 
 export default function TournamentList(){
 
@@ -73,7 +73,31 @@ export default function TournamentList(){
             </div>
           </div>
           <div className="col-md-6 col-12 period-box">
-
+            <div className="period-box-header">
+              <div className="col">우 승</div>
+            </div>
+            <div className="period-box-body">
+              <div className="player">
+                <img className="player-profile"src={buildProfileUrl(tournament.topId)} alt={tournament.topName}/>
+                <br/><span className="player-name text-truncate">{tournament.topName}</span>
+              </div>
+              <div className="player">
+                <img className="player-profile"src={buildProfileUrl(tournament.jugId)} alt={tournament.jugName}/>
+                <br/><span className="player-name text-truncate">{tournament.jugName}</span>
+              </div>
+              <div className="player">
+                <img className="player-profile"src={buildProfileUrl(tournament.midId)} alt={tournament.midName}/>
+                <br/><span className="player-name text-truncate">{tournament.midName}</span>
+              </div>
+              <div className="player">
+                <img className="player-profile"src={buildProfileUrl(tournament.adId)} alt={tournament.adName}/>
+                <br/><span className="player-name text-truncate">{tournament.adName}</span>
+              </div>
+              <div className="player">
+                <img className="player-profile"src={buildProfileUrl(tournament.supId)} alt={tournament.supName}/>
+                <br/><span className="player-name text-truncate">{tournament.supName}</span>
+              </div>
+            </div>
           </div>
         </div>
       </Link>
