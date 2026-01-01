@@ -33,7 +33,7 @@ export default function TournamentList(){
 
     //render
     return(<>
-        <h2 className="section-title">대회 목록</h2>
+        <h2 className="section-title text-center">Soop : LoL 대회 목록</h2>
 
 <div className="row mt-3">
   <div className="col-12 tournament-wrapper">
@@ -48,29 +48,32 @@ export default function TournamentList(){
           <div className="col-md-2 col-3 year-tag">{tournament.tournamentYear}</div>
 
           {/* 가운데 내용 */}
-          <div className="col-md-6 col-9">
+          <div className="col-md-4 col-9">
             <div className="card-body py-3">
               <div className="tournament-top">
-                <span className="tier-text"> {tournament.tournamentTierType}</span>
+                <span className={`tier-text badge ${tournament.tournamentTierType === "통합" ? "all-tier" : tournament.tournamentTierType === "천상계" ? "top-tier" : "bottom-tier" }`}> {tournament.tournamentTierType}</span>
                 {/* 공식 대회 여부 : 배지 */}
                 {tournament.tournamentIsofficial === "Y" && (
                   <span className="badge official-badge ms-2">공식</span>
                 )}
+                {tournament.tournamentName?.includes("멸망전") && (
+                  <span className="badge official-badge2 ms-2">멸망전</span>
+                )}
               </div>
-
+              {/* 대회명 */}
               <h5 className="tournament-title mt-1">
                 {tournament.tournamentName}
               </h5>
-            </div>
-          </div>
-
-          {/* 기간 */}
-          <div className="col-md-4 col-12 period-box">
-            {tournament.tournamentStart && (
+              {/* 기간 */}
+              {tournament.tournamentStart && (
               <span className="period-text">
                 {formatDate(tournament.tournamentStart)} ~ {formatDate(tournament.tournamentEnd)}
               </span>
             )}
+            </div>
+          </div>
+          <div className="col-md-6 col-12 period-box">
+
           </div>
         </div>
       </Link>

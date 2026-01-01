@@ -40,8 +40,7 @@ export default function TournamentDetail(){
 
     //render
     return(<>
-        <h2>대회 상세</h2>
-        <div> 대회 : {tournament.tournamentName}</div>
+        <h2 className="text-center">{tournament.tournamentName} 상세</h2>
 
         <div className="team-list mt-4">
         {team.map((team) => (

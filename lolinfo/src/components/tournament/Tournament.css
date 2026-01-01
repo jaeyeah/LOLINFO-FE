@@ -55,6 +55,9 @@
 .official-badge {
   background-color: #0d6efd;
 }
+.official-badge2 {
+  background-color: #690dfd;
+}
 
 .tournament-title {
     color : black;
@@ -186,4 +189,21 @@
   color: #1d4ed8;
   width : 40px;
   border: 1px solid #dbe4ff;
+}
+
+/* 티어 스타일 */
+.top-tier{
+  text-align: center;
+  background: #f89185;
+  width : 50px;
+}
+.all-tier{
+  text-align: center;
+  background: #4fd64f;
+  width : 50px;
+}
+.bottom-tier{
+  text-align: center;
+  background: #999999;
+  width : 50px;
 }
