@@ -61,7 +61,7 @@ export default function TournamentList(){
                 )}
               </div>
               {/* 대회명 */}
-              <h5 className="tournament-title mt-1">
+              <h5 className="tournament-title mt-2">
                 {tournament.tournamentName}
               </h5>
               {/* 기간 */}
@@ -74,28 +74,28 @@ export default function TournamentList(){
           </div>
           <div className="col-md-6 col-12 period-box">
             <div className="period-box-header">
-              <div className="col">우 승</div>
+              <div className="col"> W I N N E R <span className="badge team-badge">{tournament.teamName}</span></div>
             </div>
             <div className="period-box-body">
               <div className="player">
                 <img className="player-profile"src={buildProfileUrl(tournament.topId)} alt={tournament.topName}/>
-                <br/><span className="player-name text-truncate">{tournament.topName}</span>
+                <br/><span className="player-name">{tournament.topName}</span>
               </div>
               <div className="player">
                 <img className="player-profile"src={buildProfileUrl(tournament.jugId)} alt={tournament.jugName}/>
-                <br/><span className="player-name text-truncate">{tournament.jugName}</span>
+                <br/><span className="player-name">{tournament.jugName}</span>
               </div>
               <div className="player">
                 <img className="player-profile"src={buildProfileUrl(tournament.midId)} alt={tournament.midName}/>
-                <br/><span className="player-name text-truncate">{tournament.midName}</span>
+                <br/><span className="player-name">{tournament.midName}</span>
               </div>
               <div className="player">
                 <img className="player-profile"src={buildProfileUrl(tournament.adId)} alt={tournament.adName}/>
-                <br/><span className="player-name text-truncate">{tournament.adName}</span>
+                <br/><span className="player-name">{tournament.adName}</span>
               </div>
               <div className="player">
                 <img className="player-profile"src={buildProfileUrl(tournament.supId)} alt={tournament.supName}/>
-                <br/><span className="player-name text-truncate">{tournament.supName}</span>
+                <br/><span className="player-name">{tournament.supName}</span>
               </div>
             </div>
           </div>

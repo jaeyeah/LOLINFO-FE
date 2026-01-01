@@ -58,6 +58,11 @@
 .official-badge2 {
   background-color: #690dfd;
 }
+.team-badge {
+  font-size : 1rem !important;
+  background-color: #000000ad;
+  min-width: 200px;
+}
 
 .tournament-title {
     color : black;
