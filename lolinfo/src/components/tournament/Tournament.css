@@ -100,6 +100,9 @@
   text-align: center;
   max-width: 70px;
 }
+.player:hover {
+  transform: translateY(-4px);
+}
 
 
 /* 팀 목록 스타일 */
@@ -197,13 +200,11 @@
 }
 
 .is-champion {
-  background: #ecd448 !important;
-  border: 2px solid #ffd700;
+  background: linear-gradient(135deg, #fde246, #ffffff) !important;
 }
 
 .is-second {
-  background: #d1d1d1 !important;
-  border: 2px solid #a9a9a9;
+  background: linear-gradient(135deg, #d1d1d1, #585858) !important;
 }
 
 .player-row .badge {

@@ -42,8 +42,8 @@ export default function StreamerDetail() {
     <div className="row mt-0">
         {/* 공식 대회 */}
 
-        <div className="col-lg-6 col-12">
-            <h3 className="text-center mt-2"> 공식 </h3>
+        <div className="col-lg-6 col-12 mb-2">
+            <span className="section-title-isofficial text-center mt-2"> 공식 </span>
             {streamerTeam.filter(team => team.tournamentIsOfficial === "Y").map((team)=>(
                 <div className={`card team-card mb-3 mt-2
                         ${team.teamRanking === "우승" ? "is-champion" : ""}
@@ -118,7 +118,7 @@ export default function StreamerDetail() {
 
         {/* 스트리머 개최대회 */}
         <div className="col-lg-6 col-12">
-            <h3 className="text-center mt-2"> 스트리머 개최 </h3>
+            <span className="section-title-isofficial text-center mt-2"> 스트리머 개최 </span>
             {streamerTeam.filter(team => team.tournamentIsOfficial === "N").map((team)=>(
                 <div className={`card team-card mb-3 mt-2
                         ${team.teamRanking === "우승" ? "is-champion" : ""}
@@ -154,32 +154,32 @@ export default function StreamerDetail() {
                             <div className="card team-card mt-2">
                                 <div className="period-box-body team-member">
                                     <Link to={`/streamer/${team.teamTop}`} className="streamer-link">
-                                    <div className="player">
-                                        <img className="player-profile"src={buildProfileUrl(team.topId)} alt={team.topName}/>
-                                        <br/><span className={`player-name ${team.topName === streamer.streamerName ? "highlighted" : ""}`}>{team.topName}</span>
-                                    </div>
+                                        <div className="player">
+                                            <img className="player-profile mb-1"src={buildProfileUrl(team.topId)} alt={team.topName}/>
+                                            <br/><span className={`player-name ${team.topName === streamer.streamerName ? "highlighted" : ""}`}>{team.topName}</span>
+                                        </div>
                                     </Link>
                                     <Link to={`/streamer/${team.teamJug}`} className="streamer-link">
-                                    <div className="player">
-                                        <img className="player-profile"src={buildProfileUrl(team.jugId)} alt={team.jugName}/>
-                                        <br/><span className={`player-name ${team.jugName === streamer.streamerName ? "highlighted" : ""}`}>{team.jugName}</span>
-                                    </div>
+                                        <div className="player">
+                                            <img className="player-profile mb-1"src={buildProfileUrl(team.jugId)} alt={team.jugName}/>
+                                            <br/><span className={`player-name ${team.jugName === streamer.streamerName ? "highlighted" : ""}`}>{team.jugName}</span>
+                                        </div>
                                     </Link>
                                     <Link to={`/streamer/${team.teamMid}`} className="streamer-link">
                                         <div className="player">
-                                            <img className="player-profile"src={buildProfileUrl(team.midId)} alt={team.midName}/>
+                                            <img className="player-profile mb-1"src={buildProfileUrl(team.midId)} alt={team.midName}/>
                                             <br/><span className={`player-name ${team.midName === streamer.streamerName ? "highlighted" : ""}`}>{team.midName}</span>
                                         </div>
                                     </Link>
                                     <Link to={`/streamer/${team.teamAd}`} className="streamer-link">
                                         <div className="player">
-                                            <img className="player-profile"src={buildProfileUrl(team.adId)} alt={team.adName}/>
+                                            <img className="player-profile mb-1"src={buildProfileUrl(team.adId)} alt={team.adName}/>
                                             <br/><span className={`player-name ${team.adName === streamer.streamerName ? "highlighted" : ""}`}>{team.adName}</span>
                                         </div>
                                     </Link>
                                     <Link to={`/streamer/${team.teamSup}`} className="streamer-link">
                                         <div className="player">
-                                            <img className="player-profile"src={buildProfileUrl(team.supId)} alt={team.supName}/>
+                                            <img className="player-profile mb-1"src={buildProfileUrl(team.supId)} alt={team.supName}/>
                                             <br/><span className={`player-name ${team.supName === streamer.streamerName ? "highlighted" : ""}`}>{team.supName}</span>
                                         </div>
                                     </Link>

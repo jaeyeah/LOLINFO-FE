@@ -159,3 +159,15 @@
   border-radius: 0.5rem;
   font-weight:500;
 }
+
+.section-title-isofficial {
+  display: inline-block;
+  background: linear-gradient(135deg, #0055ff, #001141); /* 파란계열 */
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 10px;       /* 완전 둥글게 */
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);  /* 검은배경에서도 떠보이게 */
+}
