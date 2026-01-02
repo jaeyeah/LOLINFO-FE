@@ -1,3 +1,20 @@
+/* 등록 */
+.insert-form {
+  background: linear-gradient(135deg, #000000, #000a9970) !important;
+  border-radius: 12px;
+  width:800px;
+  padding: 1rem 1.2rem;
+}
+.insert-form .btn-insert{
+  background: linear-gradient(135deg, #292929, #000dc270) !important;
+  color :white !important;
+}
+.insert-form .btn-insert:hover{
+  background: linear-gradient(135deg, #000000, #000a9970) !important;
+}
+
+
+/* ------------------------------ */
 .section-title {
   font-weight: 700;
   letter-spacing: -0.5px;

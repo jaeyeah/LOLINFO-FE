@@ -62,16 +62,18 @@ export default function StreamerList() {
     //render
     return (<>
     
+    <div className="insert-form">
+
     <div className="row">
-        <div className="col-8">
+        <div className="col text-center">
             <h2>신규 스트리머 등록</h2>
+            <hr/>
         </div>
     </div>
 
-
     {/* 스트리머 목록 */}
         {/* 이름 */}
-        <div className="row mt-4">
+        <div className="row mt-2">
             <label className="col-sm-3 col-form-label">이름</label>
             <div className="col-sm-9">
                 <input type="text" className={`form-control ${streamerClass.streamerName}`} 
@@ -99,7 +101,7 @@ export default function StreamerList() {
         {/* 등록버튼  */}
         <div className="row mt-4">
             <div className="col">
-                <button type="button" className="btn btn-lg btn-success w-100"
+                <button type="button" className="btn btn-lg btn-insert w-100"
                             disabled={streamerValid === false}
                             onClick = {sendData}
                             >
@@ -109,7 +111,7 @@ export default function StreamerList() {
             </div>
         </div>
     
-    
+    </div>
     </>)
 
 }
