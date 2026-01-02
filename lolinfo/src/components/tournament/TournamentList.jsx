@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Tournament.css";
 import { buildProfileUrl } from "../../utils/profileUrl";
+import { FaTrophy } from "react-icons/fa";
 
 export default function TournamentList(){
 
@@ -72,9 +73,11 @@ export default function TournamentList(){
             )}
             </div>
           </div>
-          <div className="col-md-6 col-12 period-box">
-            <div className="period-box-header">
-              <div className="col"> W I N N E R <span className="badge team-badge">{tournament.teamName}</span></div>
+          <div className="col-md-6 col-12 period-box ">
+            <div className="period-box-header team-badge">
+              <div className="col">
+                <span className="text-light fs-5">{tournament.teamName}</span>
+              </div>
             </div>
             <div className="period-box-body">
               <div className="player">

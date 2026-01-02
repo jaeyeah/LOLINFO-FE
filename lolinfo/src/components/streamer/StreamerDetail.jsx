@@ -61,15 +61,15 @@ export default function StreamerDetail() {
                         <div className="col-9">
                             <div className="row">
                                 <div className="col-9">
-                                    <span className="tournament-title">{team.tournamentName}</span>
+                                    <Link to={`/tournament/${team.tournamentId}`} className="tournament-title">{team.tournamentName}</Link>
                                     {team.teamName && <span className="team-name"> : {team.teamName}</span>}  
                                 </div>
                                 <div className="col-3 text-end">
                                     {team.teamRanking === "우승" ? (
-                                        <FaTrophy className="fs-3"/>
+                                        <FaTrophy className="fs-3 text-warning"/>
                                     )
                                     : team.teamRanking === "준우승" ? (
-                                        <MdLooksTwo className="fs-2"/>
+                                        <MdLooksTwo className="fs-2 text-light"/>
                                     ) : (
                                         <span className="team-ranking">{team.teamRanking}</span>
                                     )}
@@ -136,15 +136,15 @@ export default function StreamerDetail() {
                         <div className="col-9">
                             <div className="row">
                                 <div className="col-8">
-                                    <span className="tournament-title">{team.tournamentName}</span>
+                                    <Link to={`/tournament/${team.tournamentId}`} className="tournament-title">{team.tournamentName}</Link>
                                     {team.teamName && <span className="team-name"> : {team.teamName}</span>}  
                                 </div>
                                 <div className="col-3 text-end ms-4">
                                     {team.teamRanking === "우승" ? (
-                                        <FaTrophy className="fs-3"/>
+                                        <FaTrophy className="fs-3 text-warning"/>
                                     )
                                     : team.teamRanking === "준우승" ? (
-                                        <MdLooksTwo className="fs-2"/>
+                                        <MdLooksTwo className="fs-2 text-light"/>
                                     ) : (
                                         <span className="team-ranking">{team.teamRanking}</span>
                                     )}
