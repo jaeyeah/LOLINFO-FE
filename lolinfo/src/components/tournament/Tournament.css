@@ -89,6 +89,7 @@
   justify-content: space-around;
   align-items: center;
   padding: 0.6rem 0.8rem;
+  flex-wrap: wrap;
 }
 .period-text {
   color: #495057;

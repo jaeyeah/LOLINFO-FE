@@ -132,10 +132,13 @@
 .team-card .team-name {
   color : rgb(231, 74, 74) !important;
   font-size: 1.2rem !important;
+  overflow: hidden !important;
+  white-space: nowrap;
+  text-overflow: ellipsis ;
 }
 .team-card .team-ranking {
   color : rgb(255, 255, 255);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   margin: 0;
   font-weight: 700;
 }
@@ -151,7 +154,8 @@
 }
 .team-member .highlighted {
   color : rgb(255, 255, 255) !important;
-  background-color: #00025fb4;
+  background-color: #000000b9;
   padding : 0.1rem 0.4rem;
   border-radius: 0.5rem;
+  font-weight:500;
 }
