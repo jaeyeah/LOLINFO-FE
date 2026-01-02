@@ -3,7 +3,6 @@ import { useCallback, useMemo, useState } from "react";
 import { FaAsterisk } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-
 export default function TournamentInsert(){
   const navigate = useNavigate();
   const [tournament, setTournament] = useState({
@@ -20,15 +19,27 @@ export default function TournamentInsert(){
   // callback
   const changeStrValue = useCallback(e=>{
       const {name, value} = e.target;
-      setMember(prev=>({...prev, [name]:value}))
+      setTournament(prev=>({...prev, [name]:value}))
     },[])
 
-  const changeDateValue = useCallback((date)=>{
-      // → 별도의 포맷 전환 절차가 필요
-      const replacement = format(date,"yyyy-MM-dd");
-      setMember(prev=>({...prev, memberBirth : replacement}));
-    },[]);
-
+  //유효성검사
+  const checkTournamentName = useCallback(e=>{
+    const valid = tournament.tournamentName.length > 0;
+    setTournamentClass(prev=>({...prev, tournamentName : valid ? "is-valid" : "is-invalid"}));
+  },[tournament, tournamentClass])
+  const checkTournamentYear = useCallback(e=>{
+    const regex = /^(19|20)\d{2}$/;
+    const valid = regex.test(tournament.tournamentYear) && tournament.tournamentYear.length > 0;
+    setTournamentClass(prev=>({...prev, tournamentYear : valid ? "is-valid" : "is-invalid"}));
+  },[tournament, tournamentClass])
+  const checkTournamentIsofficial = useCallback(e=>{
+    const valid = tournament.tournamentName.length > 0;
+    setTournamentClass(prev=>({...prev, tournamentIsofficial : valid ? "is-valid" : "is-invalid"}));
+  },[tournament, tournamentClass])
+  const checkTournamentTierType = useCallback(e=>{
+    const valid = tournament.tournamentName.length > 0;
+    setTournamentClass(prev=>({...prev, tournamentTierType : valid ? "is-valid" : "is-invalid"}));
+  },[tournament, tournamentClass])
 
     //memo (유효성검사)
     const tournamentValid = useMemo(()=>{
@@ -48,10 +59,10 @@ export default function TournamentInsert(){
         try{
             const response = await axios.post("/tournament/",tournament);
             console.log("성공", response);
-            navigate("/streamer"); // 메인페이지
+            navigate("/tournament"); // 메인페이지
         }
         catch(err){
-            console.log("대회 등록 실패");
+            console.error("대회 등록 실패", err);
         }
     },[tournament, tournamentValid])
 
@@ -69,7 +80,7 @@ return(<>
         <div className="col-sm-9">
           <input type="text" className={`form-control`}
                 name="tournamentName" value={tournament.tournamentName}
-                onChange={changeStrValue}/>
+                onChange={changeStrValue} onBlur={checkTournamentName}/>
           <div className="valid-feedback"></div>
           <div className="invalid-feedback"></div>
         </div>
@@ -80,7 +91,7 @@ return(<>
         <div className="col-sm-9">
           <input type="text" className={`form-control`}
                 name="tournamentYear" value={tournament.tournamentYear}
-                onChange={changeStrValue}/>
+                onChange={changeStrValue} onBlur={checkTournamentYear}/>
           <div className="valid-feedback"></div>
           <div className="invalid-feedback"></div>
         </div>
@@ -91,7 +102,7 @@ return(<>
         <div className="col-sm-9">
           <input type="date" className={`form-control`}
                 name="tournamentStart" value={tournament.tournamentStart}
-                onChange={changeDateValue}/>
+                onChange={changeStrValue}/>
           <div className="valid-feedback"></div>
           <div className="invalid-feedback"></div>
         </div>
@@ -102,7 +113,7 @@ return(<>
         <div className="col-sm-9">
           <input type="date" className={`form-control`}
                 name="tournamentEnd" value={tournament.tournamentEnd}
-                onChange={changeDateValue}/>
+                onChange={changeStrValue}/>
           <div className="valid-feedback"></div>
           <div className="invalid-feedback"></div>
         </div>
@@ -111,7 +122,7 @@ return(<>
       <div className="row mt-4">
         <label className="col-sm-3 col-form-label">공식/비공식 <FaAsterisk className="text-danger"/></label> 
         <div className="col-sm-9">
-          <select className={`form-control`} name="tournamentIsofficial">
+          <select className={`form-control`} name="tournamentIsofficial" onChange={changeStrValue} onBlur={checkTournamentIsofficial}>
             <option value=""> - 선택 - </option>
             <option value="Y">공식</option>
             <option value="N">비공식</option>
@@ -124,11 +135,11 @@ return(<>
       <div className="row mt-4">
         <label className="col-sm-3 col-form-label">구분 <FaAsterisk className="text-danger"/></label> 
         <div className="col-sm-9">
-          <select className={`form-control`} name="tournamenttournamentTierType">
+          <select className={`form-control`} name="tournamentTierType" onChange={changeStrValue} onBlur={checkTournamentTierType}>
             <option value=""> - 선택 - </option>
-            <option>통합</option>
-            <option>천상계</option>
-            <option>지상계</option>
+            <option value="통합">통합</option>
+            <option value="천상계">천상계</option>
+            <option value="지상계">지상계</option>
           </select>
           <div className="valid-feedback"></div>
           <div className="invalid-feedback"></div>
