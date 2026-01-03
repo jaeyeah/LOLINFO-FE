@@ -7,6 +7,7 @@ import TournamentList from "./tournament/TournamentList";
 import TournamentDetail from "./tournament/TournamentDetail";
 import StreamerDetail from "./streamer/StreamerDetail";
 import TournamentInsert from "./tournament/TournamentInsert";
+import TeamInsert from "./tournament/TeamInsert";
 
 
 export default function Content(){
@@ -30,6 +31,9 @@ return (<>
                 <Route path="/tournament" element={<TournamentList />} />
                 <Route path="/tournament/insert" element={<TournamentInsert/>}/>
                 <Route path="/tournament/:tournamentId" element={<TournamentDetail />} />
+
+                {/* 팀 */}
+                <Route path="/team/insert" element={<TeamInsert/>}/>
             
             </Routes>
         </div>
