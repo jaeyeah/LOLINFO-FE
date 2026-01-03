@@ -1,0 +1,94 @@
+/* 전체 Navbar 느낌: 시네마 분위기의 다크 + 글래스 */
+.cinema-navbar,
+.dropdown-menu
+ {
+  background: #3d3d3d !important;
+  /* border-bottom: 1px solid rgba(255, 200, 100, 0.15); */
+  padding: 0.7rem 1rem;
+  transition: all 0.3s ease;
+}
+
+/* 브랜드 로고 */
+.cinema-navbar .cinema-brand {
+  font-weight: 700;
+  color: #f5d67b;
+  letter-spacing: 1px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cinema-navbar .cinema-brand:hover {
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+}
+
+
+.cinema-navbar .nav-link{
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    overflow: hidden;
+    z-index: 1;
+    color: #ffffff ;
+    font-weight: 400 ;
+    letter-spacing: 0.7px;
+    padding: 0.6em 1em;
+    position:relative;
+    min-width: 85px;
+     transition: all 0.5s ease;
+     text-align: center;
+}
+
+.cinema-navbar .nav-link:before,
+.cinema-navbar .nav-link:after{
+      content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 0 solid;
+  -webkit-transform: rotate(360deg);
+  transform: rotate(360deg);
+  z-index: -1;
+  transition: 1s;
+}
+
+.cinema-navbar .nav-link:before{
+    border-radius: 10em;
+ bottom: 0;
+  left: 0;
+  border-color: transparent transparent transparent rgba(253, 101, 101, 0.8);
+}
+
+.cinema-navbar .nav-link:after {
+    border-radius: 10em;
+  top: 0;
+  right: 0;
+  border-color: transparent rgba(253, 101, 101, 0.8) transparent transparent;
+}
+
+.cinema-navbar .nav-link:hover:before,
+.cinema-navbar .nav-link:hover:after { 
+    border-width: 80px 262.5px;
+}
+
+.cinema-navbar .nav-link:hover span,
+.dropdown-menu .nav-link:hover span{
+  color: #ffffff !important; 
+  text-shadow: 0 0 8px rgb(253, 101, 101);
+  font-weight: 500 ;
+}
+
+.cinema-navbar .nav-link:focus::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: rgba(253, 101, 101, 0.918);
+}
+.cinema-navbar .nav-link:focus span {
+    color: #ffffff; 
+    font-weight: 500;
+}
+
+
