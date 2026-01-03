@@ -41,7 +41,11 @@ export default function TournamentDetail(){
     //render
     return(<>
         <h2 className="text-center">{tournament.tournamentName} 상세</h2>
-
+        <div className="col text-end">
+            <Link to={`/team/insert/${tournamentId}`} className="btn btn-success">등록</Link>
+        </div>
+        
+        
         <div className="team-list mt-4">
         {team.map((team) => (
             <div className={`team-card

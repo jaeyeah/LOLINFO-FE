@@ -33,7 +33,7 @@ return (<>
                 <Route path="/tournament/:tournamentId" element={<TournamentDetail />} />
 
                 {/* 팀 */}
-                <Route path="/team/insert" element={<TeamInsert/>}/>
+                <Route path="/team/insert/:tournamentId" element={<TeamInsert/>}/>
             
             </Routes>
         </div>

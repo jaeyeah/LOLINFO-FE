@@ -45,7 +45,7 @@ export default function Menu() {
             <div className="container-fluid">
 
                 {/* 브랜딩 텍스트(이미지) : 메뉴 가장 좌측에 나오는 로고 또는 텍스트 */}
-                <Link className="navbar-brand cinema-brand text-light" to="/" onClick={closeMenu}>
+                <Link className="navbar-brand cinema-brand text-light fs-4" to="/" onClick={closeMenu}>
                     <img src="https://res.sooplive.co.kr/images/svg/soop_logo.svg"
                         width="40" height="40"/>
                 </Link>
