@@ -130,8 +130,12 @@
   font-weight: 700;
 }
 .team-card .team-name {
-  color : rgb(231, 74, 74) !important;
-  font-size: 1.2rem !important;
+  background-color: black;
+  padding-left: 4px;
+  padding-right: 4px;
+  border-radius: 10px;
+  color : rgb(255, 255, 255) !important;
+  font-size: 1.1rem !important;
   overflow: hidden !important;
   white-space: nowrap;
   text-overflow: ellipsis ;
