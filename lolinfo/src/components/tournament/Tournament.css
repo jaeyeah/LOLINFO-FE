@@ -255,3 +255,12 @@
     color : rgb(46, 1, 209) !important;
     font-weight: 700 !important;
 }
+
+/* 프로필 이미지 크기 & 모양 */
+.line-image {
+  width: 32px;  
+  height: 32px;
+  border-radius: 20%;
+  object-fit: cover;
+  flex-shrink: 0; 
+}

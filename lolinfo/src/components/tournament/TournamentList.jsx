@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Tournament.css";
 import { buildProfileUrl } from "../../utils/profileUrl";
-import { FaTrophy } from "react-icons/fa";
 
 export default function TournamentList(){
 
