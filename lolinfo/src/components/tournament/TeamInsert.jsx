@@ -10,6 +10,7 @@ export default function TeamInsert(){
 
     //state
     const {tournamentId} = useParams();
+    const [checking, setChecking] = useState(false);
     //전송용 State
     const [team, setTeam] = useState({
         tournamentId : tournamentId, teamName : "",
@@ -49,6 +50,7 @@ export default function TeamInsert(){
         // top
         const checkTeamTop = useCallback(async(e)=>{
             try{
+                setChecking(true); // 검증 시작
                 const {data} = await axios.get(`/team/check/${teamData.teamTop}`);
                 console.log("전송된 데이터", data);
                 
@@ -61,10 +63,14 @@ export default function TeamInsert(){
                 console.log("err",err);
                 setTeamClass(prev => ({ ...prev, teamTop: "is-invalid" }));
             }
+            finally {
+             setChecking(false); // 검증 끝
+            }
         },[team, teamClass, teamData])
         // jug
         const checkTeamJug = useCallback(async(e)=>{
             try{
+                setChecking(true); // 검증 시작
                 const {data} = await axios.get(`/team/check/${teamData.teamJug}`);
                 console.log("전송된 데이터", data);
                 
@@ -77,10 +83,14 @@ export default function TeamInsert(){
                 console.log("err",err);
                 setTeamClass(prev => ({ ...prev, teamJug: "is-invalid" }));
             }
+            finally {
+             setChecking(false); // 검증 끝
+            }
         },[team, teamClass, teamData])
         // mid
         const checkTeamMid = useCallback(async(e)=>{
             try{
+                setChecking(true); // 검증 시작
                 const {data} = await axios.get(`/team/check/${teamData.teamMid}`);
                 console.log("전송된 데이터", data);
                 
@@ -93,10 +103,14 @@ export default function TeamInsert(){
                 console.log("err",err);
                 setTeamClass(prev => ({ ...prev, teamMid: "is-invalid" }));
             }
+            finally {
+             setChecking(false); // 검증 끝
+            }
         },[team, teamClass, teamData])
         // ad
         const checkTeamAd = useCallback(async(e)=>{
             try{
+                setChecking(true); // 검증 시작
                 const {data} = await axios.get(`/team/check/${teamData.teamAd}`);
                 console.log("전송된 데이터", data);
                 
@@ -109,10 +123,14 @@ export default function TeamInsert(){
                 console.log("err",err);
                 setTeamClass(prev => ({ ...prev, teamAd: "is-invalid" }));
             }
+            finally {
+             setChecking(false); // 검증 끝
+            }
         },[team, teamClass, teamData])
         // sup
         const checkTeamSup = useCallback(async(e)=>{
             try{
+                setChecking(true); // 검증 시작
                 const {data} = await axios.get(`/team/check/${teamData.teamSup}`);
                 console.log("전송된 데이터", data);
                 
@@ -124,6 +142,9 @@ export default function TeamInsert(){
             catch(err){
                 console.log("err",err);
                 setTeamClass(prev => ({ ...prev, teamSup: "is-invalid" }));
+            }
+            finally {
+             setChecking(false); // 검증 끝
             }
         },[team, teamClass, teamData])
 
@@ -148,6 +169,7 @@ export default function TeamInsert(){
 
     //최종 가입--------------------------------------------------
     const sendData = useCallback(async()=>{
+        if(checking) return; 
         if(teamValid === false) return ;
         try{
             const response = await axios.post("/team/",team);
@@ -298,7 +320,7 @@ return(<>
     <div className="row mt-4">
         <div className="col">
             <button type="button" className="btn btn-lg btn-insert w-100"
-                        disabled={teamValid === false}
+                        disabled={teamValid === false||checking}
                         onClick = {sendData}
                         >
             <span>등록</span>
