@@ -149,11 +149,10 @@ export default function TeamInsert(){
         },[team, teamClass, teamData])
 
 
-
-
-
-
-
+    const checkTeamRanking = useCallback(e=>{
+        const valid = team.teamRanking.length > 0;
+        setTeamClass(prev=>({...prev, teamRanking : valid ? "is-valid" : "is-invalid"}));
+    },[team, teamClass])
 
     // memo --------------------------------------------------
     const teamValid = useMemo(()=>{
@@ -164,6 +163,7 @@ export default function TeamInsert(){
         if(teamClass.teamMid !== "is-valid") return false;
         if(teamClass.teamAd !== "is-valid") return false;
         if(teamClass.teamSup !== "is-valid") return false;
+        if(teamClass.teamRanking === "is-invalid") return false;
         return true;
     },[teamClass]);
 
@@ -212,10 +212,14 @@ return(<>
         <div className="row mt-2">
             <label className="col-sm-3 col-form-label">성적</label>
             <div className="col-sm-9">
-                <input type="text" className={`form-control ${teamClass.teamRanking}`} 
-                            name="teamRanking" value={team.teamRanking}
-                            onChange={changeStrValue}
-                            />
+                <select className={`form-control ${teamClass.teamRanking}`}  name="teamRanking" onChange={changeStrValue} onBlur={checkTeamRanking}>
+                    <option value=""> - 선택 - </option>
+                    <option value="우승">우승</option>
+                    <option value="준우승">준우승</option>
+                    <option value="4강">4강</option>
+                    <option value="본선진출">본선진출</option>
+                    <option value="예선탈락">예선탈락</option>
+                </select>
                 <div className="valid-feedback"></div>
                 <div className="invalid-feedback"></div>
             </div>
