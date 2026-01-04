@@ -54,7 +54,7 @@ export default function TournamentDetail(){
                 key={team.teamId}>
             {/* 상단 헤더 : 순위 + 팀 이름 */}
             <div className="team-header d-flex align-items-center mb-3">
-                <div>#{team.teamRanking} | <span className="team-name">{team.teamName}</span></div>
+                <div>#{team.teamRanking} | {team.teamName && <span className="team-name">{team.teamName}</span> }</div>
             </div>
 
             {/* 선수 목록 */}

@@ -62,7 +62,8 @@ export default function StreamerDetail() {
                             <div className="row">
                                 <div className="col-9">
                                     <Link to={`/tournament/${team.tournamentId}`} className="tournament-title">{team.tournamentName}</Link>
-                                    {team.teamName && <span className="team-name"> : {team.teamName}</span>}  
+                                    <span> </span>
+                                    {team.teamName && <span className="team-name">{team.teamName} </span>}  
                                 </div>
                                 <div className="col-3 text-end">
                                     {team.teamRanking === "우승" ? (
@@ -137,7 +138,8 @@ export default function StreamerDetail() {
                             <div className="row">
                                 <div className="col-8">
                                     <Link to={`/tournament/${team.tournamentId}`} className="tournament-title">{team.tournamentName}</Link>
-                                    {team.teamName && <span className="team-name"> : {team.teamName}</span>}  
+                                    <span> </span>
+                                    {team.teamName && <span className="team-name">{team.teamName}</span>}  
                                 </div>
                                 <div className="col-3 text-end ms-4">
                                     {team.teamRanking === "우승" ? (
