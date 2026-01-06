@@ -26,7 +26,7 @@ export default function StreamerList() {
     
     <div className="row align-items-center">
         <div className="col-8  d-flex align-items-center">
-            <span className="fs-2 page-title">스트리머 목록 : 전체대회 </span>
+            <span className="fs-2 page-title">스트리머 목록 : 공식대회 </span>
             <Link to="/streamer" className="ms-2 btn btn-click">공식</Link>
             <Link to="/streamerTotal" className="ms-2 btn btn-nonClick">전체</Link>
         </div>

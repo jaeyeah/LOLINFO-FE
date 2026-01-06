@@ -9,7 +9,7 @@ export default function StreamerList() {
 
     const loadData = useCallback( async() => {
         try {
-            const {data} = await axios.get("/streamer/");
+            const {data} = await axios.get("/streamer/totalList");
             setStreamerList(data);
             console.log(data);
         } catch (error) {
