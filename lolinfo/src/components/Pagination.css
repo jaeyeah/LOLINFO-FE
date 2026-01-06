@@ -1,0 +1,50 @@
+/* pagination 전체 */
+.pagination {
+  justify-content: center;
+  gap: 3px;
+}
+
+/* 기본 페이지 버튼 */
+.pagination .page-link {
+  background-color: rgb(160, 160, 160) !important;
+  color: #000000 !important; /* 레드 */
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 6px 12px;
+  transition: all 0.2s ease;
+}
+
+/* hover 효과 */
+.pagination .page-link:hover {
+  background-color: #2b2b2b !important;
+  color: #3c5be7 !important;
+  border-color: #3c5be7;
+  transform: translateY(-1px);
+}
+
+/* active 페이지 */
+.pagination .page-item.active .page-link {
+  background-color: #3c5be7 !important;
+  color: #ffffff !important;
+  border-color: #3c5be7;
+  font-weight: bold;
+  box-shadow: 0 0 8px rgba(86, 60, 231, 0.6);
+}
+
+/* disabled 버튼 */
+.pagination .page-item.disabled .page-link,
+.pagination .page-link:disabled {
+  background-color: rgb(56, 56, 56) !important;
+  color: #777 !important;
+  border-color: #444;
+  cursor:  default;
+  opacity: 0.6;
+  transform: none;
+}
+
+/* focus / active 시 outline 제거 */
+.pagination .page-link:focus,
+.pagination .page-link:active {
+  outline: none !important;
+  box-shadow: none !important;
+}

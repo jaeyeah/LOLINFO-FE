@@ -3,24 +3,30 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom"
 import "./Streamer.css";
 import { FaHome } from "react-icons/fa";
+import Pagination from "../Pagination";
 
 export default function StreamerList() {
 
     const [streamerList, setStreamerList] = useState([]);
+    // 페이지네이션 설정
+    const [page, setPage] = useState(1);
+    const [pageData, setPageData] = useState({
+        page : 1,size : 10,  totalCount : 0, totalPage : 0, blockStart : 1, blockFinish : 1
+    });
 
     const loadData = useCallback( async() => {
         try {
-            const {data} = await axios.get("/streamer/totalList");
-            setStreamerList(data);
-            console.log(data);
+            const {data} = await axios.get("/streamer/totalList", {params : {page}});
+            setStreamerList(data.list);
+            setPageData(data.pageVO);
         } catch (error) {
             console.error("Error fetching streamer list:", error);
         }
-    }, []);
+    }, [page]);
 
     useEffect(()=>{
         loadData();
-    },[]);
+    },[loadData]);
 
     //render
     return (<>
@@ -95,6 +101,18 @@ export default function StreamerList() {
             ))}
         </div>
     </div>
+    {/* 페이지네이션 */}
+        <div className ="row mt-1">
+            <div className="col-6 offset-3">
+                <Pagination
+                    page={page}
+                    totalPage={pageData.totalPage}
+                    blockStart={pageData.blockStart}
+                    blockFinish={pageData.blockFinish}
+                    onPageChange={setPage}
+                />
+            </div>
+        </div>
     
     
     </>)
