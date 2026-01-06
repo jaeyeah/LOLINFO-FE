@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 
 
 import StreamerList from "./streamer/StreamerList";
+import StreamerTotalList from "./streamer/StreamerTotalList";
 import StreamerInsert from "./streamer/StreamerInsert";
 import TournamentList from "./tournament/TournamentList";
 import TournamentDetail from "./tournament/TournamentDetail";
@@ -24,6 +25,7 @@ return (<>
 
                 {/* 스트리머 */}
                 <Route path="/streamer" element={<StreamerList />} />
+                <Route path="/streamerTotal" element={<StreamerTotalList />} />
                 <Route path="/streamer/insert" element={<StreamerInsert />} />
                 <Route path="/streamer/:streamerId" element={<StreamerDetail />} /> 
 

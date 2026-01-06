@@ -24,17 +24,12 @@ export default function StreamerList() {
     //render
     return (<>
     
-    <div className="row">
     <div className="row align-items-center">
         <div className="col-8  d-flex align-items-center">
             <span className="fs-2 page-title">스트리머 목록 : 전체대회 </span>
-            <Link to="/streamer" className="ms-2 btn btn-click">공식</Link>
-            <Link to="/streamerTotal" className="ms-2 btn btn-nonClick">전체</Link>
+            <Link to="/streamer" className="ms-2 btn btn-nonClick">공식</Link>
+            <Link to="/streamerTotal" className="ms-2 btn btn-click">전체</Link>
         </div>
-        <div className="col-4 text-end">
-            <Link to="/streamer/insert" className="btn btn-success">등록</Link>
-        </div>
-    </div>
         <div className="col-4 text-end">
             <Link to="/streamer/insert" className="btn btn-success">등록</Link>
         </div>
@@ -66,22 +61,22 @@ export default function StreamerList() {
                                 <div className="col">
                                     <span className="card-text text-white">우승 </span>
                                     <hr/>
-                                    <span className={`badge stat-badge card-text ${streamer.officialRanking1 > 0 && 'streamer-stat1'}`}>
-                                        {streamer.officialRanking1} 회
+                                    <span className={`badge stat-badge card-text ${streamer.totalRanking1 > 0 && 'streamer-stat1'}`}>
+                                        {streamer.totalRanking1} 회
                                     </span>
                                 </div>
                                 <div className="col">
                                     <span className="card-text text-white">준우승 </span>
                                     <hr/>
-                                    <span className={`badge stat-badge card-text ${streamer.officialRanking2 > 0 && 'streamer-stat2'}`}>
-                                        {streamer.officialRanking2} 회
+                                    <span className={`badge stat-badge card-text ${streamer.totalRanking2 > 0 && 'streamer-stat2'}`}>
+                                        {streamer.totalRanking2} 회
                                     </span>
                                 </div>
                                 <div className="col">
                                     <span className="card-text text-white">4강 </span>
                                     <hr/>
-                                    <span className={`badge stat-badge card-text ${streamer.officialRanking3 > 0 && 'streamer-stat3'}`}>
-                                        {streamer.officailRanking3} 회
+                                    <span className={`badge stat-badge card-text ${streamer.totalRanking3 > 0 && 'streamer-stat3'}`}>
+                                        {streamer.totalRanking3} 회
                                     </span>
                                 </div>
                             </div>

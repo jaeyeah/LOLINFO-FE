@@ -175,3 +175,40 @@
   letter-spacing: 1px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.25);  /* 검은배경에서도 떠보이게 */
 }
+
+.stat-badge{
+  display: block;
+  width: 100%;
+  border-radius: 12px !important;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: transform .15s ease, box-shadow .15s ease;
+  
+}
+
+
+.streamer-stat1{
+  font-size : 18px !important;
+  color : black !important;
+  background-color: rgba(240, 240, 6, 0.89);
+}
+.streamer-stat2{
+  font-size : 18px !important;
+  color : black !important;
+  background-color: rgba(187, 187, 187, 0.733);
+}
+.streamer-stat3{
+  font-size : 18px !important;
+  color : rgb(255, 255, 255) !important;
+  background-color: rgba(173, 96, 44, 0.575);
+}
+
+.btn.btn-click{
+  color : white;
+  font-weight: 600;
+  background-color: rgb(0, 67, 190);
+}
+.btn.btn-nonClick{
+  color :white;
+  background-color: rgba(0, 48, 138, 0.712);
+}

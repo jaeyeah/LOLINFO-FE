@@ -71,7 +71,7 @@ return(<>
 <div className="d-flex justify-content-center">
     <div className="insert-form">
       <div className="text-center">
-        <h2>대회 등록</h2>
+        <h2 className="">대회 등록</h2>
       </div>
       <hr/>
       {/* 대회 이름 */}

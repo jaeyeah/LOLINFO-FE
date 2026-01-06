@@ -33,7 +33,7 @@ export default function TournamentList(){
 
 //render
 return(<>
-  <h2 className="section-title text-center">Soop : LoL 대회 목록</h2>
+  <h2 className="section-title text-center ">Soop : LoL 대회 목록</h2>
   <div className="row text-end">
     <div className="col-8"></div>
     <div className="col-4">
