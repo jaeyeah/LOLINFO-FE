@@ -104,13 +104,6 @@ export default function StreamerDetail() {
 
 
 
-
-
-
-
-
-
-
     {/* 참여 대회 상세 */}
     <div className="row mt-0">
         {/* 공식 대회 */}
@@ -132,9 +125,8 @@ export default function StreamerDetail() {
                         </div>
                         <div className="col-9">
                             <div className="row">
-                                <div className="col-9">
+                                <div className="col-9 tournament-row">
                                     <Link to={`/tournament/${team.tournamentId}`} className="tournament-title">{team.tournamentName}</Link>
-                                    <span> </span>
                                     {team.teamName && <span className="team-name">{team.teamName} </span>}  
                                 </div>
                                 <div className="col-3 text-end">
@@ -208,7 +200,7 @@ export default function StreamerDetail() {
                         </div>
                         <div className="col-9">
                             <div className="row">
-                                <div className="col-8">
+                                <div className="col-8 tournament-row">
                                     <Link to={`/tournament/${team.tournamentId}`} className="tournament-title">{team.tournamentName}</Link>
                                     <span> </span>
                                     {team.teamName && <span className="team-name">{team.teamName}</span>}  

@@ -123,11 +123,20 @@
 }
 
 
+.team-card .tournament-row {
+  display : flex;
+  gap:6px;
+  align-items: center;
+  min-width: 0;  
+
+}
+
 .team-card .tournament-title {
   color : black;
   font-size: 1.3rem;
   margin: 0;
   font-weight: 700;
+  flex: 1; 
 }
 .team-card .team-name {
   background-color: black;
@@ -136,9 +145,14 @@
   border-radius: 10px;
   color : rgb(255, 255, 255) !important;
   font-size: 1.2rem !important;
+}
+.team-card .tournament-title,
+.team-card .team-name,
+.team-card .team-ranking {
+  display: block !important; 
   overflow: hidden !important;
-  white-space: nowrap;
-  text-overflow: ellipsis ;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
 }
 .team-card .team-ranking {
   color : rgb(255, 255, 255);
@@ -196,17 +210,17 @@
 .streamer-stat1{
   font-size : 18px !important;
   color : black !important;
-  background-color: rgba(240, 240, 6, 0.89);
+  background: linear-gradient(135deg, rgba(240, 240, 6, 0.89), #ffffff); 
 }
 .streamer-stat2{
   font-size : 18px !important;
   color : black !important;
-  background-color: rgba(187, 187, 187, 0.733);
+  background: linear-gradient(135deg, rgba(187, 187, 187, 0.733), #bdb2be);
 }
 .streamer-stat3{
   font-size : 18px !important;
   color : rgb(255, 255, 255) !important;
-  background-color: rgba(173, 96, 44, 0.575);
+  background: linear-gradient(135deg, rgba(173, 96, 44, 0.575), #000000);
 }
 
 .btn.btn-click{
@@ -238,6 +252,10 @@
   box-shadow: 0 10px 25px rgba(0,0,0,0.35);
 }
 
+.card-body.stat-box{
+  margin : 0;
+}
+
 /* 라벨 */
 .stat-box-label{
   color: rgba(255,255,255,.7);
@@ -255,4 +273,9 @@
   font-weight: 500;
   font-size: 0.9rem;
   opacity: .8;
+}
+
+.stat-box .card-text{
+  font-size : 1.1rem;
+  font-weight : 600;
 }

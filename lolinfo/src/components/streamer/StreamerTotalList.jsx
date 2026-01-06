@@ -29,7 +29,7 @@ export default function StreamerList() {
         <div className="col-12 col-lg-8">
             <div className="row align-items-center">
                 <div className="col-12 col-md-10 d-flex align-items-center">
-                    <span className="fs-2 page-title">스트리머 목록 : 전체대회 </span>
+                    <span className="fs-2 page-title">스트리머 목록 : 전체 </span>
                     <Link to="/streamer" className="ms-2 btn btn-nonClick">공식</Link>
                     <Link to="/streamerTotal" className="ms-2 btn btn-click">전체</Link>
                 </div>
@@ -53,16 +53,20 @@ export default function StreamerList() {
                             </Link>
                         </div>
                         <div className="col-md-10 col-7">
-                            <div className="card-body">
-                                <span className="card-title">{streamer.streamerName} </span>
-                                <span className="card-text">{streamer.streamerSoopId}</span>
-                                <Link to={streamer.streamerStation} className="btn btn-station ms-3" target="_blank" rel="noopener noreferrer"><FaHome className="fs-4"/></Link>
-                                <Link to={`/streamer/${streamer.streamerNo}`} className="btn btn-secondary ms-2" target="_blank" rel="noopener noreferrer">스트리머 상세</Link>
+                            <div className="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span className="card-title">{streamer.streamerName} </span>
+                                    <span className="card-text">{streamer.streamerSoopId}</span>
+                                </div>
+                                <div className="text-end">
+                                    <Link to={streamer.streamerStation} className="btn btn-station ms-3" target="_blank" rel="noopener noreferrer"><FaHome className="fs-4"/></Link>
+                                    <Link to={`/streamer/${streamer.streamerNo}`} className="btn btn-secondary ms-2" target="_blank" rel="noopener noreferrer">스트리머 상세</Link>
+                                </div>
                             </div>
                             
                             
-                            <div className="row card-body text-center">
-                                <div className="col">
+                            <div className="row card-body text-center stat-box">
+                                <div className="col ">
                                     <span className="card-text text-white">우승 </span>
                                     <hr/>
                                     <span className={`badge stat-badge card-text ${streamer.totalRanking1 > 0 && 'streamer-stat1'}`}>
