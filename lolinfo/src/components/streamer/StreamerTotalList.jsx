@@ -2,6 +2,7 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom"
 import "./Streamer.css";
+import { FaHome } from "react-icons/fa";
 
 export default function StreamerList() {
 
@@ -24,21 +25,25 @@ export default function StreamerList() {
     //render
     return (<>
     
-    <div className="row align-items-center">
-        <div className="col-8  d-flex align-items-center">
-            <span className="fs-2 page-title">스트리머 목록 : 전체대회 </span>
-            <Link to="/streamer" className="ms-2 btn btn-nonClick">공식</Link>
-            <Link to="/streamerTotal" className="ms-2 btn btn-click">전체</Link>
-        </div>
-        <div className="col-4 text-end">
-            <Link to="/streamer/insert" className="btn btn-success">등록</Link>
+    <div className="row justify-content-center mt-2">
+        <div className="col-12 col-lg-8">
+            <div className="row align-items-center">
+                <div className="col-12 col-md-10 d-flex align-items-center">
+                    <span className="fs-2 page-title">스트리머 목록 : 전체대회 </span>
+                    <Link to="/streamer" className="ms-2 btn btn-nonClick">공식</Link>
+                    <Link to="/streamerTotal" className="ms-2 btn btn-click">전체</Link>
+                </div>
+                <div className="col-2 text-end">
+                    <Link to="/streamer/insert" className="btn btn-success">등록</Link>
+                </div>
+            </div>
         </div>
     </div>
 
 
     {/* 스트리머 목록 */}
-    <div className="row mt-2">
-        <div className="col-12 streamer-wrapper">
+    <div className="row mt-2 justify-content-center">
+        <div className="col-12 col-lg-8 streamer-wrapper">
             {streamerList.map((streamer)=>(
                 <div key={streamer.streamerNo} className="card streamer-card mb-3">
                     <div className="row g-0">
@@ -51,11 +56,10 @@ export default function StreamerList() {
                             <div className="card-body">
                                 <span className="card-title">{streamer.streamerName} </span>
                                 <span className="card-text">{streamer.streamerSoopId}</span>
-                            {/* <div className="card-body d-block align-items-center justify-content-end"> */}
-                                <Link to={streamer.streamerStation} className="btn btn-station ms-3" target="_blank" rel="noopener noreferrer">방송국</Link>
-                                <Link to={`/streamer/${streamer.streamerNo}`} className="btn btn-secondary ms-3" target="_blank" rel="noopener noreferrer">스트리머 상세</Link>
-                            {/* </div> */}
+                                <Link to={streamer.streamerStation} className="btn btn-station ms-3" target="_blank" rel="noopener noreferrer"><FaHome className="fs-4"/></Link>
+                                <Link to={`/streamer/${streamer.streamerNo}`} className="btn btn-secondary ms-2" target="_blank" rel="noopener noreferrer">스트리머 상세</Link>
                             </div>
+                            
                             
                             <div className="row card-body text-center">
                                 <div className="col">

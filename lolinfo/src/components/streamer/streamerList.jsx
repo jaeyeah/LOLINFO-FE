@@ -2,6 +2,7 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom"
 import "./Streamer.css";
+import { FaHome } from "react-icons/fa";
 
 export default function StreamerList() {
 
@@ -50,10 +51,8 @@ export default function StreamerList() {
                             <div className="card-body">
                                 <span className="card-title">{streamer.streamerName} </span>
                                 <span className="card-text">{streamer.streamerSoopId}</span>
-                            {/* <div className="card-body d-block align-items-center justify-content-end"> */}
-                                <Link to={streamer.streamerStation} className="btn btn-station ms-3" target="_blank" rel="noopener noreferrer">방송국</Link>
-                                <Link to={`/streamer/${streamer.streamerNo}`} className="btn btn-secondary ms-3" target="_blank" rel="noopener noreferrer">스트리머 상세</Link>
-                            {/* </div> */}
+                                <Link to={streamer.streamerStation} className="btn btn-station ms-3" target="_blank" rel="noopener noreferrer"><FaHome className="fs-4"/></Link>
+                                <Link to={`/streamer/${streamer.streamerNo}`} className="btn btn-secondary ms-2" target="_blank" rel="noopener noreferrer">스트리머 상세</Link>
                             </div>
                             
                             <div className="row card-body text-center">
@@ -75,7 +74,7 @@ export default function StreamerList() {
                                     <span className="card-text text-white">4강 </span>
                                     <hr/>
                                     <span className={`badge stat-badge card-text ${streamer.officialRanking3 > 0 && 'streamer-stat3'}`}>
-                                        {streamer.officailRanking3} 회
+                                        {streamer.officialRanking3} 회
                                     </span>
                                 </div>
                             </div>

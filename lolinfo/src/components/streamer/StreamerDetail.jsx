@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom"
 import "./Streamer.css";
 import { buildProfileUrl } from "../../utils/profileUrl";
-import { FaTrophy } from "react-icons/fa";
+import { FaHome, FaTrophy } from "react-icons/fa";
 import { MdLooksTwo } from "react-icons/md";
 
 export default function StreamerDetail() {
@@ -38,10 +38,82 @@ export default function StreamerDetail() {
             <h2 className="page-title p-3">{streamer.streamerName} : 개인 상세</h2>
         </div>
     </div>
-    
+    {/* 스트리머 상세 */}
+    <div className="streamer-wrapper">
+      <div className="card streamer-card mb-4">
+        <div className="card-body">
+          {/* 상단: 프로필 + 이름 + 버튼들 */}
+          <div className="row align-items-center">
+            <div className="col-auto">
+              <img src={streamer.streamerProfile} className="streamer-profile"/>
+            </div>
+            <div className="col">
+              <h3 className="card-title mb-1">{streamer.streamerName}</h3>
+              <p className="card-text mb-0">@{streamer.streamerSoopId}</p>
+            </div>
+            <div className="col-auto text-end">
+                <a href={streamer.streamerStation} target="_blank" rel="noreferrer"
+                    className="btn btn-station mb-2"><FaHome className="fs-2"/> </a>
+            </div>
+          </div>
+          <hr />
+
+            {/* 하단: 공식 / 전체 기록 */}
+            <div className="row g-3 mt-2">
+            {[
+                {
+                title: "공식전 기록", stats: [
+                    { label: "우승", value: streamer.officialRanking1 },
+                    { label: "준우승", value: streamer.officialRanking2 },
+                    { label: "4강", value: streamer.officialRanking3 },
+                ],},
+                {
+                title: "전체 기록", stats: [
+                    { label: "우승", value: streamer.totalRanking1 },
+                    { label: "준우승", value: streamer.totalRanking2 },
+                    { label: "4강", value: streamer.totalRanking3 },
+                ],},
+            ].map((section) => (
+                <div className="col-md-6" key={section.title}>
+                <div className="mb-2">
+                    <span className="detail-section-title">
+                    {section.title}
+                    </span>
+                </div>
+
+                <div className="stat-box">
+                    <div className="row text-center">
+                        {section.stats.map((stat) => (
+                        <div className="col" key={stat.label}>
+                            <div className="stat-box-label">{stat.label}</div>
+                            <div className="stat-box-number">
+                            {stat.value}
+                            <span className="stat-box-unit"> 회</span>
+                            </div>
+                        </div>
+                        ))}
+                    </div>
+                    </div>
+                </div>
+            ))}
+            </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    {/* 참여 대회 상세 */}
     <div className="row mt-0">
         {/* 공식 대회 */}
-
         <div className="col-lg-6 col-12 mb-2">
             <span className="section-title-isofficial text-center mt-2"> 공식 </span>
             {streamerTeam.filter(team => team.tournamentIsOfficial === "Y").map((team)=>(

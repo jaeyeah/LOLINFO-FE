@@ -183,7 +183,13 @@
   letter-spacing: 0.5px;
   border: 1px solid rgba(255,255,255,0.15);
   transition: transform .15s ease, box-shadow .15s ease;
-  
+  padding: 0.55rem 0.9rem;
+  font-weight: 600;
+}
+.stat-badge-dark{
+  font-size : 18px !important;
+  background: rgba(1, 0, 36, 0.664)!important;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.45);
 }
 
 
@@ -211,4 +217,42 @@
 .btn.btn-nonClick{
   color :white;
   background-color: rgba(0, 48, 138, 0.712);
+}
+.detail-section-title{
+  display: inline-block;
+  background: linear-gradient(135deg, #000000, #001141); /* 파란계열 */
+  color: #ffffff;
+  padding: 5px 16px;
+  border-radius: 5px;       /* 완전 둥글게 */
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25); 
+}
+
+.stat-box{
+  background: rgba(0, 0, 0, 0.596);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+}
+
+/* 라벨 */
+.stat-box-label{
+  color: rgba(255,255,255,.7);
+  margin-bottom: 0.2rem;
+}
+
+/* 숫자 */
+.stat-box-number{
+  color: white;
+  font-weight: 800;
+  font-size: 1.25rem;
+}
+
+.stat-box-unit{
+  font-weight: 500;
+  font-size: 0.9rem;
+  opacity: .8;
 }
