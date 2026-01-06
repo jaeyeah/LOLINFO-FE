@@ -30,6 +30,30 @@ export default function StreamerDetail() {
         loadData();
     },[streamerId]);
 
+
+    const sections = [
+    {
+        key: "official",
+        title: "공식전 기록",
+        stats: [
+        { label: "우승", value: streamer.officialRanking1 },
+        { label: "준우승", value: streamer.officialRanking2 },
+        { label: "4강", value: streamer.officialRanking3 },
+        ],
+        filter: (team) => team.tournamentIsOfficial === "Y",
+    },
+    {
+        key: "total",
+        title: "전체 기록",
+        stats: [
+        { label: "우승", value: streamer.totalRanking1 },
+        { label: "준우승", value: streamer.totalRanking2 },
+        { label: "4강", value: streamer.totalRanking3 },
+        ],
+        filter: () => true, // 전체
+    },
+    ];
+
     //render
     return (<>
     
@@ -60,28 +84,16 @@ export default function StreamerDetail() {
 
             {/* 하단: 공식 / 전체 기록 */}
             <div className="row g-3 mt-2">
-            {[
-                {
-                title: "공식전 기록", stats: [
-                    { label: "우승", value: streamer.officialRanking1 },
-                    { label: "준우승", value: streamer.officialRanking2 },
-                    { label: "4강", value: streamer.officialRanking3 },
-                ],},
-                {
-                title: "전체 기록", stats: [
-                    { label: "우승", value: streamer.totalRanking1 },
-                    { label: "준우승", value: streamer.totalRanking2 },
-                    { label: "4강", value: streamer.totalRanking3 },
-                ],},
-            ].map((section) => (
-                <div className="col-md-6" key={section.title}>
-                <div className="mb-2">
-                    <span className="detail-section-title">
-                    {section.title}
-                    </span>
-                </div>
+                {sections.map((section) => {
+                const filteredTeams = streamerTeam.filter(section.filter);
 
-                <div className="stat-box">
+                return (
+                <div className="col-md-6" key={section.key}>
+                    <div className="mb-2">
+                    <span className="detail-section-title">{section.title}</span>
+                    </div>
+
+                    <div className="stat-box">
                     <div className="row text-center">
                         {section.stats.map((stat) => (
                         <div className="col" key={stat.label}>
@@ -93,9 +105,28 @@ export default function StreamerDetail() {
                         </div>
                         ))}
                     </div>
+
+                    <hr className="text-white mt-2 mb-2"/>
+
+                    <div className="row">
+                        {filteredTeams.map((team) => (
+                        <div className="mt-1 text-white d-flex align-items-center" key={team.teamId}>
+                            <div className={`col-10 fs-5 ${team.teamRanking !== '우승' ? "text-secondary" : ""}`}>
+                                <span>{team.tournamentYear} | </span>
+                                <span> {team.tournamentName}</span>
+                            </div>
+                            <span className={`col-2 text-center ${team.teamRanking === '우승' ? "badge bg-warning text-dark"
+                                    : team.teamRanking === "준우승" ? "badge bg-secondary" 
+                                    : team.teamRanking === "예선탈락" ? "badge text-secondary"
+                                    : "badge text-secondary"
+                                }`}>{team.teamRanking}</span>
+                        </div>
+                        ))}
+                    </div>
                     </div>
                 </div>
-            ))}
+                );
+            })}
             </div>
 
         </div>
