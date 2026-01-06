@@ -40,7 +40,7 @@ export default function TournamentDetail(){
 
     //render
     return(<>
-        <h2 className="text-center">{tournament.tournamentName} 상세</h2>
+        <h2 className="text-center page-title p-3">{tournament.tournamentName} : 대회 상세</h2>
         <div className="col text-end">
             <Link to={`/team/insert/${tournamentId}`} className="btn btn-success">등록</Link>
         </div>

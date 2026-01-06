@@ -24,7 +24,6 @@ export default function StreamerList() {
     //render
     return (<>
     
-    <div className="row">
     <div className="row align-items-center">
         <div className="col-8  d-flex align-items-center">
             <span className="fs-2 page-title">스트리머 목록 : 전체대회 </span>
@@ -35,11 +34,6 @@ export default function StreamerList() {
             <Link to="/streamer/insert" className="btn btn-success">등록</Link>
         </div>
     </div>
-        <div className="col-4 text-end">
-            <Link to="/streamer/insert" className="btn btn-success">등록</Link>
-        </div>
-    </div>
-
 
     {/* 스트리머 목록 */}
     <div className="row mt-2">

@@ -17,10 +17,10 @@ body {
 } */
 
 .page-title{
-  font-weight: 700;
+  font-weight: 600;
   padding: 6px 14px;
   border-radius: 10px;
-  background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.02));
+  background: linear-gradient(135deg, rgba(0, 26, 255, 0.349), rgba(149, 0, 218, 0.089));
   box-shadow: 0 8px 16px rgba(32, 24, 70, 0.15);
   letter-spacing: .5px;
 }
