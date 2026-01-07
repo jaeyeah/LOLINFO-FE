@@ -9,6 +9,7 @@ import TournamentDetail from "./tournament/TournamentDetail";
 import StreamerDetail from "./streamer/StreamerDetail";
 import TournamentInsert from "./tournament/TournamentInsert";
 import TeamInsert from "./tournament/TeamInsert";
+import TeamEdit from "./tournament/TeamEdit";
 
 
 export default function Content(){
@@ -21,7 +22,7 @@ return (<>
             {/* 분할된 화면의 주소를 지정하는 영역 (path=주소 , element=화면) */}
             <Routes>
 
-                <Route path="/" element={<div>홈 화면</div>} />
+                <Route path="/" element={<TournamentList />} />
 
                 {/* 스트리머 */}
                 <Route path="/streamer" element={<StreamerList />} />
@@ -36,6 +37,7 @@ return (<>
 
                 {/* 팀 */}
                 <Route path="/team/insert/:tournamentId" element={<TeamInsert/>}/>
+                <Route path="/team/edit/:teamId" element={<TeamEdit/>}/>
             
             </Routes>
         </div>

@@ -20,7 +20,7 @@ export default function TournamentDetail(){
 
     const loadTeamData = useCallback( async() => {
         try {
-            const {data} = await axios.get(`/team/${tournamentId}`);
+            const {data} = await axios.get(`/team/tournament/${tournamentId}`);
             setTeam(data);
             console.log("팀 데이터:",data);
         } catch (error) {
@@ -94,6 +94,9 @@ export default function TournamentDetail(){
                         <span className="player-name ms-2">{team.supName}</span>
                     </Link>
                 </div>
+            </div>
+            <div className="">
+                <Link to={`/team/edit/${team.teamId}`} className="btn btn-secondary">수정</Link>
             </div>
             </div>
         ))}

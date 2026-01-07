@@ -41,8 +41,8 @@ return(<>
     </div>
   </div>
   
-  <div className="row mt-3">
-    <div className="col-12 tournament-wrapper">
+  <div className="row mt-3 justify-content-center">
+    <div className="col-12 col-xl-8 tournament-wrapper">
       {tournamentList.map((tournament) => (
         <Link
           to={`/tournament/${tournament.tournamentId}`}
