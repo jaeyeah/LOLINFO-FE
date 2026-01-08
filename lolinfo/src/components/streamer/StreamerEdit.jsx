@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom"
 import "./Streamer.css";
 
-export default function StreamerList() {
+export default function StreamerEdit() {
 
     const navigate = useNavigate();
     const {streamerId} = useParams();
@@ -57,12 +57,12 @@ export default function StreamerList() {
     const sendData = useCallback(async()=>{
         if(streamerValid === false) return ;
         try{
-            const response = await axios.post("/streamer/",streamer);
+            const response = await axios.put("/streamer/",streamer);
             console.log("성공", response);
-            navigate("/streamer"); // 메인페이지
+            navigate(`/streamer/${streamerId}`); // 메인페이지
         }
         catch(err){
-            console.log("스트리머 등록 실패");
+            console.log("스트리머 수정 실패");
             console.log("err.response.status", err.response?.status);
             console.log("err.response.data", err.response?.data);
         }

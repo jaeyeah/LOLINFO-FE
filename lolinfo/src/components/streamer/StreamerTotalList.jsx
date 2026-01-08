@@ -5,7 +5,7 @@ import "./Streamer.css";
 import { FaHome } from "react-icons/fa";
 import Pagination from "../Pagination";
 
-export default function StreamerList() {
+export default function StreamerTotalList() {
 
     const [streamerList, setStreamerList] = useState([]);
     // 페이지네이션 설정
