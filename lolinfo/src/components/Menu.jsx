@@ -46,8 +46,10 @@ export default function Menu() {
 
                 {/* 브랜딩 텍스트(이미지) : 메뉴 가장 좌측에 나오는 로고 또는 텍스트 */}
                 <Link className="navbar-brand cinema-brand text-light fs-4" to="/" onClick={closeMenu}>
-                    <img src="https://res.sooplive.co.kr/images/svg/soop_logo.svg"
-                        width="40" height="40"/>
+                        <div class="sooplol-icon-focus">
+                            <div class="infinity"></div>
+                            <span class="l-letter text-dark">L</span>
+                        </div>
                 </Link>
 
                 {/* 토글버튼 */}
@@ -79,6 +81,11 @@ export default function Menu() {
                         <li className="nav-item" onClick={closeMenu}>
                             <Link className="nav-link fw-600" to="/streamer/655">
                                 SLL
+                            </Link>
+                        </li>
+                        <li className="nav-item" onClick={closeMenu}>
+                            <Link className="nav-link fw-600" target="_blank" to="https://www.sooplive.co.kr/">
+                                <img src="https://res.sooplive.co.kr/images/svg/soop_logo.svg" width="50" height="23"/>
                             </Link>
                         </li>
                     </ul>
