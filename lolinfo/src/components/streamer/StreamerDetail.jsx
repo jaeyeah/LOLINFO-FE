@@ -11,15 +11,17 @@ export default function StreamerDetail() {
     const {streamerId} = useParams();
     const [streamer, setStreamer] = useState({});
     const [streamerTeam, setStreamerTeam] = useState([]);
+    const [host, setHost] = useState([]);
 
     const loadData = useCallback( async() => {
         try {
             const {data} = await axios.get(`/streamer/${streamerId}`);
             setStreamer(data);
-            console.log(data);
             const teamData = await axios.get(`/team/streamer/${streamerId}`);
-            console.log(teamData.data);
             setStreamerTeam(teamData.data);
+            const hostData = await axios.get(`/host/streamer/${streamerId}`);
+            setHost(hostData.data);
+            console.log("host",hostData.data);
         } catch (error) {
             console.error("Error fetching streamer detail:", error);
         }
@@ -84,6 +86,30 @@ export default function StreamerDetail() {
           </div>
           <hr />
 
+            {/* 스트리머가 개최한 대회 */}
+            <div className="row mt-2 p-2">
+                <div className="mb-2">
+                    <span className="detail-section-title">개최대회</span>
+                </div>
+                <div className="stat-box">
+                {host.map((host)=>(
+                    <div className="row mt-2 text-center text-light align-items-center" key={host.hostTournament}>
+                        <div className={`col-2 fw-600 ${host.tournamentYear % 2 === 0 ? "text-secondary" : ""}`}>{host.tournamentYear}</div>
+                        <div className={`col-2 badge fs-6
+                                    ${host.tournamentTierType === "천상계" ? "top-tier text-dark"
+                                    : host.tournamentTierType === "지상계" ? "bottom-tier"
+                                    : "all-tier"
+                                    }`}>{host.tournamentTierType}</div>
+                        <div className="col-8">
+                            <Link to={`/tournament/${host.hostTournament}`} className="streamer-link tournament-title text-warning">
+                                {host.tournamentName}
+                            </Link>
+                        </div>
+                    </div>
+                ))}
+                </div>
+            </div>
+
             {/* 하단: 공식 / 전체 기록 */}
             <div className="row g-3 mt-2">
                 {sections.map((section) => {
@@ -130,14 +156,13 @@ export default function StreamerDetail() {
                 );
             })}
             </div>
-
         </div>
       </div>
     </div>
 
 
-
-    {/* 참여 대회 상세 */}
+    {host.streamerName !== "멸망전" && streamer.streamerName !== "SLL" &&(<>
+ {/* 참여 대회 상세 */}
     <div className="row mt-0">
         {/* 공식 대회 */}
         <div className="col-lg-6 col-12 mb-2">
@@ -290,6 +315,9 @@ export default function StreamerDetail() {
             ))}
         </div>
     </div>
+    </>
+    )}
+   
 
 
 
