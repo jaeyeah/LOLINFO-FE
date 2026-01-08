@@ -347,17 +347,14 @@ return(<>
     </div>
 
 
-
-
-        
-    {/* 등록버튼  */}
+    {/* 수정버튼  */}
     <div className="row mt-4">
         <div className="col">
             <button type="button" className="btn btn-lg btn-insert w-100"
                         disabled={teamValid === false||checking}
                         onClick = {sendData}
                         >
-            <span>등록</span>
+            <span>수정</span>
             </button>
         </div>
     </div>

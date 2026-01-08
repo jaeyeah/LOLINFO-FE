@@ -1,14 +1,16 @@
 import { Route, Routes } from "react-router-dom";
 
-
 import StreamerList from "./streamer/StreamerList";
 import StreamerTotalList from "./streamer/StreamerTotalList";
 import StreamerInsert from "./streamer/StreamerInsert";
+import StreamerEdit from "./streamer/StreamerEdit";
+import StreamerDetail from "./streamer/StreamerDetail";
+
 import TournamentList from "./tournament/TournamentList";
 import TournamentDetail from "./tournament/TournamentDetail";
-import StreamerDetail from "./streamer/StreamerDetail";
 import TournamentInsert from "./tournament/TournamentInsert";
 import TournamentEdit from "./tournament/TournamentEdit";
+
 import TeamInsert from "./tournament/TeamInsert";
 import TeamEdit from "./tournament/TeamEdit";
 
@@ -29,6 +31,7 @@ return (<>
                 <Route path="/streamer" element={<StreamerList />} />
                 <Route path="/streamerTotal" element={<StreamerTotalList />} />
                 <Route path="/streamer/insert" element={<StreamerInsert />} />
+                <Route path="/streamer/edit/:streamerId" element={<StreamerEdit />} />
                 <Route path="/streamer/:streamerId" element={<StreamerDetail />} /> 
 
                 {/* 대회 */}

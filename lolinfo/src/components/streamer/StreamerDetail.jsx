@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom"
 import "./Streamer.css";
 import { buildProfileUrl } from "../../utils/profileUrl";
-import { FaHome, FaTrophy } from "react-icons/fa";
+import { FaEdit, FaHome, FaTrophy } from "react-icons/fa";
 import { MdLooksTwo } from "react-icons/md";
 
 export default function StreamerDetail() {
@@ -76,8 +76,10 @@ export default function StreamerDetail() {
               <p className="card-text mb-0">@{streamer.streamerSoopId}</p>
             </div>
             <div className="col-auto text-end">
-                <a href={streamer.streamerStation} target="_blank" rel="noreferrer"
-                    className="btn btn-station mb-2"><FaHome className="fs-2"/> </a>
+                <Link to={streamer.streamerStation} target="_blank" rel="noreferrer"
+                    className="btn btn-station mb-2"><FaHome className="fs-2"/> </Link>
+                <Link to={`/streamer/edit/${streamerId}`} target="_blank" rel="noreferrer"
+                    className="btn btn-station mb-2 ms-1 bg-warning"><FaEdit className="fs-2"/> </Link>
             </div>
           </div>
           <hr />
