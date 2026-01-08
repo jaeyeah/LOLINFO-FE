@@ -2,10 +2,12 @@ import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FaAsterisk } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
+import { buildProfileUrl } from "../../utils/profileUrl";
 
 export default function TournamentInsert(){
   const navigate = useNavigate();
   const {tournamentId} = useParams();
+  // State
   const [tournament, setTournament] = useState({
     tournamentName : "", tournamentYear : "",
     tournamentStart : "", tournamentEnd : "",
@@ -16,8 +18,11 @@ export default function TournamentInsert(){
     tournamentStart : "is-valid", tournamentEnd : "is-valid",
     tournamentIsofficial : "is-valid",tournamentTierType : "is-valid",
   });
+  const [hostList, setHostList] = useState([
+    {hostStreamer : "", hostName : "", hostSoopId : ""}
+  ])
 
-
+  // 초기데이터
   const loadData = useCallback(async()=>{
     const {data} = await axios.get(`/tournament/${tournamentId}`)
     setTournament(data);
@@ -34,6 +39,19 @@ export default function TournamentInsert(){
       const {name, value} = e.target;
       setTournament(prev=>({...prev, [name]:value}))
     },[])
+  const changeHostValue = useCallback((index,e)=>{
+    const {name, value} = e.target;
+    setHostList(prev =>
+      prev.map((host, i) => (i === index ? { ...host, [name]: value } : host))
+    );
+  },[])
+    // 개최자 칸 추가/삭제
+    const addHostRow = useCallback(() => {
+      setHostList(prev => [...prev, { hostStreamer: "", hostName: "" }]);
+    }, []);
+    const removeHostRow = useCallback((index) => {
+      setHostList(prev => prev.filter((_, i) => i !== index));
+    }, []);
 
   //유효성검사
   const checkTournamentName = useCallback(e=>{
@@ -53,6 +71,22 @@ export default function TournamentInsert(){
     const valid = tournament.tournamentName.length > 0;
     setTournamentClass(prev=>({...prev, tournamentTierType : valid ? "is-valid" : "is-invalid"}));
   },[tournament, tournamentClass])
+    // 개최자 검사
+  const checkHost = useCallback(async(idx)=>{
+    const name = hostList[idx]?.hostName;
+    if(!name) return;
+    try{
+      const {data} = await axios.get(`/team/check/${name}`);
+      console.log("전송된 데이터", data);
+
+     setHostList(prev => prev.map((h, i) =>
+        i === idx ? { ...h, hostStreamer: data.streamerNo, hostSoopId: data.streamerSoopId } : h
+      )
+    );}
+    catch(err){
+      console.log("err",err);
+    }
+  },[hostList])
 
     //memo (유효성검사)
     const tournamentValid = useMemo(()=>{
@@ -70,14 +104,19 @@ export default function TournamentInsert(){
     const sendData = useCallback(async()=>{
         if(tournamentValid === false) return ;
         try{
-            const response = await axios.put(`/tournament/${tournamentId}`,tournament);
+            const payload = {
+              tournamentDto : tournament,
+              hostDto : hostList.map(h=>({hostStreamer : h.hostStreamer}))
+            }
+            console.log("페이로드",payload);
+            const response = await axios.put(`/tournament/${tournamentId}`,payload);
             console.log("성공", response);
             navigate(`/tournament/${tournamentId}`); // 메인페이지
         }
         catch(err){
             console.error("대회 수정 실패", err);
         }
-    },[tournament, tournamentValid])
+    },[tournament, tournamentValid, hostList])
 
     //render
 return(<>   
@@ -158,6 +197,28 @@ return(<>
           <div className="invalid-feedback"></div>
         </div>
       </div>
+      <hr/>
+      {/* 개최자 등록 */}
+      <button type="button" className="btn btn-outline-primary mt-2" onClick={addHostRow}>
+        + 개최자 추가
+      </button>
+      {hostList.map((host, idx) => (
+        <div key={idx} className="row mt-2 ms-1 d-flex">
+          <label className="col-3 col-form-label d-flex justify-content-center">
+                <img className="player-profile ms-3"src={buildProfileUrl(host.hostSoopId)}/>
+            </label>
+            <div className="col-7">
+              <input type="text" className={`form-control`} 
+                          name="hostName" value={host.hostName}
+                          onChange={(e) => changeHostValue(idx, e)}
+                          onBlur={()=>checkHost(idx)}
+                          />
+            </div>
+            <button type="button" className="col-2 btn btn-danger"
+              onClick={() => removeHostRow(idx)} disabled={hostList.length === 1}>삭제
+            </button>
+        </div>
+      ))}
       {/* 등록 버튼 */}
       <div className="row mt-4">
         <div className="col">

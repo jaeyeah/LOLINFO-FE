@@ -23,8 +23,6 @@ export default function TournamentInsert(){
   ])
 
 
-
-
   // callback
   const changeStrValue = useCallback(e=>{
       const {name, value} = e.target;
