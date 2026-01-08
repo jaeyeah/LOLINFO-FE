@@ -24,15 +24,22 @@ export default function TeamInsert(){
     });
     // 피드백/Valid용 State
     const [teamClass, setTeamClass] = useState({
-        teamName : "", teamRanking : "", teamNote : "",
-        teamTop : "", teamJug : "", teamMid : "", teamAd : "", teamSup : "",
+        teamName : "is-valid", teamRanking : "", teamNote : "",
+        teamTop : "is-valid", teamJug : "is-valid", teamMid : "is-valid", teamAd : "is-valid", teamSup : "is-valid",
     });
 
 
     const loadData = useCallback(async()=>{
         try {
             const {data} = await axios.get(`/team/${teamId}`); 
-            setTournamentList(data);
+            setTeam(data);
+            setTeamData({
+                teamTop: data.topName, topId: data.topId, 
+                teamJug: data.jugName,jugId: data.jugId,
+                teamMid: data.midName, midId: data.midId,
+                teamAd: data.adName,  adId: data.adId,
+                teamSup: data.supName, supId: data.supId
+            });
         } catch (error) {
             console.error("Error fetching tournament list:", error);
         }
@@ -191,9 +198,9 @@ export default function TeamInsert(){
         if(checking) return; 
         if(teamValid === false) return ;
         try{
-            const response = await axios.post("/team/",team);
+            const response = await axios.put("/team/",team);
             console.log("성공", response);
-            navigate(`/tournament/${tournamentId}`); // 메인페이지
+            navigate(`/tournament/${team.tournamentId}`); // 메인페이지
         }
         catch(err){
             console.log("팀 등록 실패");
@@ -208,7 +215,7 @@ return(<>
 
     <div className="row">
         <div className="col text-center">
-            <h2>신규 팀 등록</h2>
+            <h2>팀 정보 수정</h2>
             <hr/>
         </div>
     </div>

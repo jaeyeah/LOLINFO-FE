@@ -56,8 +56,8 @@ export default function TournamentDetail(){
                 key={team.teamId}>
             {/* 상단 헤더 : 순위 + 팀 이름 */}
             <div className="team-header">
-                #{team.teamRanking} | 
-                {team.teamName && <span className="team-name p-1">{team.teamName} </span> }
+                #{team.teamRanking}
+                {team.teamName && <span className="team-name ms-2 p-1">{team.teamName} </span> }
                 {/* 추후, 관리자만 수정가능하도록 지정 */}
                 <div className="ms-auto">
                     <Link to={`/team/edit/${team.teamId}`} className="p-1 fs-5 ms-1 btn btn-warning"><FaEdit/></Link>

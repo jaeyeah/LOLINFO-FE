@@ -147,6 +147,7 @@
 }
 .team-card .tournament-title,
 .team-card .team-name,
+.team-card .team-header,
 .team-card .team-ranking {
   overflow: hidden !important;
   white-space: nowrap !important;
