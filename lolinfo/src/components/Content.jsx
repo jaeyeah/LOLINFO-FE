@@ -8,6 +8,7 @@ import TournamentList from "./tournament/TournamentList";
 import TournamentDetail from "./tournament/TournamentDetail";
 import StreamerDetail from "./streamer/StreamerDetail";
 import TournamentInsert from "./tournament/TournamentInsert";
+import TournamentEdit from "./tournament/TournamentEdit";
 import TeamInsert from "./tournament/TeamInsert";
 import TeamEdit from "./tournament/TeamEdit";
 
@@ -33,6 +34,7 @@ return (<>
                 {/* 대회 */}
                 <Route path="/tournament" element={<TournamentList />} />
                 <Route path="/tournament/insert" element={<TournamentInsert/>}/>
+                <Route path="/tournament/edit/:tournamentId" element={<TournamentEdit/>}/>
                 <Route path="/tournament/:tournamentId" element={<TournamentDetail />} />
 
                 {/* 팀 */}
