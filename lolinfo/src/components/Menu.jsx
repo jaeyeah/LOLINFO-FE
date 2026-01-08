@@ -71,6 +71,16 @@ export default function Menu() {
                                 <SiLeagueoflegends className="fs-4"/>
                             </Link>
                         </li>
+                        <li className="nav-item" onClick={closeMenu}>
+                            <Link className="nav-link fw-600" to="/streamer/654">
+                                멸망전
+                            </Link>
+                        </li>
+                        <li className="nav-item" onClick={closeMenu}>
+                            <Link className="nav-link fw-600" to="/streamer/655">
+                                SLL
+                            </Link>
+                        </li>
                     </ul>
                     <ul className="navbar-nav ms-auto">
                         {/* 우측 메뉴 */}

@@ -43,8 +43,6 @@ export default function TournamentDetail(){
 
     }, []); 
 
-
-
     useEffect(()=>{
         loadData();
         loadTeamData();

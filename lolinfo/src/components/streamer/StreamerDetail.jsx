@@ -59,7 +59,7 @@ export default function StreamerDetail() {
     
     <div className="row">
         <div className="col text-center">
-            <h2 className="page-title p-3">{streamer.streamerName} : 개인 상세</h2>
+            <h2 className="page-title p-3">{streamer.streamerName} : 상세</h2>
         </div>
     </div>
     {/* 스트리머 상세 */}
