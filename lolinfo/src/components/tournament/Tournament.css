@@ -273,3 +273,24 @@
   object-fit: cover;
   flex-shrink: 0; 
 }
+
+/* 대회 개최자 영역 */
+.tournment-host {
+  padding: 10px;
+}
+
+.tournment-host .host-profile{
+  width : 100px;
+  height: 100px;
+  border-radius: 20px;
+}
+
+.host-box{
+  background: rgba(0, 0, 0, 0.459);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  padding: 0.35rem 0.7rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+/* ------------------ */
