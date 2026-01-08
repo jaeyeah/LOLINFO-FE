@@ -4,6 +4,7 @@
   border-radius: 12px;
   width:800px;
   padding: 1rem 1.2rem;
+  margin: 0 auto;
 }
 .insert-form .btn-insert{
   background: linear-gradient(135deg, #292929, #000dc270) !important;
@@ -88,7 +89,6 @@
   display: flex;
   flex-direction: column;
   background-color: #b7d8fd42;     /* 전체 노란 박스 */
-  border-radius: 0 12px 12px 0;  /* 카드 모양 맞춰서 조정 */
   overflow: hidden;              /* 안쪽 요소 튀어나오는 것 방지 */
 }
 

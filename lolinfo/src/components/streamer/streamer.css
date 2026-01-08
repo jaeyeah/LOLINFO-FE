@@ -138,12 +138,13 @@
   /* flex: 1;  */
 }
 .team-card .team-name {
-  background-color: black;
+  /* background-color: black; */
+  background-color : rgba(0, 0, 0, 0.6);
   padding-left: 4px;
   padding-right: 4px;
-  border-radius: 10px;
+  border-radius: 7px;
   color : rgb(255, 255, 255) !important;
-  font-size: 1.2rem !important;
+  font-size: 1.1rem !important;
 }
 .team-card .tournament-title,
 .team-card .team-name,

@@ -78,7 +78,7 @@ export default function StreamerDetail() {
             <div className="col-auto text-end">
                 <Link to={streamer.streamerStation} target="_blank" rel="noreferrer"
                     className="btn btn-station mb-2"><FaHome className="fs-2"/> </Link>
-                <Link to={`/streamer/edit/${streamerId}`} target="_blank" rel="noreferrer"
+                <Link to={`/streamer/edit/${streamerId}`} rel="noreferrer"
                     className="btn btn-station mb-2 ms-1 bg-warning"><FaEdit className="fs-2"/> </Link>
             </div>
           </div>
