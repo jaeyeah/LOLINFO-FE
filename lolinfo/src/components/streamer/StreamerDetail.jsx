@@ -21,7 +21,6 @@ export default function StreamerDetail() {
             setStreamerTeam(teamData.data);
             const hostData = await axios.get(`/host/streamer/${streamerId}`);
             setHost(hostData.data);
-            console.log("host",hostData.data);
         } catch (error) {
             console.error("Error fetching streamer detail:", error);
         }
@@ -161,7 +160,7 @@ export default function StreamerDetail() {
     </div>
 
 
-    {host.streamerName !== "멸망전" && streamer.streamerName !== "SLL" &&(<>
+    {streamer.streamerName !== "SLL" && streamer.streamerName !== "멸망전" &&(<>
  {/* 참여 대회 상세 */}
     <div className="row mt-0">
         {/* 공식 대회 */}

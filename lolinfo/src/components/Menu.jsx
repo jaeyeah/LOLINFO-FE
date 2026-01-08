@@ -46,9 +46,9 @@ export default function Menu() {
 
                 {/* 브랜딩 텍스트(이미지) : 메뉴 가장 좌측에 나오는 로고 또는 텍스트 */}
                 <Link className="navbar-brand cinema-brand text-light fs-4" to="/" onClick={closeMenu}>
-                        <div class="sooplol-icon-focus">
-                            <div class="infinity"></div>
-                            <span class="l-letter text-dark">L</span>
+                        <div className="sooplol-icon-focus">
+                            <div className="infinity"></div>
+                            <span className="l-letter text-dark">L</span>
                         </div>
                 </Link>
 
