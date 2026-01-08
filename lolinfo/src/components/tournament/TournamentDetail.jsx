@@ -40,14 +40,25 @@ export default function TournamentDetail(){
         }catch (err) {
             console.error("개최자 로딩 실패", err);
         }
-
     }, []); 
 
     useEffect(()=>{
         loadData();
         loadTeamData();
         loadHostData();
-    },[]);
+    },[loadData, loadTeamData, loadHostData]);
+
+    const deleteHost = useCallback(async(hostStreamer, hostTournament)=>{
+        try{
+            await axios.delete(`/host/`,{
+                data : {hostStreamer, hostTournament}
+            });
+            loadHostData();
+            console.log("개최자 삭제 실행");
+        }catch (err) {
+            console.error("개최자 삭제 실패", err);
+        }
+    })
 
 
     //render
@@ -61,12 +72,13 @@ export default function TournamentDetail(){
                     <h3 className="host-box text-center">주최</h3>
                     <div className="d-flex tournment-host justify-content-center align-items-center gap-2">
                     {hostList.map((host)=>(
-                    <Link to={`/streamer/${host.hostStreamer}`} className="streamer-link ms-2">
-                        <div className="text-center">
-                            <img className="host-profile mb-1"src={buildProfileUrl(host.streamerSoopId)}/>
+                        <div className="text-center" key={host.hostStreamer}>
+                            <Link to={`/streamer/${host.hostStreamer}`} >
+                                <img className="host-profile mb-1"src={buildProfileUrl(host.streamerSoopId)}/>
+                            </Link>
                             <br/><span className={`stat-box-number `}>{host.streamerName}</span>
+                            <div className="p-1 ms-1 btn btn-danger pt-0 pb-0" onClick={()=>{deleteHost(host.hostStreamer,host.hostTournament)}}>X</div>
                         </div>
-                    </Link>
                     ))}
                     </div>
                 </div>
