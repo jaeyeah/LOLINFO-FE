@@ -148,7 +148,6 @@
 .team-card .tournament-title,
 .team-card .team-name,
 .team-card .team-ranking {
-  display: block !important; 
   overflow: hidden !important;
   white-space: nowrap !important;
   text-overflow: ellipsis !important;

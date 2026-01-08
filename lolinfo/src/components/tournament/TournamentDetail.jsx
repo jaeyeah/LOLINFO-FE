@@ -2,6 +2,8 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 
 export default function TournamentDetail(){
     const {tournamentId} = useParams();
@@ -53,9 +55,16 @@ export default function TournamentDetail(){
                 ${team.teamRanking === "준우승" ? "is-second" : ""}`}
                 key={team.teamId}>
             {/* 상단 헤더 : 순위 + 팀 이름 */}
-            <div className="team-header d-flex align-items-center mb-3">
-                <div>#{team.teamRanking} | {team.teamName && <span className="team-name">{team.teamName}</span> }</div>
+            <div className="team-header">
+                #{team.teamRanking} | 
+                {team.teamName && <span className="team-name p-1">{team.teamName} </span> }
+                {/* 추후, 관리자만 수정가능하도록 지정 */}
+                <div className="ms-auto">
+                    <Link to={`/team/edit/${team.teamId}`} className="p-1 fs-5 ms-1 btn btn-warning"><FaEdit/></Link>
+                    <Link to="/" className="p-1 ms-1 fs-5 btn btn-danger"><MdDelete/></Link>
+                </div>
             </div>
+
 
             {/* 선수 목록 */}
             <div className="player-list">
@@ -94,9 +103,6 @@ export default function TournamentDetail(){
                         <span className="player-name ms-2">{team.supName}</span>
                     </Link>
                 </div>
-            </div>
-            <div className="">
-                <Link to={`/team/edit/${team.teamId}`} className="btn btn-secondary">수정</Link>
             </div>
             </div>
         ))}
