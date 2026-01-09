@@ -210,17 +210,20 @@
 .streamer-stat1{
   font-size : 18px !important;
   color : black !important;
-  background: linear-gradient(135deg, rgba(240, 240, 6, 0.89), #ffffff); 
+  background: linear-gradient(    135deg, #f7e27c, #f2c94c, #fff3b0);
+  box-shadow: inset 0 0 8px rgba(255, 215, 0, 0.4);
 }
 .streamer-stat2{
   font-size : 18px !important;
-  color : black !important;
-  background: linear-gradient(135deg, rgba(187, 187, 187, 0.733), #bdb2be);
+  color: #2f2f2f !important;
+  background: linear-gradient(  135deg,#e5e5e5, #cfcfcf, #f7f7f7 );
+  box-shadow: inset 0 0 6px rgba(180, 180, 180, 0.4);
 }
 .streamer-stat3{
-  font-size : 18px !important;
-  color : rgb(255, 255, 255) !important;
-  background: linear-gradient(135deg, rgba(173, 96, 44, 0.575), #000000);
+  font-size: 18px !important;
+  color: #fff !important;
+  background: linear-gradient(135deg,    #c68642,    #683e1a,   #300a02 );
+  box-shadow: inset 0 0 6px rgba(141, 85, 36, 0.5);
 }
 
 .btn.btn-click{

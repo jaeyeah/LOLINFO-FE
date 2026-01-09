@@ -144,7 +144,7 @@ export default function StreamerDetail() {
                             </div>
                             <span className={`col-2 text-center ${team.teamRanking === '우승' ? "badge bg-warning text-dark"
                                     : team.teamRanking === "준우승" ? "badge bg-secondary" 
-                                    : team.teamRanking === "예선탈락" ? "badge text-secondary"
+                                    : team.teamRanking === "4강" ? "badge text-light"
                                     : "badge text-secondary"
                                 }`}>{team.teamRanking}</span>
                         </div>

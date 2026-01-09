@@ -32,9 +32,9 @@ export default function StreamerList() {
     return (<>
     
     <div className="row justify-content-center mt-2">
-        <div className="col-12 col-lg-8">
+        <div className="col-12 col-xl-8">
             <div className="row align-items-center">
-                <div className="col-12 col-md-10 d-flex align-items-center">
+                <div className="col-10 col-md-10 d-flex align-items-center">
                     <span className="fs-3 page-title">스트리머 목록 : 공식 </span>
                     <Link to="/streamer" className="ms-2 btn btn-click">공식</Link>
                     <Link to="/streamerTotal" className="ms-2 btn btn-nonClick">전체</Link>
@@ -48,7 +48,7 @@ export default function StreamerList() {
 
     {/* 스트리머 목록 */}
     <div className="row mt-2 justify-content-center">
-        <div className="col-12 col-lg-8 streamer-wrapper">
+        <div className="col-12 col-xl-8 streamer-wrapper">
             {streamerList.map((streamer)=>(
                 <div key={streamer.streamerNo} className="card streamer-card mb-3">
                     <div className="row g-0">
