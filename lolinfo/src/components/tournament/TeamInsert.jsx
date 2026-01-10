@@ -219,6 +219,7 @@ return(<>
                     <option value="4강">4강</option>
                     <option value="본선진출">본선진출</option>
                     <option value="예선탈락">예선탈락</option>
+                    <option value="참가">참가</option>
                 </select>
                 <div className="valid-feedback"></div>
                 <div className="invalid-feedback"></div>
