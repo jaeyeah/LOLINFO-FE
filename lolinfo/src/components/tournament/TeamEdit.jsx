@@ -233,7 +233,11 @@ export default function TeamInsert(){
         if(checking) return; 
         if(teamValid === false) return ;
         try{
-            const response = await axios.put("/team/",team);
+            const payload = {
+              teamDto : team,
+              staffDto : staffList.map(s=>({staffStreamer : s.staffStreamer, staffRole : s.staffRole}))
+            }
+            const response = await axios.put("/team/",payload);
             console.log("성공", response);
             navigate(`/tournament/${team.tournamentId}`); // 메인페이지
         }
@@ -242,7 +246,7 @@ export default function TeamInsert(){
             console.log("err.response.status", err.response?.status);
             console.log("err.response.data", err.response?.data);
         }
-    },[team,teamValid])
+    },[team,teamValid, staffList])
 
 //render--------------------------------------------------
 return(<>

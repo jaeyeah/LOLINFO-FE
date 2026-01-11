@@ -22,6 +22,9 @@ export default function TeamInsert(){
         teamTop : "", teamJug : "", teamMid : "", teamAd : "", teamSup : "",
         topId : "", jugId: "", midId : "", adId : "", supId : ""
     });
+    const [staffList, setStaffList] = useState([
+        {staffStreamer : "", staffRole : "" , staffName : "", staffSoopId : ""}
+    ]);
     // 피드백/Valid용 State
     const [teamClass, setTeamClass] = useState({
         teamName : "", teamRanking : "", teamNote : "",
@@ -37,6 +40,19 @@ export default function TeamInsert(){
         const {name, value} = e.target;
         setTeamData(prev=>({...prev, [name]:value}))
     },[])
+    const changeStaffValue = useCallback((index,e)=>{
+        const {name, value} = e.target;
+        setStaffList(prev =>
+        prev.map((staff, i) => (i === index ? { ...staff, [name]: value } : host))
+        );
+    },[])
+    // 개최자 칸 추가/삭제
+    const addStaffRow = useCallback(() => {
+      setStaffList(prev => [...prev, { staffStreamer: "", staffName: "" , staffRole : ""}]);
+    }, []);
+    const removeStaffRow = useCallback((index) => {
+      setStaffList(prev => prev.filter((_, i) => i !== index));
+    }, []);
 
     // 이름
     const checkTeamName = useCallback(e=>{
@@ -148,11 +164,27 @@ export default function TeamInsert(){
             }
         },[team, teamClass, teamData])
 
-
     const checkTeamRanking = useCallback(e=>{
         const valid = team.teamRanking.length > 0;
         setTeamClass(prev=>({...prev, teamRanking : valid ? "is-valid" : "is-invalid"}));
     },[team, teamClass])
+    
+    // 감독/코치 검사
+    const checkStaff = useCallback(async(idx)=>{
+        const name = staffList[idx]?.staffName;
+        if(!name) return;
+        try{
+        const {data} = await axios.get(`/team/check/${name}`);
+        console.log("전송된 데이터", data);
+
+        setStaffList(prev => prev.map((h, i) =>
+            i === idx ? { ...h, staffStreamer: data.streamerNo, staffSoopId: data.streamerSoopId } : h
+        )
+        );}
+        catch(err){
+           console.log("err",err);
+        }
+    },[staffList])
 
     // memo --------------------------------------------------
     const teamValid = useMemo(()=>{
@@ -172,7 +204,11 @@ export default function TeamInsert(){
         if(checking) return; 
         if(teamValid === false) return ;
         try{
-            const response = await axios.post("/team/",team);
+            const payload = {
+              teamDto : team,
+              staffDto : staffList.map(s=>({staffStreamer : s.staffStreamer, staffRole : s.staffRole}))
+            }
+            const response = await axios.post("/team/",payload);
             console.log("성공", response);
             navigate(`/tournament/${tournamentId}`); // 메인페이지
         }
@@ -181,7 +217,7 @@ export default function TeamInsert(){
             console.log("err.response.status", err.response?.status);
             console.log("err.response.data", err.response?.data);
         }
-    },[team,teamValid])
+    },[team,teamValid,staffList])
 
 //render--------------------------------------------------
 return(<>
@@ -320,11 +356,36 @@ return(<>
             </div>
         </div>
     </div>
-
-
-
-
-        
+    <hr/>
+    {/* 감독/코치 등록 */}
+    <button type="button" className="btn btn-outline-primary mt-2" onClick={addStaffRow}>
+    + 감독/코치 추가
+    </button>
+    {staffList.map((staff, idx) => (
+    <div key={idx} className="row mt-2 ms-1 d-flex">
+        <label className="col-2 col-form-label d-flex justify-content-center">
+            <img className="player-profile ms-3"src={buildProfileUrl(staff.staffSoopId)}/>
+        </label>
+        <div className ="col-2">
+            <select className={`form-control`} name="staffROle" onChange={(e) => changeStaffValue(idx, e)} onBlur={checkStaff}>
+            <option value=""> - 선택 - </option>
+            <option value="감독">감독</option>
+            <option value="코치">코치</option>
+          </select>
+        </div>
+        <div className="col-6">
+            <input type="text" className={`form-control`} 
+                        name="staffName" value={staff.staffName}
+                        onChange={(e) => changeStaffValue(idx, e)}
+                        onBlur={()=>checkStaff(idx)}
+                        />
+        </div>
+        <button type="button" className="col-2 btn btn-danger"
+            onClick={() => removeStaffRow(idx)} disabled={staffList.length === 1}>삭제
+        </button>
+    </div>
+    ))}
+  
     {/* 등록버튼  */}
     <div className="row mt-4">
         <div className="col">
