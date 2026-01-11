@@ -32,7 +32,7 @@ export default function StreamerDetail() {
 
     useEffect(()=>{
         loadData();
-    },[streamerId]);
+    },[streamerId, loadData]);
 
 
     const sections = [
@@ -57,6 +57,20 @@ export default function StreamerDetail() {
         filter: () => true, // 전체
     },
     ];
+
+    const deleteStaff = useCallback(async(staffStreamer, staffTeam)=>{
+        try{
+            await axios.delete(`/staff/`,{
+                data : {staffStreamer, staffTeam}
+            });
+            loadData();
+            console.log("감독/코치 삭제 실행");
+        }catch (err) {
+            console.error("감독/코치 삭제 실패", err);
+        }
+    })
+
+
 
     //render
     return (<>
@@ -126,12 +140,13 @@ export default function StreamerDetail() {
                                 : "badge bg-secondary"
                             }`}>{staff.staffRole}</span>
                         <div className="col-2">{staff.tournamentName}</div>
-                        <div className="col-4 fw-600">{staff.teamName}</div>
+                        <div className="col-3 fw-600">{staff.teamName}</div>
                         <span className={`col-2 text-center ${staff.teamRanking === '우승' ? "badge bg-warning text-dark"
                                 : staff.teamRanking === "준우승" ? "badge bg-secondary" 
                                 : staff.teamRanking === "4강" ? "badge text-light"
                                 : "badge text-secondary"
                             }`}>{staff.teamRanking}</span>
+                        <button type="button" className="col-1 btn btn-danger p-0" onClick={()=>{deleteStaff(staff.staffStreamer,staff.staffTeam)}}>X</button>
                     </div>
                 ))}
                 </div>

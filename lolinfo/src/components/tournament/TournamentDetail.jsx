@@ -59,7 +59,17 @@ export default function TournamentDetail(){
             console.error("개최자 삭제 실패", err);
         }
     })
-
+    const deleteStaff = useCallback(async(staffStreamer, staffTeam)=>{
+        try{
+            await axios.delete(`/staff/`,{
+                data : {staffStreamer, staffTeam}
+            });
+            loadData();
+            console.log("감독/코치 삭제 실행");
+        }catch (err) {
+            console.error("감독/코치 삭제 실패", err);
+        }
+    })
 
     //render
     return(<>
@@ -120,6 +130,17 @@ export default function TournamentDetail(){
                     <Link to="/" className="p-1 ms-1 fs-5 btn btn-danger"><MdDelete/></Link>
                 </div>
             </div>
+            {/* 감독 표시 */}
+            {team.staffId !== null && (
+            <div className="team-header">
+                <span className="badge bg-dark"> 감독 </span>
+                <Link to={`/streamer/${team.staffStreamer}`} className="ms-1 btn btn-link" rel="noopener noreferrer">
+                    <img className="player-profile"src={buildProfileUrl(team.staffId)} alt={team.staffName}/>
+                    <span className="player-name ms-2">{team.staffName}</span>
+                </Link>
+                <button type="button" className="col-1 btn btn-danger p-0" onClick={()=>{deleteStaff(team.staffStreamer,team.teamId)}}>X</button>
+            </div>
+            )}
 
 
             {/* 선수 목록 */}
