@@ -69,7 +69,7 @@ export default function TeamInsert(){
     const changeStaffValue = useCallback((index,e)=>{
         const {name, value} = e.target;
         setStaffList(prev =>
-        prev.map((staff, i) => (i === index ? { ...staff, [name]: value } : host))
+        prev.map((staff, i) => (i === index ? { ...staff, [name]: value } : staff))
         );
     },[])
     // 개최자 칸 추가/삭제
@@ -395,7 +395,7 @@ return(<>
             <img className="player-profile ms-3"src={buildProfileUrl(staff.staffSoopId)}/>
         </label>
         <div className ="col-2">
-            <select className={`form-control`} name="staffROle" onChange={(e) => changeStaffValue(idx, e)} onBlur={checkStaff}>
+            <select className={`form-control`} name="staffRole" onChange={(e) => changeStaffValue(idx, e)} onBlur={checkStaff}>
             <option value=""> - 선택 - </option>
             <option value="감독">감독</option>
             <option value="코치">코치</option>

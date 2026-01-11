@@ -89,31 +89,32 @@ export default function StreamerDetail() {
           <hr />
 
             {/* 스트리머가 개최한 대회 */}
-            <div className="row mt-2 p-2">
-                <div className="mb-2">
-                    <span className="detail-section-title">개최대회</span>
-                </div>
-                <div className="stat-box">
-                {host.map((host)=>(
-                    <div className="row mt-2 text-center text-light align-items-center" key={host.hostTournament}>
-                        <div className={`col-2 fw-600 ${host.tournamentYear % 2 === 0 ? "text-secondary" : ""}`}>{host.tournamentYear}</div>
-                        <div className={`col-2 badge fs-6
-                                    ${host.tournamentTierType === "천상계" ? "top-tier text-dark"
-                                    : host.tournamentTierType === "지상계" ? "bottom-tier"
-                                    : "all-tier"
-                                    }`}>{host.tournamentTierType}</div>
-                        <div className="col-8">
-                            <Link to={`/tournament/${host.hostTournament}`} className="streamer-link tournament-title text-warning">
-                                {host.tournamentName}
-                            </Link>
-                        </div>
+            <div className="row p-2">
+                <div className="col-xl-6 mt-2">
+                    <div className="mb-2">
+                        <span className="detail-section-title">개최대회</span>
                     </div>
-                ))}
+                    <div className="stat-box">
+                    {host.map((host)=>(
+                        <div className="row mt-2 text-center text-light align-items-center" key={host.hostTournament}>
+                            <div className={`col-2 fw-600 ${host.tournamentYear % 2 === 0 ? "text-secondary" : ""}`}>{host.tournamentYear}</div>
+                            <div className={`col-2 badge fs-6
+                                        ${host.tournamentTierType === "천상계" ? "top-tier text-dark"
+                                        : host.tournamentTierType === "지상계" ? "bottom-tier"
+                                        : "all-tier"
+                                        }`}>{host.tournamentTierType}</div>
+                            <div className="col-8">
+                                <Link to={`/tournament/${host.hostTournament}`} className="streamer-link tournament-title text-warning">
+                                    {host.tournamentName}
+                                </Link>
+                            </div>
+                        </div>
+                    ))}
+                    </div>
                 </div>
-            </div>
 
             {/* 감독/코치로 참여한 대회 */}
-            <div className="row mt-2 p-2">
+                <div className="col-xl-6 mt-2">
                 <div className="mb-2">
                     <span className="detail-section-title">감독/코치</span>
                 </div>
@@ -121,12 +122,19 @@ export default function StreamerDetail() {
                 {staff.map((staff)=>(
                     <div className="row mt-2 text-center text-light align-items-center" key={staff.staffTeam}>
                         <div className={`col-2 fw-600 ${staff.tournamentYear % 2 === 0 ? "text-secondary" : ""}`}>{staff.tournamentYear}</div>
+                        <span className={`col-2 text-center fs-6 ${staff.staffRole === '감독' ? "badge bg-white text-dark"
+                                : "badge bg-secondary"
+                            }`}>{staff.staffRole}</span>
                         <div className="col-2">{staff.tournamentName}</div>
-                        <div className="col-2">{staff.staffRole}</div>
-                        <div className="col-2">{staff.teamName}</div>
-                        <div className="col-2">{staff.teamRanking}</div>
+                        <div className="col-4 fw-600">{staff.teamName}</div>
+                        <span className={`col-2 text-center ${staff.teamRanking === '우승' ? "badge bg-warning text-dark"
+                                : staff.teamRanking === "준우승" ? "badge bg-secondary" 
+                                : staff.teamRanking === "4강" ? "badge text-light"
+                                : "badge text-secondary"
+                            }`}>{staff.teamRanking}</span>
                     </div>
                 ))}
+                </div>
                 </div>
             </div>
 
