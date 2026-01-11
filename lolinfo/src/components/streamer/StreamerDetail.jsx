@@ -12,6 +12,7 @@ export default function StreamerDetail() {
     const [streamer, setStreamer] = useState({});
     const [streamerTeam, setStreamerTeam] = useState([]);
     const [host, setHost] = useState([]);
+    const [staff, setStaff] = useState([]);
 
     const loadData = useCallback( async() => {
         try {
@@ -21,6 +22,8 @@ export default function StreamerDetail() {
             setStreamerTeam(teamData.data);
             const hostData = await axios.get(`/host/streamer/${streamerId}`);
             setHost(hostData.data);
+            const staffData = await axios.get(`/staff/streamer/${streamerId}`);
+            setStaff(staffData.data);
         } catch (error) {
             console.error("Error fetching streamer detail:", error);
         }
@@ -108,6 +111,26 @@ export default function StreamerDetail() {
                 ))}
                 </div>
             </div>
+
+            {/* 감독/코치로 참여한 대회 */}
+            <div className="row mt-2 p-2">
+                <div className="mb-2">
+                    <span className="detail-section-title">감독/코치</span>
+                </div>
+                <div className="stat-box">
+                {staff.map((staff)=>(
+                    <div className="row mt-2 text-center text-light align-items-center" key={staff.staffTeam}>
+                        <div className={`col-2 fw-600 ${staff.tournamentYear % 2 === 0 ? "text-secondary" : ""}`}>{staff.tournamentYear}</div>
+                        <div className="col-2">{staff.tournamentName}</div>
+                        <div className="col-2">{staff.staffRole}</div>
+                        <div className="col-2">{staff.teamName}</div>
+                        <div className="col-2">{staff.teamRanking}</div>
+                    </div>
+                ))}
+                </div>
+            </div>
+
+
 
             {/* 하단: 공식 / 전체 기록 */}
             <div className="row g-3 mt-2">
