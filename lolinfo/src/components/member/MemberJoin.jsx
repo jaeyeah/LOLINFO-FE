@@ -2,6 +2,7 @@ import { FaAsterisk, FaEraser, FaEye, FaEyeSlash, FaKey, FaMagnifyingGlass, FaPa
 import axios from "axios";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"
+import "./Member.css"
 
 export default function MemberJoin(){
     //도구
@@ -221,8 +222,8 @@ export default function MemberJoin(){
     //render
     return (<>
         <div className="d-flex justify-content-center">
-        <div className="member-form">
-        <h2 className="text-center">회원가입</h2>
+        <div className="member-form w-100">
+        <h2 className="text-center page-title">회원가입</h2>
         <hr/>
         {/* 아이디 */}
         <div className="row mt-4">

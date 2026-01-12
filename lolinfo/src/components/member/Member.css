@@ -1,0 +1,50 @@
+/* 전체 회원가입 폼 */
+.member-form {
+  background: #1e1e1e;
+  border-radius: 18px;
+  padding: 2.5rem;
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* 필수 표시 */
+.member-form .text-danger {
+  color: #fd6565 !important;
+}
+
+/* 입력 필드 */
+.member-form .form-control {
+  background: rgb(255, 255, 255);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+/* 입력 포커스 */
+.member-form .form-control:focus {
+  background: rgba(255, 255, 255, 0.856);
+}
+
+/* 유효성 메시지 */
+.member-form .valid-feedback {
+  color: #7cff90;
+  /* 초록빛 강조 */
+}
+
+.member-form .invalid-feedback {
+  color: #e67474;
+  /* 붉은색 강조 */
+}
+
+/* 버튼 스타일 */
+.member-form .btn {
+  background: #f86d6d;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.member-form .btn:hover {
+  background: #ff4d4d;
+}
