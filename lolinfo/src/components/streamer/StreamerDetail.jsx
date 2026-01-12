@@ -103,7 +103,9 @@ export default function StreamerDetail() {
           <hr />
 
             {/* 스트리머가 개최한 대회 */}
+            
             <div className="row p-2">
+                {host.length > 0 && (
                 <div className="col-xl-6 mt-2">
                     <div className="mb-2">
                         <span className="detail-section-title">개최대회</span>
@@ -126,8 +128,10 @@ export default function StreamerDetail() {
                     ))}
                     </div>
                 </div>
+                )}
 
             {/* 감독/코치로 참여한 대회 */}
+                {staff.length > 0 && (
                 <div className="col-xl-6 mt-2">
                 <div className="mb-2">
                     <span className="detail-section-title">감독/코치</span>
@@ -151,6 +155,7 @@ export default function StreamerDetail() {
                 ))}
                 </div>
                 </div>
+                )}
             </div>
 
 

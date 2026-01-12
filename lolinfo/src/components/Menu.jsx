@@ -92,8 +92,13 @@ export default function Menu() {
                     <ul className="navbar-nav ms-auto">
                         {/* 우측 메뉴 */}
                         <li className   ="nav-item">
+                            <Link className="nav-link" to={`/member/join`} onClick={closeMenu}>
+                                <span>회원가입</span>
+                            </Link>
+                        </li>
+                        <li className   ="nav-item">
                             <Link className="nav-link" to={``} onClick={closeMenu}>
-                                <span>MY</span>
+                                <span>로그인</span>
                             </Link>
                         </li>
                     </ul>
