@@ -1,6 +1,6 @@
 import { FaAsterisk, FaEraser, FaEye, FaEyeSlash, FaKey, FaMagnifyingGlass, FaPaperPlane, FaSpinner, FaUser } from "react-icons/fa6";
 import axios from "axios";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom"
 import "./Member.css"
 
@@ -79,8 +79,8 @@ export default function MemberJoin(){
         }
     },[member,memberClass])
     
-        //비밀번호 숨김/표시
-        const [showPassword, setShowPassword] = useState(false);
+    //비밀번호 숨김/표시
+    const [showPassword, setShowPassword] = useState(false);
 
 
     // 닉네임 (형식검사 + 중복검사)
@@ -110,93 +110,93 @@ export default function MemberJoin(){
     },[member,memberClass])
 
     // 이메일
-            // 이메일 형식검사와 인증검사
-            const checkMemberEmail = useCallback(async(e)=>{
-                if(member.memberEmail.length === 0 ){
+        // 이메일 형식검사와 인증검사
+        const checkMemberEmail = useCallback(async(e)=>{
+            if(member.memberEmail.length === 0 ){
+                setMemberClass(prev=>({...prev, memberEmail : "is-invalid"}));
+                setMemberEmailFeedback("이메일은 필수항목입니다");
+                return;
+            }
+            const regex = /^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/; 
+            const valid = regex.test(member.memberEmail);
+            if(valid === true){
+                if(certNumberClass !== "is-valid"){ // 인증되지 않음
                     setMemberClass(prev=>({...prev, memberEmail : "is-invalid"}));
-                    setMemberEmailFeedback("이메일은 필수항목입니다");
-                    return;
+                    setMemberEmailFeedback("이메일 인증이 필요합니다");
                 }
-                const regex = /^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/; 
-                const valid = regex.test(member.memberEmail);
-                if(valid === true){
-                    if(certNumberClass !== "is-valid"){ // 인증되지 않음
-                        setMemberClass(prev=>({...prev, memberEmail : "is-invalid"}));
-                        setMemberEmailFeedback("이메일 인증이 필요합니다");
-                    }
-                }
-                else {
-                    setMemberClass(prev=>({...prev, memberEmail : "is-invalid"}));
-                    setMemberEmailFeedback("이메일 형식이 맞지 않습니다")
-                }
-            },[member, certNumberClass])
+            }
+            else {
+                setMemberClass(prev=>({...prev, memberEmail : "is-invalid"}));
+                setMemberEmailFeedback("이메일 형식이 맞지 않습니다")
+            }
+        },[member, certNumberClass])
 
-            //이메일 전송
-            const [sending, setSending] = useState(null);
-            const sendCertEmail = useCallback(async()=>{
-                resetMemberEmail();
-                // 입력안하고 버튼 눌렀을때, 작동X + 피드백 출력
-                if(member.memberEmail.length===0){
-                    setMemberClass(prev=>({...prev, memberEmail : "is-invalid"}));
-                    setMemberEmailFeedback("이메일은 필수항목입니다");
-                    return;
-                }
-                // 이메일 형식 오류시 → 전송X
-                const regex = /^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/; 
-                const emailValid = regex.test(member.memberEmail);
-                if(emailValid===false){
-                    return;
-                }
-                // 통과시 이메일 전송
-                setSending(true);
-                const {data} = await axios.post("/cert/send", {certEmail : member.memberEmail});
-                setSending(false);
-                setMemberEmailFeedback("이메일이 전송되었습니다")
+        //이메일 전송
+        const [sending, setSending] = useState(null);
+        const sendCertEmail = useCallback(async()=>{
+            resetMemberEmail();
+            // 입력안하고 버튼 눌렀을때, 작동X + 피드백 출력
+            if(member.memberEmail.length===0){
+                setMemberClass(prev=>({...prev, memberEmail : "is-invalid"}));
+                setMemberEmailFeedback("이메일은 필수항목입니다");
+                return;
+            }
+            // 이메일 형식 오류시 → 전송X
+            const regex = /^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/; 
+            const emailValid = regex.test(member.memberEmail);
+            if(emailValid===false){
+                return;
+            }
+            // 통과시 이메일 전송
+            setSending(true);
+            const {data} = await axios.post("/cert/send", {certEmail : member.memberEmail});
+            setSending(false);
+            setMemberEmailFeedback("이메일이 전송되었습니다")
 
-            },[member, memberClass])  
-            
-            // 이메일 - 인증번호
-            const changeCertNumber = useCallback(e=>{
-                const replacement = e.target.value.replace(/[^0-9]+/g,""); // 숫자가 아닌 항목을 제거한 뒤
-                setCertNumber(replacement)
-            },[])
-                //인증번호 미입력시
-            const checkCertNumber = useCallback(e=>{
-                if(certNumber.length===0){
+        },[member, memberClass])  
+        
+        // 이메일 - 인증번호
+        const changeCertNumber = useCallback(e=>{
+            const replacement = e.target.value.replace(/[^0-9]+/g,""); // 숫자가 아닌 항목을 제거한 뒤
+            setCertNumber(replacement)
+        },[])
+            //인증번호 미입력시
+        const checkCertNumber = useCallback(e=>{
+            if(certNumber.length===0){
+                setCertNumberClass("is-invalid");
+                setCertNumberFeedback("인증번호를 입력해주세요");
+            }
+            else{setCertNumberClass(prev=>({...prev, certNumber : ""}));}   
+        },[certNumber] )
+
+        const sendCertCheck = useCallback(async e=>{
+            try{
+                const {data} = await axios.post("/cert/check", {
+                    certEmail : member.memberEmail,
+                    certNumber : certNumber
+                });
+                if(data.result === true){//인증성공
+                    setCertNumberClass("is-valid");
+                    setSending(null); 
+                    setMemberClass(prev=>({...prev, memberEmail : "is-valid"}));
+                    setMemberEmailFeedback(data.message);
+                }
+                else{ // 인증실패
                     setCertNumberClass("is-invalid");
-                    setCertNumberFeedback("인증번호를 입력해주세요");
+                    setCertNumberFeedback(data.message);
                 }
-                else{setCertNumberClass(prev=>({...prev, certNumber : ""}));}   
-            },[certNumber] )
+            }
+            catch(err){
+                    setCertNumberClass("is-invalid");
+                    setCertNumberFeedback("인증번호 형식이 부적합합니다");
+            }
+        },[member, certNumber]);
 
-            const sendCertCheck = useCallback(async e=>{
-                try{
-                    const {data} = await axios.post("/cert/check", {
-                        certEmail : member.memberEmail,
-                        certNumber : certNumber
-                    });
-                    if(data.result === true){//인증성공
-                        setCertNumberClass("is-valid");
-                        setSending(null); 
-                        setMemberClass(prev=>({...prev, memberEmail : "is-valid"}));
-                        setMemberEmailFeedback(data.message);
-                    }
-                    else{ // 인증실패
-                        setCertNumberClass("is-invalid");
-                        setCertNumberFeedback(data.message);
-                    }
-                }
-                catch(err){
-                        setCertNumberClass("is-invalid");
-                        setCertNumberFeedback("인증번호 형식이 부적합합니다");
-                }
-            },[member, certNumber]);
-
-            // 입력시 이메일입력창 초기화
-            const resetMemberEmail = useCallback(()=>{
-                setMemberClass(prev=>({...prev, memberEmail:""}));
-                setMemberEmailFeedback("");
-            },[]);
+        // 입력시 이메일입력창 초기화
+        const resetMemberEmail = useCallback(()=>{
+            setMemberClass(prev=>({...prev, memberEmail:""}));
+            setMemberEmailFeedback("");
+        },[]);
 
 
     //memo
@@ -215,8 +215,13 @@ export default function MemberJoin(){
     //최종 가입
     const sendData = useCallback(async()=>{
         if(memberValid === false) return ;
-        const {data} = await axios.post("/member/",member)
-        navigate("/member/login"); // 메인페이지
+        try{
+            const {data} = await axios.post("/member/",member)
+            navigate("/member/"); // 메인페이지
+        }
+        catch(err){
+            console.log("err",err);
+        }
     },[member,memberValid])
 
     //render
