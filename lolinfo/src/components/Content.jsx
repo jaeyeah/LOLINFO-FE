@@ -14,6 +14,7 @@ import TournamentEdit from "./tournament/TournamentEdit";
 import TeamInsert from "./tournament/TeamInsert";
 import TeamEdit from "./tournament/TeamEdit";
 import MemberJoin from "./member/MemberJoin";
+import MemberLogin from "./member/MemberLogin";
 
 
 export default function Content(){
@@ -30,6 +31,7 @@ return (<>
 
                 {/* 회원 */}
                 <Route path="/member/join" element={<MemberJoin/>} />
+                <Route path="/member/login" element={<MemberLogin/>} />
 
 
                 {/* 스트리머 */}

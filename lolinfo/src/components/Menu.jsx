@@ -97,7 +97,7 @@ export default function Menu() {
                             </Link>
                         </li>
                         <li className   ="nav-item">
-                            <Link className="nav-link" to={``} onClick={closeMenu}>
+                            <Link className="nav-link" to={`/member/login`} onClick={closeMenu}>
                                 <span>로그인</span>
                             </Link>
                         </li>

@@ -71,7 +71,7 @@ export default function MemberLogin(){
         <div className="login-form col-12">
         <div className="row">
             <div className="col">
-                <h1 className="text-center">로그인</h1>
+                <h1 className="text-center page-title p-3">로그인</h1>
             </div>
         </div>
 
@@ -101,7 +101,7 @@ export default function MemberLogin(){
                     <div className="row">
                         <div className="col fs-6 text-center text-danger">
                             아이디 또는 비밀번호가 잘못되었습니다
-                        </div>s
+                        </div>
                     </div>
                 )}
                 <button type="button" className="mt-2 login btn fs-4"
