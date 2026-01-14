@@ -5,13 +5,21 @@ import './Menu.css'
 
 import { IoMdPerson } from "react-icons/io";
 import { SiLeagueoflegends } from "react-icons/si";
+import { accessTokenState, adminState, clearLoginState, loginCompleteState, loginIdState, loginLevelState, loginState } from "../utils/jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 
 export default function Menu() {
     const navigate = useNavigate();
 
     //통합 state
-
+    const [loginId, setLoginId] = useAtom(loginIdState);
+    const [loginLevel, setLoginLevel] = useAtom(loginLevelState);
+    const [loginComplete, setLoginComplete] = useAtom(loginCompleteState);
+    const [accessToken, setAccessToken] = useAtom(accessTokenState);
+    const isLogin = useAtomValue(loginState);
+    const isAdmin = useAtomValue(adminState);
+    const clearLogin = useSetAtom(clearLoginState);
 
 
 
@@ -36,6 +44,18 @@ export default function Menu() {
             window.removeEventListener("mousedown", listener);
         };
     }, [open]);
+
+    //로그아웃
+    const logout = useCallback(async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        clearLogin();
+        await axios.delete("/member/logout");
+        delete axios.defaults.headers.common['Authorization'];
+        navigate("/");
+
+        closeMenu();
+    }, []);
 
 
     return (<>
@@ -91,16 +111,44 @@ export default function Menu() {
                     </ul>
                     <ul className="navbar-nav ms-auto">
                         {/* 우측 메뉴 */}
-                        <li className   ="nav-item">
-                            <Link className="nav-link" to={`/member/join`} onClick={closeMenu}>
-                                <span>회원가입</span>
-                            </Link>
-                        </li>
-                        <li className   ="nav-item">
-                            <Link className="nav-link" to={`/member/login`} onClick={closeMenu}>
-                                <span>로그인</span>
-                            </Link>
-                        </li>
+
+                        {isLogin === true ? (<>  {/* 로그인 시 나와야 하는 화면 */}
+                            {isAdmin === true ? (
+                                <>
+                                <li className="nav-item" onClick={closeMenu}>
+                                    <Link className="nav-link" to={`/admin`}>
+                                        <span><FaGear /></span>
+                                    </Link>
+                                </li>
+                                </>
+                            ) : (
+                                <>
+
+                                </>
+                            )}
+                            <li className="nav-item">
+                                <Link className="nav-link" to={`/member/mypage/myinfo/${loginId}`} onClick={closeMenu}>
+                                    <span>MY</span>
+                                </Link>
+                            </li>
+                            <li className="nav-item" onClick={closeMenu}>
+                                <Link className="nav-link" onClick={logout}>
+                                    <span>로그아웃</span>
+                                </Link>
+                            </li>
+                        </>) : (<>  {/* 비로그인 시 나와야 하는 화면 */}
+                            <li className="nav-item" onClick={closeMenu}>
+                                <Link className="nav-link" to="/member/login">
+                                    <span>로그인</span>
+                                </Link>
+                            </li>
+                            <li className="nav-item" onClick={closeMenu}>
+                                <Link className="nav-link" to="/member/join">
+                                    <span>회원가입</span>
+                                </Link>
+                            </li>
+                        </>)}
+
                     </ul>
                 </div>
             </div>

@@ -10,13 +10,11 @@ export const refreshTokenState= atomWithStorage("refreshTokenState", "", session
 export const loginState = atom(get=>{
     const loginId = get(loginIdState);
     const loginLevel = get(loginLevelState);
-    console.log("loginId", loginId, "loginLevel", loginLevel);
     return loginId?.length>0 && loginLevel?.length>0;
 });
 export const adminState = atom(get=>{
     const loginId = get(loginIdState);
     const loginLevel = get(loginLevelState);
-    console.log("loginId", loginId, "loginLevel", loginLevel);
     return loginId?.length>0 && loginLevel==="관리자";
 });
 

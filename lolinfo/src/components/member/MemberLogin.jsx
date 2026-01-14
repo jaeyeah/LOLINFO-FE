@@ -40,7 +40,6 @@ export default function MemberLogin(){
 
             // Authorization에 accesstoken 저장
             axios.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
-            console.log(data);
             //통합 state 저장
             setLoginId(data.loginId);
             setLoginLevel(data.loginLevel);
