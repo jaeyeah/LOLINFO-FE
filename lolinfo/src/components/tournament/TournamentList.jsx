@@ -3,9 +3,13 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Tournament.css";
 import { buildProfileUrl } from "../../utils/profileUrl";
+import { useAtomValue } from "jotai";
+import { adminState, loginState } from "../../utils/jotai";
 
 export default function TournamentList(){
 
+    const isLogin = useAtomValue(loginState);
+    const isAdmin = useAtomValue(adminState);
     const [tournamentList, setTournamentList] = useState([]); 
 
     const loadData = useCallback( async() => {
@@ -34,12 +38,14 @@ export default function TournamentList(){
 //render
 return(<>
   <h2 className="section-title text-center ">Soop : LoL 대회 목록</h2>
-  <div className="row text-end">
-    <div className="col-8"></div>
-    <div className="col-4">
-      <Link to="/tournament/insert" className="btn btn-success">등록</Link>
+  {isAdmin === true && (
+    <div className="row text-end">
+      <div className="col-8"></div>
+      <div className="col-4">
+        <Link to="/tournament/insert" className="btn btn-success">등록</Link>
+      </div>
     </div>
-  </div>
+  )}
   
   <div className="row mt-3 justify-content-center">
     <div className="col-12 col-xl-8 tournament-wrapper">

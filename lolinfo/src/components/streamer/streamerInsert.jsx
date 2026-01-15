@@ -2,11 +2,13 @@ import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import "./Streamer.css";
+import { useAtomValue } from "jotai";
+import { loginState } from "../../utils/jotai";
 
 export default function StreamerInsert() {
 
     const navigate = useNavigate();
-
+    const isLogin = useAtomValue(loginState);
     const [streamer, setStreamer] = useState({
         streamerName: "",
         streamerSoopId: ""
@@ -99,6 +101,7 @@ export default function StreamerInsert() {
         </div>
         
         {/* 등록버튼  */}
+        {isLogin === true &&(
         <div className="row mt-4">
             <div className="col">
                 <button type="button" className="btn btn-lg btn-insert w-100"
@@ -110,7 +113,7 @@ export default function StreamerInsert() {
                 </button>
             </div>
         </div>
-    
+        )}
     </div>
     </>)
 

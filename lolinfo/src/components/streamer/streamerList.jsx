@@ -4,9 +4,13 @@ import { Link } from "react-router-dom"
 import "./Streamer.css";
 import { FaHome } from "react-icons/fa";
 import Pagination from "../Pagination";
+import { useAtomValue } from "jotai";
+import { adminState, loginState } from "../../utils/jotai";
 
 export default function StreamerList() {
 
+    const isLogin = useAtomValue(loginState);
+    const isAdmin = useAtomValue(adminState);
     const [streamerList, setStreamerList] = useState([]);
     // 페이지네이션 설정
     const [page, setPage] = useState(1);
@@ -39,9 +43,11 @@ export default function StreamerList() {
                     <Link to="/streamer" className="ms-2 btn btn-click">공식</Link>
                     <Link to="/streamerTotal" className="ms-2 btn btn-nonClick">전체</Link>
                 </div>
-                <div className="col-2 text-end">
-                    <Link to="/streamer/insert" className="btn btn-success">등록</Link>
-                </div>
+                {isAdmin === true && (
+                    <div className="col-2 text-end">
+                        <Link to="/streamer/insert" className="btn btn-success">등록</Link>
+                    </div>
+                )}
             </div>
         </div>
     </div>

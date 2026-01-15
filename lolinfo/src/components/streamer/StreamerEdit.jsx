@@ -2,10 +2,14 @@ import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom"
 import "./Streamer.css";
+import { useAtomValue } from "jotai";
+import { loginState } from "../../utils/jotai";
 
 export default function StreamerEdit() {
 
     const navigate = useNavigate();
+    
+    const isLogin = useAtomValue(loginState);
     const {streamerId} = useParams();
     const [streamer, setStreamer] = useState({
         streamerName: "",
@@ -110,6 +114,7 @@ export default function StreamerEdit() {
         </div>
         
         {/* 등록버튼  */}
+        {isLogin === true &&(
         <div className="row mt-4">
             <div className="col">
                 <button type="button" className="btn btn-lg btn-insert w-100"
@@ -121,7 +126,7 @@ export default function StreamerEdit() {
                 </button>
             </div>
         </div>
-    
+        )}
     </div>
     </>)
 

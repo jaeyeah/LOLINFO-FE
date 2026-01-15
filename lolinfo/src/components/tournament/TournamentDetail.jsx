@@ -4,8 +4,14 @@ import { Link, useParams } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { useAtomValue } from "jotai";
+import { adminState, loginState } from "../../utils/jotai";
 
 export default function TournamentDetail(){
+
+    const isLogin = useAtomValue(loginState);
+    const isAdmin = useAtomValue(adminState);
+
     const {tournamentId} = useParams();
     const [tournament, setTournament] = useState({});
     const [team, setTeam] = useState([]);
@@ -87,7 +93,9 @@ export default function TournamentDetail(){
                                 <img className="host-profile mb-1"src={buildProfileUrl(host.streamerSoopId)}/>
                             </Link>
                             <br/><span className={`stat-box-number `}>{host.streamerName}</span>
-                            <div className="p-1 ms-1 btn btn-danger pt-0 pb-0" onClick={()=>{deleteHost(host.hostStreamer,host.hostTournament)}}>X</div>
+                            {isAdmin === true && (
+                                <div className="p-1 ms-1 btn btn-danger pt-0 pb-0" onClick={()=>{deleteHost(host.hostStreamer,host.hostTournament)}}>X</div>
+                            )}
                         </div>
                     ))}
                     </div>
@@ -109,10 +117,12 @@ export default function TournamentDetail(){
         </div>
 
         {/*  */}
-        <div className="col text-end">
-            <Link to={`/team/insert/${tournamentId}`} className="btn btn-success">+TEAM</Link>
-            <Link to={`/tournament/edit/${tournamentId}`} className="p-1 fs-5 ms-1 btn btn-warning"><FaEdit/></Link>
-        </div>
+        {isAdmin === true && (
+            <div className="col text-end">
+                <Link to={`/team/insert/${tournamentId}`} className="btn btn-success">+TEAM</Link>
+                <Link to={`/tournament/edit/${tournamentId}`} className="p-1 fs-5 ms-1 btn btn-warning"><FaEdit/></Link>
+            </div>
+        )}
         
         <div className="team-list mt-4">
         {team.map((team) => (
@@ -125,10 +135,12 @@ export default function TournamentDetail(){
                 #{team.teamRanking}
                 {team.teamName && <span className="team-name ms-2 p-1">{team.teamName} </span> }
                 {/* 추후, 관리자만 수정가능하도록 지정 */}
-                <div className="ms-auto">
-                    <Link to={`/team/edit/${team.teamId}`} className="p-1 fs-5 ms-1 btn btn-warning"><FaEdit/></Link>
-                    <Link to="/" className="p-1 ms-1 fs-5 btn btn-danger"><MdDelete/></Link>
-                </div>
+                {isAdmin === true && (
+                    <div className="ms-auto">
+                        <Link to={`/team/edit/${team.teamId}`} className="p-1 fs-5 ms-1 btn btn-warning"><FaEdit/></Link>
+                        <Link to="/" className="p-1 ms-1 fs-5 btn btn-danger"><MdDelete/></Link>
+                    </div>
+                )}
             </div>
             {/* 감독 표시 */}
             {team.staffId !== null && (
@@ -138,7 +150,9 @@ export default function TournamentDetail(){
                     <img className="player-profile"src={buildProfileUrl(team.staffId)} alt={team.staffName}/>
                     <span className="player-name ms-2">{team.staffName}</span>
                 </Link>
+                {isAdmin === true && (
                 <button type="button" className="col-1 btn btn-danger p-0" onClick={()=>{deleteStaff(team.staffStreamer,team.teamId)}}>X</button>
+                )}
             </div>
             )}
 

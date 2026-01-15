@@ -5,9 +5,14 @@ import "./Streamer.css";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import { FaEdit, FaHome, FaTrophy } from "react-icons/fa";
 import { MdLooksTwo } from "react-icons/md";
+import { useAtomValue } from "jotai";
+import { adminState } from "../../utils/jotai";
 
 export default function StreamerDetail() {
 
+    const isAdmin = useAtomValue(adminState);
+
+    
     const {streamerId} = useParams();
     const [streamer, setStreamer] = useState({});
     const [streamerTeam, setStreamerTeam] = useState([]);
@@ -96,8 +101,10 @@ export default function StreamerDetail() {
             <div className="col-auto text-end">
                 <Link to={streamer.streamerStation} target="_blank" rel="noreferrer"
                     className="btn btn-station mb-2"><FaHome className="fs-2"/> </Link>
-                <Link to={`/streamer/edit/${streamerId}`} rel="noreferrer"
+                {isAdmin === true && (
+                     <Link to={`/streamer/edit/${streamerId}`} rel="noreferrer"
                     className="btn btn-station mb-2 ms-1 bg-warning"><FaEdit className="fs-2"/> </Link>
+                )}
             </div>
           </div>
           <hr />

@@ -2,12 +2,14 @@ import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
+import { useAtomValue } from "jotai";
+import { loginState } from "../../utils/jotai";
 
 
 export default function TeamInsert(){
 
     const navigate = useNavigate();
-
+    const isLogin = useAtomValue(loginState);
     //state
     const {tournamentId} = useParams();
     const [checking, setChecking] = useState(false);
@@ -387,6 +389,7 @@ return(<>
     ))}
   
     {/* 등록버튼  */}
+    {isLogin === true &&(
     <div className="row mt-4">
         <div className="col">
             <button type="button" className="btn btn-lg btn-insert w-100"
@@ -397,6 +400,7 @@ return(<>
             </button>
         </div>
     </div>
+    )}
 </div>
 </>)
 }

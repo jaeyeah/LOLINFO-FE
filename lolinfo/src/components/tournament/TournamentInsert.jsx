@@ -3,10 +3,13 @@ import { useCallback, useMemo, useState } from "react";
 import { FaAsterisk } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
+import { loginState } from "../../utils/jotai";
+import { useAtomValue } from "jotai";
 
 export default function TournamentInsert(){
   const navigate = useNavigate();
 
+  const isLogin = useAtomValue(loginState);
   // State
   const [tournament, setTournament] = useState({
     tournamentName : "", tournamentYear : "",
@@ -216,16 +219,18 @@ return(<>
       ))}
 
       {/* 등록 버튼 */}
-      <div className="row mt-4">
-        <div className="col">
-          <button type="button" className="btn btn-lg btn-insert w-100"
-                      disabled={tournamentValid === false}
-                      onClick = {sendData}
-                      >
-            <span>등록</span>
-          </button>
+      {isLogin === true && (
+        <div className="row mt-4">
+          <div className="col">
+            <button type="button" className="btn btn-lg btn-insert w-100"
+                        disabled={tournamentValid === false}
+                        onClick = {sendData}
+                        >
+              <span>등록</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
 </div>   
 </>)

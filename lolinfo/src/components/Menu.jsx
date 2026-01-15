@@ -7,7 +7,7 @@ import { IoMdPerson } from "react-icons/io";
 import { SiLeagueoflegends } from "react-icons/si";
 import { accessTokenState, adminState, clearLoginState, loginCompleteState, loginIdState, loginLevelState, loginState } from "../utils/jotai";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-
+import { FaGear } from "react-icons/fa6";
 
 export default function Menu() {
     const navigate = useNavigate();
