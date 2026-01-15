@@ -227,7 +227,7 @@ export default function MemberJoin(){
     //render
     return (<>
         <div className="d-flex justify-content-center">
-        <div className="member-form w-100">
+        <div className="login-form member-form w-100">
         <h2 className="text-center page-title">회원가입</h2>
         <hr/>
         {/* 아이디 */}
