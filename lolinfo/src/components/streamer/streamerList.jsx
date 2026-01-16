@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom"
+import { Link} from "react-router-dom"
 import "./Streamer.css";
+import "./Search.css";
 import { FaHome, FaSearch } from "react-icons/fa";
 import Pagination from "../Pagination";
 import { useAtomValue } from "jotai";
@@ -9,7 +10,6 @@ import { adminState, loginState } from "../../utils/jotai";
 
 export default function StreamerList() {
 
-    const navigate = useNavigate();
     const isLogin = useAtomValue(loginState);
     const isAdmin = useAtomValue(adminState);
     const [streamerList, setStreamerList] = useState([]);
@@ -37,6 +37,10 @@ export default function StreamerList() {
     
     //[입력창 제어 및 검색이동]
     const handleSearch = useCallback(async() => {
+        if(keyword.trim().length === 0){
+            alert("검색어를 입력해주세요.");
+            return;
+        }
         setPage(1);
         if (keyword.trim().length === 0) return;
         try {
@@ -46,33 +50,28 @@ export default function StreamerList() {
         } catch (error) {
             console.error("Error fetching streamer list:", error);
         }
+        setKeyword("");
     }, [keyword, page]);
 
     //render
     return (<>
     {/* 검색영역 */}
-    <div className="row mt-1 justify-content-center">
-        <div className="col-12 col-md-5 d-flex text-nowrap">
-            <div className="input-group search-wrapper">
-                {/* 검색창 */}
-                <input type="text" className="search form-control search-bar text-light" value={keyword}
-                    placeholder="스트리머" onChange={e => setKeyword(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }} />
-                {/* 검색 버튼 */}
-                <button className="search btn btn-success" onClick={handleSearch}>
-                    <FaSearch className="fs-4" />
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div className="row justify-content-center mt-4">
+    <div className="row justify-content-center">
         <div className="col-12 col-xl-8">
             <div className="row align-items-center">
-                <div className="col-10 col-md-10 d-flex align-items-center">
-                    <span className="fs-3 page-title">스트리머 목록 : 공식 </span>
-                    <Link to="/streamer" className="ms-2 btn btn-click">공식</Link>
-                    <Link to="/streamerTotal" className="ms-2 btn btn-nonClick">전체</Link>
+                <div className="col-10 col-md-10 d-flex align-items-center flex-nowrap">
+                    <Link to="/streamer" className="ms-2 streamer-btn p-2 btn btn-click">공식</Link>
+                    <Link to="/streamerTotal" className="ms-2 streamer-btn p-2 btn btn-nonClick">전체</Link>
+                    <div className="ms-3 input-group search-wrapper">
+                        {/* 검색창 */}
+                        <input type="text" className="search form-control search-bar text-light" value={keyword}
+                            placeholder="스트리머" onChange={e => setKeyword(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }} />
+                        {/* 검색 버튼 */}
+                        <button className="search btn btn-success" onClick={handleSearch}>
+                            <FaSearch className="fs-4" />
+                        </button>
+                    </div>
                 </div>
                 {isAdmin === true && (
                     <div className="col-2 text-end">
