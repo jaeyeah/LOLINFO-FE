@@ -14,7 +14,7 @@ export default function StreamerList() {
     const isAdmin = useAtomValue(adminState);
     const [streamerList, setStreamerList] = useState([]);
     //검색어 state
-    const [query, setQuery] = useState("");
+    const [keyword, setKeyword] = useState("");
     // 페이지네이션 설정
     const [page, setPage] = useState(1);
     const [pageData, setPageData] = useState({
@@ -36,12 +36,17 @@ export default function StreamerList() {
     },[loadData]);
     
     //[입력창 제어 및 검색이동]
-    const handleSearch = useCallback(() => {
-        if (query.trim().length === 0) return;
-        // 검색어와 함께 결과 페이지로 이동
-        navigate(`/contents/searchResult/${query}`);
-        setQuery(""); // 입력창 비우기 (선택사항)
-    }, [query, navigate]);
+    const handleSearch = useCallback(async() => {
+        setPage(1);
+        if (keyword.trim().length === 0) return;
+        try {
+            const {data} = await axios.get(`/streamer/keyword/${keyword}`, {params : {page}});
+            setStreamerList(data.list);
+            setPageData(data.pageVO);
+        } catch (error) {
+            console.error("Error fetching streamer list:", error);
+        }
+    }, [keyword, page]);
 
     //render
     return (<>
@@ -50,8 +55,8 @@ export default function StreamerList() {
         <div className="col-12 col-md-5 d-flex text-nowrap">
             <div className="input-group search-wrapper">
                 {/* 검색창 */}
-                <input type="text" className="search form-control search-bar text-light" value={query}
-                    placeholder="제목" onChange={e => setQuery(e.target.value)}
+                <input type="text" className="search form-control search-bar text-light" value={keyword}
+                    placeholder="스트리머" onChange={e => setKeyword(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }} />
                 {/* 검색 버튼 */}
                 <button className="search btn btn-success" onClick={handleSearch}>
