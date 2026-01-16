@@ -1,17 +1,20 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import "./Streamer.css";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaSearch } from "react-icons/fa";
 import Pagination from "../Pagination";
 import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
 
 export default function StreamerList() {
 
+    const navigate = useNavigate();
     const isLogin = useAtomValue(loginState);
     const isAdmin = useAtomValue(adminState);
     const [streamerList, setStreamerList] = useState([]);
+    //검색어 state
+    const [query, setQuery] = useState("");
     // 페이지네이션 설정
     const [page, setPage] = useState(1);
     const [pageData, setPageData] = useState({
@@ -31,11 +34,34 @@ export default function StreamerList() {
     useEffect(()=>{
         loadData();
     },[loadData]);
+    
+    //[입력창 제어 및 검색이동]
+    const handleSearch = useCallback(() => {
+        if (query.trim().length === 0) return;
+        // 검색어와 함께 결과 페이지로 이동
+        navigate(`/contents/searchResult/${query}`);
+        setQuery(""); // 입력창 비우기 (선택사항)
+    }, [query, navigate]);
 
     //render
     return (<>
-    
-    <div className="row justify-content-center mt-2">
+    {/* 검색영역 */}
+    <div className="row mt-1 justify-content-center">
+        <div className="col-12 col-md-5 d-flex text-nowrap">
+            <div className="input-group search-wrapper">
+                {/* 검색창 */}
+                <input type="text" className="search form-control search-bar text-light" value={query}
+                    placeholder="제목" onChange={e => setQuery(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }} />
+                {/* 검색 버튼 */}
+                <button className="search btn btn-success" onClick={handleSearch}>
+                    <FaSearch className="fs-4" />
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div className="row justify-content-center mt-4">
         <div className="col-12 col-xl-8">
             <div className="row align-items-center">
                 <div className="col-10 col-md-10 d-flex align-items-center">
