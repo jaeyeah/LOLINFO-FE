@@ -66,7 +66,7 @@ export default function StreamerList() {
                         {/* 검색창 */}
                         <input type="text" className="search form-control search-bar text-light" value={keyword}
                             placeholder="스트리머" onChange={e => setKeyword(e.target.value)}
-                            onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }} />
+                            onKeyDown={(e) => { if (e.key1 === "Enter") handleSearch(); }} />
                         {/* 검색 버튼 */}
                         <button className="search btn btn-success" onClick={handleSearch}>
                             <FaSearch className="fs-4" />

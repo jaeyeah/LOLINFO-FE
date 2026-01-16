@@ -217,7 +217,7 @@ export default function MemberJoin(){
         if(memberValid === false) return ;
         try{
             const {data} = await axios.post("/member/",member)
-            navigate("/member/"); // 메인페이지
+            navigate("/"); // 메인페이지
         }
         catch(err){
             console.log("err",err);

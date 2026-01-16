@@ -157,7 +157,9 @@ export default function StreamerDetail() {
                                 : staff.teamRanking === "4강" ? "badge text-light"
                                 : "badge text-secondary"
                             }`}>{staff.teamRanking}</span>
-                        <button type="button" className="col-1 btn btn-danger p-0" onClick={()=>{deleteStaff(staff.staffStreamer,staff.staffTeam)}}>X</button>
+                        {isAdmin === true && (
+                            <button type="button" className="col-1 btn btn-danger p-0" onClick={()=>{deleteStaff(staff.staffStreamer,staff.staffTeam)}}>X</button>
+                        )}
                     </div>
                 ))}
                 </div>
