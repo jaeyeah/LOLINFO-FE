@@ -21,7 +21,7 @@ export default function TournamentDetail(){
         try {
             const {data} = await axios.get(`/tournament/${tournamentId}`); 
             setTournament(data);
-            console.log("대회정보",data);
+            //console.log("대회정보",data);
         } catch (error) {
             console.error("Error fetching tournament list:", error);
         }
@@ -31,7 +31,7 @@ export default function TournamentDetail(){
         try {
             const {data} = await axios.get(`/team/tournament/${tournamentId}`);
             setTeam(data);
-            console.log("팀 데이터:",data);
+            //console.log("팀 데이터:",data);
         } catch (error) {
             console.error("팀 로딩 오류");
             console.error("Error fetching team list:", error);
@@ -41,7 +41,7 @@ export default function TournamentDetail(){
     const loadHostData = useCallback( async() => {
         try{
             const {data} = await axios.get(`/host/tournament/${tournamentId}`)
-            console.log("개최자 데이터:",data);
+            //console.log("개최자 데이터:",data);
             setHostList(data);
         }catch (err) {
             console.error("개최자 로딩 실패", err);

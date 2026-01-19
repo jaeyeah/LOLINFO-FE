@@ -142,11 +142,11 @@ export default function Menu() {
                                     <span>로그인</span>
                                 </Link>
                             </li>
-                            <li className="nav-item" onClick={closeMenu}>
+                            {/* <li className="nav-item" onClick={closeMenu}>
                                 <Link className="nav-link" to="/member/join">
                                     <span>회원가입</span>
                                 </Link>
-                            </li>
+                            </li> */}
                         </>)}
 
                     </ul>
