@@ -23,7 +23,6 @@ export default function TournamentList(){
             const {data} = await axios.get("/tournament/", {params : {page}}); 
             setTournamentList(data.list);
             setPageData(data.pageVO);
-            console.log(data);
         } catch (error) {
             console.error("Error fetching tournament list:", error);
         }

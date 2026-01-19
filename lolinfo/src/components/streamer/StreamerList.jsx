@@ -25,7 +25,6 @@ export default function StreamerList() {
             const {data} = await axios.get("/streamer/", {params : {page}});
             setStreamerList(data.list);
             setPageData(data.pageVO);
-            console.log(data);
         } catch (error) {
             console.error("Error fetching streamer list:", error);
         }
