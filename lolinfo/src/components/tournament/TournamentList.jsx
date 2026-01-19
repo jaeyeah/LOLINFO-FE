@@ -5,25 +5,33 @@ import "./Tournament.css";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
+import Pagination from "../Pagination";
 
 export default function TournamentList(){
 
     const isLogin = useAtomValue(loginState);
     const isAdmin = useAtomValue(adminState);
     const [tournamentList, setTournamentList] = useState([]); 
+   // 페이지네이션 설정
+    const [page, setPage] = useState(1);
+    const [pageData, setPageData] = useState({
+        page : 1,size : 10,  totalCount : 0, totalPage : 0, blockStart : 1, blockFinish : 1
+    });
 
     const loadData = useCallback( async() => {
         try {
-            const {data} = await axios.get("/tournament/"); 
-            setTournamentList(data);
+            const {data} = await axios.get("/tournament/", {params : {page}}); 
+            setTournamentList(data.list);
+            setPageData(data.pageVO);
+            console.log(data);
         } catch (error) {
             console.error("Error fetching tournament list:", error);
         }
-    }, []); 
+    }, [page]); 
 
     useEffect(()=>{
         loadData();
-    },[]);
+    },[loadData]);
 
 
     function formatDate(value) {
@@ -118,5 +126,17 @@ return(<>
       ))}
     </div>
   </div>
+  {/* 페이지네이션 */}
+      <div className ="row mt-1">
+          <div className="col-6 offset-3">
+              <Pagination
+                  page={page}
+                  totalPage={pageData.totalPage}
+                  blockStart={pageData.blockStart}
+                  blockFinish={pageData.blockFinish}
+                  onPageChange={setPage}
+              />
+          </div>
+      </div>
       </>)
   }
