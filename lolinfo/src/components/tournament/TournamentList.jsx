@@ -17,14 +17,23 @@ export default function TournamentList(){
     const [pageData, setPageData] = useState({
         page : 1,size : 10,  totalCount : 0, totalPage : 0, blockStart : 1, blockFinish : 1
     });
+    //로딩중 설정
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const loadData = useCallback( async() => {
         try {
+            setLoading(true);
+            setError(null);
             const {data} = await axios.get("/tournament/", {params : {page}}); 
             setTournamentList(data.list);
             setPageData(data.pageVO);
         } catch (error) {
             console.error("Error fetching tournament list:", error);
+            setError("목록을 불러오지 못했습니다.");
+        }
+        finally {
+          setLoading(false);
         }
     }, [page]); 
 
@@ -56,6 +65,14 @@ return(<>
   
   <div className="row mt-3 justify-content-center">
     <div className="col-12 col-xl-8 tournament-wrapper">
+      {/* 로딩중 or 에러 */}
+      {loading && (
+        <div className="d-flex justify-content-center py-5">
+          <div className="spinner-border" role="status" />
+        </div>
+      )}
+      {error && <p className="text-danger">{error}</p>}
+      {/* 토너먼트 목록 */}
       {tournamentList.map((tournament) => (
         <Link
           to={`/tournament/${tournament.tournamentId}`}
