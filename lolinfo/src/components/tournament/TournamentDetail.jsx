@@ -16,14 +16,21 @@ export default function TournamentDetail(){
     const [tournament, setTournament] = useState({});
     const [team, setTeam] = useState([]);
     const [hostList, setHostList] = useState([]);
-
+    //로딩중 설정
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const loadData = useCallback( async() => {
         try {
+            setLoading(true);
+            setError(null);
             const {data} = await axios.get(`/tournament/${tournamentId}`); 
             setTournament(data);
             //console.log("대회정보",data);
         } catch (error) {
             console.error("Error fetching tournament list:", error);
+        }
+        finally {
+          setLoading(false);
         }
     }, []); 
 
@@ -80,9 +87,16 @@ export default function TournamentDetail(){
     //render
     return(<>
         <h2 className="text-center page-title p-3">{tournament.tournamentName} : 대회 상세</h2>
-        
+            {/* 로딩중 or 에러 */}
+                {loading && (
+                    <div className="d-flex justify-content-center py-5">
+                    <div className="spinner-border" role="status" />
+                    </div>
+                )}
+            {error && <p className="text-danger">{error}</p>}
         {/* 대회 개최자 및 상세 */}
         <div className="streamer-card mb-2">
+
             <div className="row g-0">
                 <div className="col-lg-4 col-12">
                     <h3 className="host-box text-center">주최</h3>
