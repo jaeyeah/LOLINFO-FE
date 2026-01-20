@@ -18,9 +18,13 @@ export default function StreamerDetail() {
     const [streamerTeam, setStreamerTeam] = useState([]);
     const [host, setHost] = useState([]);
     const [staff, setStaff] = useState([]);
-
+    //로딩중 설정
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const loadData = useCallback( async() => {
         try {
+            setLoading(true);
+            setError(null);
             const {data} = await axios.get(`/streamer/${streamerId}`);
             setStreamer(data);
             const teamData = await axios.get(`/team/streamer/${streamerId}`);
@@ -31,6 +35,9 @@ export default function StreamerDetail() {
             setStaff(staffData.data);
         } catch (error) {
             console.error("Error fetching streamer detail:", error);
+        }
+        finally {
+          setLoading(false);
         }
     }, [streamerId]);
 
@@ -85,6 +92,13 @@ export default function StreamerDetail() {
             <h2 className="page-title p-3">{streamer.streamerName} : 상세</h2>
         </div>
     </div>
+    {/* 로딩중 or 에러 */}
+    {loading && (
+        <div className="d-flex justify-content-center py-5">
+            <div className="spinner-border" role="status" />
+        </div>
+    )}
+    {error && <p className="text-danger">{error}</p>}
     {/* 스트리머 상세 */}
     <div className="streamer-wrapper">
       <div className="card streamer-card mb-4">
