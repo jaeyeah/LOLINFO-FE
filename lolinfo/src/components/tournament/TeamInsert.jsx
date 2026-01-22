@@ -192,11 +192,11 @@ export default function TeamInsert(){
     const teamValid = useMemo(()=>{
         //필수항목
         if(teamClass.teamName !== "is-valid") return false;
-        if(teamClass.teamTop !== "is-valid") return false;
-        if(teamClass.teamJug !== "is-valid") return false;
-        if(teamClass.teamMid !== "is-valid") return false;
-        if(teamClass.teamAd !== "is-valid") return false;
-        if(teamClass.teamSup !== "is-valid") return false;
+        if(teamClass.teamTop === "is-invalid") return false;
+        if(teamClass.teamJug === "is-invalid") return false;
+        if(teamClass.teamMid === "is-invalid") return false;
+        if(teamClass.teamAd === "is-invalid") return false;
+        if(teamClass.teamSup === "is-invalid") return false;
         if(teamClass.teamRanking === "is-invalid") return false;
         return true;
     },[teamClass]);
