@@ -83,6 +83,15 @@ export default function TournamentDetail(){
             console.error("감독/코치 삭제 실패", err);
         }
     })
+    const deleteTeam = useCallback(async(teamId) =>{
+        try{
+            await axios.delete(`/team/${teamId}`);
+            loadData();
+            console.log("팀 삭제 실행");
+        }catch (err) {
+            console.error("팀 삭제 실패", err);
+        }
+    })
 
     //render
     return(<>
@@ -152,7 +161,7 @@ export default function TournamentDetail(){
                 {isAdmin === true && (
                     <div className="ms-auto">
                         <Link to={`/team/edit/${team.teamId}`} className="p-1 fs-5 ms-1 btn btn-warning"><FaEdit/></Link>
-                        <Link to="/" className="p-1 ms-1 fs-5 btn btn-danger"><MdDelete/></Link>
+                        <button className="p-1 ms-1 fs-5 btn btn-danger" onClick={() => deleteTeam(team.teamId)}><MdDelete/></button>
                     </div>
                 )}
             </div>
