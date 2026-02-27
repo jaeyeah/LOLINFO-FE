@@ -151,7 +151,9 @@ export default function TournamentDetail(){
         {team.map((team) => (
             <div className={`team-card
                 ${team.teamRanking === "우승" ? "is-champion" : ""}
-                ${team.teamRanking === "준우승" ? "is-second" : ""}`}
+                ${team.teamRanking === "준우승" ? "is-second" : ""}
+                ${team.teamRanking === "" ? "is-empty" : ""}
+                `}
                 key={team.teamId}>
             {/* 상단 헤더 : 순위 + 팀 이름 */}
             <div className="team-header">
