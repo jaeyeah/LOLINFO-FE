@@ -236,10 +236,10 @@
   background: linear-gradient(135deg, #d1d1d1, #585858) !important;
 }
 .is-empty {
-  background: linear-gradient(135deg, #807272, #807272) !important;
+  background: linear-gradient(135deg, #3f3939, #807272) !important;
 }
 
-.player-row .badge {1
+.player-row .badge {
   background: #e9f0ff;
   color: #1d4ed8;
   width : 40px;
