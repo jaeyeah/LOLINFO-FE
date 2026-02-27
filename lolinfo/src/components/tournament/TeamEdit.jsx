@@ -285,7 +285,7 @@ return(<>
                     <option value="본선진출">본선진출</option>
                     <option value="예선탈락">예선탈락</option>
                     <option value="참가">참가</option>
-                    <option value="신청">신청</option>
+                    <option value="임시">임시</option>
                 </select>
                 <div className="valid-feedback"></div>
                 <div className="invalid-feedback"></div>
