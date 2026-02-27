@@ -152,7 +152,7 @@ export default function TournamentDetail(){
             <div className={`team-card
                 ${team.teamRanking === "우승" ? "is-champion" : ""}
                 ${team.teamRanking === "준우승" ? "is-second" : ""}
-                ${team.teamRanking === "" ? "is-empty" : ""}
+                ${team.teamRanking === "신청" ? "is-empty" : ""}
                 `}
                 key={team.teamId}>
             {/* 상단 헤더 : 순위 + 팀 이름 */}
