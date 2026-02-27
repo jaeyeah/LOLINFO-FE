@@ -236,7 +236,7 @@
   background: linear-gradient(135deg, #d1d1d1, #585858) !important;
 }
 .is-empty {
-  background: linear-gradient(135deg, #807272, #807272) !important;
+  background: linear-gradient(135deg, #3f3939, #807272) !important;
 }
 
 .player-row .badge {
