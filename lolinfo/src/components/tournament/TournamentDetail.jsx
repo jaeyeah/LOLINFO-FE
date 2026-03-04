@@ -152,6 +152,7 @@ export default function TournamentDetail(){
             <div className={`team-card
                 ${team.teamRanking === "우승" ? "is-champion" : ""}
                 ${team.teamRanking === "준우승" ? "is-second" : ""}
+                ${team.teamRanking === "예선탈락" ? "is-failed" : ""}
                 ${team.teamRanking === "임시" ? "is-empty" : ""}
                 `}
                 key={team.teamId}>
