@@ -99,13 +99,13 @@ export default function StreamerTotalList() {
         <div className="col-12 col-xl-8 streamer-wrapper">
             {streamerList.map((streamer)=>(
                 <div key={streamer.streamerNo} className="card streamer-card mb-3">
-                    <div className="row g-0">
-                        <div className="col-2">
-                            <Link to={`/streamer/${streamer.streamerNo}`} className="streamer-link d-flex w-100 h-100">
+                    <div className="row g-0 align-items-center">
+                        <div className="col-3 d-flex">
+                            <Link to={`/streamer/${streamer.streamerNo}`} className="streamer-link d-flex w-100 h-100 justify-content-center">
                                 <img src={streamer.streamerProfile} className="streamer-profile img-fluid rounded-start" />
                             </Link>
                         </div>
-                        <div className="col-10">
+                        <div className="col-9">
                             <div className="card-body d-flex justify-content-between align-items-center">
                                 <div>
                                     <span className="card-title">{streamer.streamerName} </span>
@@ -113,7 +113,7 @@ export default function StreamerTotalList() {
                                 </div>
                                 <div className="text-end">
                                     <Link to={streamer.streamerStation} className="btn btn-station ms-3" target="_blank" rel="noopener noreferrer"><FaHome className="fs-4"/></Link>
-                                    <Link to={`/streamer/${streamer.streamerNo}`} className="btn btn-secondary ms-2" target="_blank" rel="noopener noreferrer">상세</Link>
+                                    <Link to={`/streamer/${streamer.streamerNo}`} className="btn btn-station ms-2" target="_blank" rel="noopener noreferrer">상세</Link>
                                 </div>
                             </div>
                             
