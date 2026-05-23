@@ -5,6 +5,9 @@ import { buildProfileUrl } from "../../utils/profileUrl";
 import { useAtomValue } from "jotai";
 import { loginState } from "../../utils/jotai";
 
+const POSITIONS = ["TOP", "JUG", "MID", "AD", "SUP"];
+const SIDES = ["red", "blue"];
+
 export default function CkInsert() {
   const navigate = useNavigate();
   const isLogin = useAtomValue(loginState);
@@ -13,19 +16,30 @@ export default function CkInsert() {
   // 전송용 State
   const [ck, setCk] = useState({
     ckDate: "",
-    ckWinner: "",
+    ckWinnerSide: "",
     ckMemo: "",
   });
 
-  // 참여자 리스트
-  const [participants, setParticipants] = useState([
-    { ckSide: "레드", ckPosition: "", ckStreamer: "", streamerName: "", streamerSoopId: "" },
-  ]);
+  // 참여자 리스트 - 레드팀, 블루팀 각 5명씩 고정
+  const [participants, setParticipants] = useState(
+    SIDES.flatMap((side) =>
+      POSITIONS.map((position) => ({
+        ckSide: side,
+        ckPosition: position,
+        ckStreamer: "",
+        streamerName: "",
+        streamerSoopId: "",
+      }))
+    )
+  );
+
+  // 스트리머 검색 오류
+  const [participantErrors, setParticipantErrors] = useState({});
 
   // 유효성 검사
   const [ckClass, setCkClass] = useState({
     ckDate: "",
-    ckWinner: "",
+    ckWinnerSide: "",
   });
 
   // callback
@@ -41,23 +55,18 @@ export default function CkInsert() {
     );
   }, []);
 
-  // 참여자 행 추가/삭제
-  const addParticipantRow = useCallback(() => {
-    setParticipants((prev) => [
-      ...prev,
-      { ckSide: "블루", ckPosition: "", ckStreamer: "", streamerName: "", streamerSoopId: "" },
-    ]);
-  }, []);
-
-  const removeParticipantRow = useCallback((index) => {
-    setParticipants((prev) => prev.filter((_, i) => i !== index));
-  }, []);
-
   // 스트리머 검색
   const checkStreamer = useCallback(
     async (idx) => {
       const name = participants[idx]?.streamerName;
-      if (!name) return;
+      if (!name) {
+        setParticipantErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[idx];
+          return newErrors;
+        });
+        return;
+      }
       try {
         setChecking(true);
         const { data } = await axios.get(`/team/check/${name}`);
@@ -72,8 +81,19 @@ export default function CkInsert() {
               : p
           )
         );
+        // 검색 성공 시 오류 제거
+        setParticipantErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[idx];
+          return newErrors;
+        });
       } catch (err) {
         console.log("스트리머 검색 실패", err);
+        // 검색 실패 시 오류 저장
+        setParticipantErrors((prev) => ({
+          ...prev,
+          [idx]: "등록되지 않은 스트리머입니다",
+        }));
       } finally {
         setChecking(false);
       }
@@ -87,20 +107,32 @@ export default function CkInsert() {
     setCkClass((prev) => ({ ...prev, ckDate: valid ? "is-valid" : "is-invalid" }));
   }, [ck]);
 
-  const checkCkWinner = useCallback(() => {
-    const valid = ck.ckWinner.length > 0;
-    setCkClass((prev) => ({ ...prev, ckWinner: valid ? "is-valid" : "is-invalid" }));
+  const checkCkWinnerSide = useCallback(() => {
+    const valid = ck.ckWinnerSide.length > 0;
+    setCkClass((prev) => ({ ...prev, ckWinnerSide: valid ? "is-valid" : "is-invalid" }));
   }, [ck]);
+
+  // 중복 스트리머 검사
+  const getDuplicateStreamers = useMemo(() => {
+    const streamerCounts = {};
+    participants.forEach((p) => {
+      if (p.ckStreamer) {
+        streamerCounts[p.ckStreamer] = (streamerCounts[p.ckStreamer] || 0) + 1;
+      }
+    });
+    return Object.keys(streamerCounts).filter((id) => streamerCounts[id] > 1);
+  }, [participants]);
+
+  const hasDuplicates = getDuplicateStreamers.length > 0;
 
   // 필수항목 검증
   const ckValid = useMemo(() => {
     if (ckClass.ckDate !== "is-valid") return false;
-    if (ckClass.ckWinner !== "is-valid") return false;
-    if (participants.length === 0) return false;
+    if (ckClass.ckWinnerSide !== "is-valid") return false;
     if (participants.some((p) => !p.ckStreamer)) return false;
-    if (participants.some((p) => !p.ckPosition)) return false;
+    if (hasDuplicates) return false;
     return true;
-  }, [ckClass, participants]);
+  }, [ckClass, participants, hasDuplicates]);
 
   // CK 등록
   const sendData = useCallback(async () => {
@@ -109,7 +141,7 @@ export default function CkInsert() {
     try {
       const payload = {
         ckDate: ck.ckDate,
-        ckWinner: ck.ckWinner,
+        ckWinner: ck.ckWinnerSide,
         ckMemo: ck.ckMemo,
         participants: participants.map((p) => ({
           ckSide: p.ckSide,
@@ -155,21 +187,37 @@ export default function CkInsert() {
           </div>
         </div>
 
-        {/* 우승팀 */}
+        {/* 승리팀 선택 */}
         <div className="row mt-2">
-          <label className="col-sm-3 col-form-label">우승팀</label>
+          <label className="col-sm-3 col-form-label">결과</label>
           <div className="col-sm-9">
-            <input
-              type="text"
-              className={`form-control ${ckClass.ckWinner}`}
-              name="ckWinner"
-              value={ck.ckWinner}
-              onChange={changeCkValue}
-              onBlur={checkCkWinner}
-              placeholder="우승팀 이름"
-            />
-            <div className="valid-feedback"></div>
-            <div className="invalid-feedback">우승팀을 입력해주세요</div>
+            <div className="btn-group w-100" role="group">
+              <input
+                type="radio"
+                className="btn-check"
+                name="ckWinnerSide"
+                id="redWin"
+                value="red"
+                onChange={changeCkValue}
+                onBlur={checkCkWinnerSide}
+              />
+              <label className="btn btn-outline-danger" htmlFor="redWin">
+                레드팀 승리
+              </label>
+
+              <input
+                type="radio"
+                className="btn-check"
+                name="ckWinnerSide"
+                id="blueWin"
+                value="blue"
+                onChange={changeCkValue}
+                onBlur={checkCkWinnerSide}
+              />
+              <label className="btn btn-outline-primary" htmlFor="blueWin">
+                블루팀 승리
+              </label>
+            </div>
           </div>
         </div>
 
@@ -190,77 +238,68 @@ export default function CkInsert() {
 
         <hr />
 
-        {/* 참여자 추가 */}
-        <button type="button" className="btn btn-outline-primary mt-2" onClick={addParticipantRow}>
-          + 참여자 추가
-        </button>
+        
+        {/* 팀 구성 */}
+        <div className="row mt-4">
+          {SIDES.map((side, sideIdx) => (
+            <div key={side} className="col-lg-6 col-12">
+              <div className="mb-3 mt-3">
+                <h4 className="text-center">{side === "red" ? "레드" : "블루"}팀</h4>
+              </div>
 
-        {/* 참여자 목록 */}
-        {participants.map((participant, idx) => (
-          <div key={idx} className="row mt-2 ms-1 d-flex align-items-center">
-            {/* 팀 선택 */}
-            <div className="col-2">
-              <select
-                className="form-control"
-                name="ckSide"
-                value={participant.ckSide}
-                onChange={(e) => changeParticipantValue(idx, e)}
-              >
-                <option value="레드">레드</option>
-                <option value="블루">블루</option>
-              </select>
+              {/* 해당 팀의 참여자들 */}
+              {participants
+                .filter((p) => p.ckSide === side)
+                .map((participant, posIdx) => {
+                  const globalIdx = participants.findIndex(
+                    (p) => p.ckSide === side && p.ckPosition === participant.ckPosition
+                  );
+                  return (
+                    <div key={`${side}-${posIdx}`} className="row mt-3 d-flex align-items-center">
+                      {/* 포지션 라벨 */}
+                      <div className="col-2 fw-bold text-center">
+                        {participant.ckPosition}
+                      </div>
+
+                      {/* 스트리머 프로필 */}
+                      <label className="col-2 col-form-label d-flex justify-content-center">
+                        <img
+                          className="player-profile"
+                          src={buildProfileUrl(participant.streamerSoopId)}
+                          alt={participant.streamerName}
+                        />
+                      </label>
+
+                      {/* 스트리머 이름 */}
+                      <div className="col-8">
+                        <input
+                          type="text"
+                          className={`form-control ${participantErrors[globalIdx] ? "is-invalid" : ""}`}
+                          name="streamerName"
+                          value={participant.streamerName}
+                          onChange={(e) => changeParticipantValue(globalIdx, e)}
+                          onBlur={() => checkStreamer(globalIdx)}
+                          placeholder={`${side==='red' ? '레드' : '블루'}팀 ${participant.ckPosition}`}
+                        />
+                        {participantErrors[globalIdx] && (
+                          <div className="invalid-feedback d-block">
+                            {participantErrors[globalIdx]}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
+          ))}
+        </div>
 
-            {/* 포지션 */}
-            <div className="col-2">
-              <select
-                className="form-control"
-                name="ckPosition"
-                value={participant.ckPosition}
-                onChange={(e) => changeParticipantValue(idx, e)}
-              >
-                <option value="">- 선택 -</option>
-                <option value="TOP">TOP</option>
-                <option value="JUG">JUG</option>
-                <option value="MID">MID</option>
-                <option value="AD">AD</option>
-                <option value="SUP">SUP</option>
-              </select>
-            </div>
-
-            {/* 스트리머 프로필 */}
-            <label className="col-2 col-form-label d-flex justify-content-center">
-              <img
-                className="player-profile ms-3"
-                src={buildProfileUrl(participant.streamerSoopId)}
-                alt={participant.streamerName}
-              />
-            </label>
-
-            {/* 스트리머 이름 */}
-            <div className="col-3">
-              <input
-                type="text"
-                className="form-control"
-                name="streamerName"
-                value={participant.streamerName}
-                onChange={(e) => changeParticipantValue(idx, e)}
-                onBlur={() => checkStreamer(idx)}
-                placeholder="스트리머 이름"
-              />
-            </div>
-
-            {/* 삭제 버튼 */}
-            <button
-              type="button"
-              className="col-1 btn btn-danger"
-              onClick={() => removeParticipantRow(idx)}
-              disabled={participants.length === 1}
-            >
-              삭제
-            </button>
+        {/* 중복 스트리머 경고 */}
+        {hasDuplicates && (
+          <div className="alert alert-danger mt-3" role="alert">
+            ⚠️ 같은 스트리머가 중복으로 등록되었습니다. 모든 스트리머를 다르게 등록해주세요.
           </div>
-        ))}
+        )}
 
         {/* 등록 버튼 */}
         {isLogin === true && (
@@ -281,3 +320,4 @@ export default function CkInsert() {
     </>
   );
 }
+
