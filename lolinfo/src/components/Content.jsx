@@ -14,6 +14,7 @@ import TournamentEdit from "./tournament/TournamentEdit";
 
 import TeamInsert from "./tournament/TeamInsert";
 import TeamEdit from "./tournament/TeamEdit";
+import CkInsert from "./ck/CkInsert";
 import MemberJoin from "./member/MemberJoin";
 import MemberLogin from "./member/MemberLogin";
 
@@ -53,7 +54,10 @@ return (<>
                 {/* 팀 */}
                 <Route path="/team/insert/:tournamentId" element={<TeamInsert/>}/>
                 <Route path="/team/edit/:teamId" element={<TeamEdit/>}/>
-            
+
+                {/* CK */}
+                <Route path="/ck/insert" element={<CkInsert/>}/>
+
             </Routes>
         </div>
     </div>
