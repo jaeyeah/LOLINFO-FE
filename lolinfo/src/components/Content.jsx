@@ -6,6 +6,7 @@ import StreamerInsert from "./streamer/StreamerInsert";
 import StreamerEdit from "./streamer/StreamerEdit";
 import StreamerDetail from "./streamer/StreamerDetail";
 import StreamerTournaments from "./streamer/StreamerTournaments";
+import StreamerCk from "./streamer/StreamerCk";
 
 import TournamentList from "./tournament/TournamentList";
 import TournamentDetail from "./tournament/TournamentDetail";
@@ -43,6 +44,7 @@ return (<>
                 <Route path="/streamer/edit/:streamerId" element={<StreamerEdit />} />
                 <Route path="/streamer/:streamerId" element={<StreamerDetail />}>
                     <Route path="tournaments" element={<StreamerTournaments />} />
+                    <Route path="ck" element={<StreamerCk />} />
                 </Route> 
 
                 {/* 대회 */}

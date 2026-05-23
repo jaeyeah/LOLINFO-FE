@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams, Outlet } from "react-router-dom"
+import { Link, useNavigate, useParams, Outlet, useLocation } from "react-router-dom"
 import "./Streamer.css";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import { FaEdit, FaHome, FaTrophy } from "react-icons/fa";
@@ -12,6 +12,7 @@ export default function StreamerDetail() {
 
     const isAdmin = useAtomValue(adminState);
 
+    const location = useLocation();
     
     const {streamerId} = useParams();
     const [streamer, setStreamer] = useState({});
@@ -98,6 +99,29 @@ export default function StreamerDetail() {
             <div className="spinner-border" role="status" />
         </div>
     )}
+
+    {streamer.streamerName !== "SLL" && streamer.streamerName !== "멸망전" && (
+        <>
+          {/* 참여 대회 탭 네비게이션 */}
+          <div className="row mt-2">
+            <div className="col-12">
+              <div className="d-flex gap-2 mb-3">
+                <Link to={`/streamer/${streamerId}`} className={location.pathname === `/streamer/${streamerId}` ? "btn btn-primary" : "btn btn-outline-primary"}>
+                  기본정보
+                </Link>
+                <Link to={`/streamer/${streamerId}/tournaments`} className={location.pathname === `/streamer/${streamerId}/tournaments` ? "btn btn-primary" : "btn btn-outline-primary"}>
+                  참여대회
+                </Link>
+                <Link to={`/streamer/${streamerId}/ck`} className={location.pathname === `/streamer/${streamerId}/ck` ? "btn btn-primary" : "btn btn-outline-primary"}>
+                  CK 전적
+                </Link>
+              </div>
+            </div>
+          </div>
+        </>
+    )}
+
+
     {error && <p className="text-danger">{error}</p>}
     {/* 스트리머 상세 */}
     <div className="streamer-wrapper">
@@ -233,30 +257,8 @@ export default function StreamerDetail() {
       </div>
     </div>
 
-
-    {streamer.streamerName !== "SLL" && streamer.streamerName !== "멸망전" && (
-        <>
-          {/* 참여 대회 탭 네비게이션 */}
-          <div className="row mt-4">
-            <div className="col-12">
-              <div className="d-flex gap-2 mb-3">
-                <Link to={`/streamer/${streamerId}`} className="btn btn-outline-primary">
-                  기본정보
-                </Link>
-                <Link to={`/streamer/${streamerId}/tournaments`} className="btn btn-outline-primary">
-                  참여대회
-                </Link>
-              </div>
-            </div>
-          </div>
-          {/* 중첩 라우트 렌더링 */}
-          <Outlet context={{ streamerTeam, streamer }} />
-        </>
-    )}
-   
-
-
-
+    {/* 중첩 라우트 렌더링 */}
+    <Outlet context={{ streamerTeam, streamer }} />
 
     </>)
 
