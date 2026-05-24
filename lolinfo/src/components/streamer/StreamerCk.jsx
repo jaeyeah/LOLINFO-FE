@@ -328,29 +328,13 @@ export default function StreamerCk() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="card-header d-flex justify-content-between align-items-center border-bottom border-secondary">
-              <div>
-                <div className="small text-secondary">{new Date(selectedCk.ckDate).toISOString().split('T')[0]}</div>
-                <div className="h5 mb-0">CK 팀 구성</div>
-              </div>
+              <div className="h5 mb-0">{new Date(selectedCk.ckDate).toISOString().split('T')[0]}</div>
               <button className="btn btn-sm btn-outline-light" onClick={() => setOpenCkId(null)}>
                 닫기
               </button>
             </div>
             <div className="card-body">
-              <div className="d-flex flex-column flex-md-row justify-content-between gap-2 mb-4">
-                <div>
-                  <div className="small text-secondary">내 포지션</div>
-                  <div>{getMe(selectedCk)?.ckPosition ?? "-"}</div>
-                </div>
-                <div>
-                  <div className="small text-secondary">맞라인 상대</div>
-                  <div>{getLaneOpponent(selectedCk, getMe(selectedCk))?.streamerName ?? "상대 없음"}</div>
-                </div>
-                <div>
-                  <div className="small text-secondary">결과</div>
-                  <div>{getResult(selectedCk, getMe(selectedCk))}</div>
-                </div>
-              </div>
+
 
               <div className="row g-3">
                 <div className="col-12 col-md-6">
