@@ -149,7 +149,7 @@ export default function CkInsert() {
           ckStreamer: p.ckStreamer,
         })),
       };
-      const response = await axios.post("/api/ck/", payload);
+      const response = await axios.post("/ck/", payload);
       console.log("CK 등록 성공", response);
       navigate("/"); // 메인페이지
     } catch (err) {
