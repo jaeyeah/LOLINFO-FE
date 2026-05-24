@@ -13,8 +13,9 @@ export default function StreamerCk() {
     try {
       setLoading(true);
       setError(null);
-      const { data } = await axios.get(`/api/ck/streamer/${streamerId}`);
+      const { data } = await axios.get(`/ck/streamer/${streamerId}`);
       setCkList(data);
+      console.log("CK 데이터 로드 성공:", data);
     } catch (err) {
       console.error("CK 데이터 로드 실패:", err);
       setError("CK 데이터를 불러올 수 없습니다.");
@@ -26,6 +27,14 @@ export default function StreamerCk() {
   useEffect(() => {
     loadCkData();
   }, [streamerId, loadCkData]);
+
+  // 현재 스트리머 표시
+  const getStreamer = (ck) => {
+    const participant = ck.participants.find(
+      (p) => p.ckStreamer === Number(streamerId)
+    );
+    return participant ? participant.streamerName : "알 수 없음";
+  }
 
   // 승리팀 판단
   const getResult = (ckWinner, ckSide) => {
@@ -54,16 +63,81 @@ export default function StreamerCk() {
   if (ckList.length === 0) {
     return (
       <div className="alert alert-info mt-3">
-        참여한 스크림이 없습니다.
+        참여한 CK가 없습니다.
       </div>
     );
   }
 
   return (
-    <div className="row mt-4">
+    <div className="row g-4">
       <div className="col-12">
+
+        {/* ----- 포지션별 전적 ----- */}
+        <div className="mb-4">
+          <h4>포지션별 전적</h4>
+          <div className="row g-2 mt-2 justify-content-center">
+            {["TOP", "JUG", "MID", "AD", "SUP"].map((position) => {
+              const positionGames = ckList.filter((ck) => {
+                const streamerParticipant = ck.participants.find(
+                  (p) => p.ckStreamer === parseInt(streamerId)
+                );
+                return streamerParticipant?.ckPosition === position;
+              });
+
+              const wins = positionGames.filter((ck) => {
+                const streamerParticipant = ck.participants.find(
+                  (p) => p.ckStreamer === parseInt(streamerId)
+                );
+                return getResult(ck.ckWinner, streamerParticipant.ckSide) === "승";
+              }).length;
+
+              const losses = positionGames.length - wins;
+              const winRate =
+                positionGames.length > 0
+                  ? (
+                      (wins / positionGames.length) * 100
+                    ).toFixed(1)
+                  : 0;
+
+              return (
+                <div key={position} className="col-md-2 col-sm-3">
+                  <div className="card text-center bg-black border-secondary ">
+                    <div className="card-body">
+                      <h6 className="card-title text-white">{position}</h6>
+                      <div className="fs-5 fw-bold text-white">
+                        {wins}W {losses}L
+                      </div>
+
+                      {/* 승률 바 */}
+                      <div
+                        className="progress mt-2"
+                        style={{
+                          height: "8px",
+                          backgroundColor: "#222"
+                        }}
+                      >
+                        <div className={`progress-bar ${
+                            winRate >= 70 ? "bg-success"
+                            : winRate >= 50 ? "bg-primary"
+                            : winRate >= 30 ? "bg-warning" : "bg-danger"
+                          }`}
+                          role="progressbar" style={{ width: `${winRate}%` }}
+                        />
+                      </div>
+
+                      <small className="text-secondary mt-1 d-block">
+                        {winRate}%
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="mb-3">
-          <h4>스크림 전적</h4>
+          <h4>CK 전적</h4>
         </div>
 
         <div className="table-responsive">
@@ -99,7 +173,7 @@ export default function StreamerCk() {
                       backgroundColor:
                         result === "승"
                           ? "rgba(0, 123, 255, 0.1)"
-                          : "rgba(220, 53, 69, 0.1)",
+                          : "rgba(80, 60, 62, 0.1)",
                     }}
                   >
                     <td className="text-start">{formattedDate}</td>
@@ -137,51 +211,7 @@ export default function StreamerCk() {
           </table>
         </div>
 
-        {/* 포지션별 전적 */}
-        <div className="mt-5">
-          <h5>포지션별 전적</h5>
-          <div className="row g-2 mt-2">
-            {["TOP", "JUG", "MID", "AD", "SUP"].map((position) => {
-              const positionGames = ckList.filter((ck) => {
-                const streamerParticipant = ck.participants.find(
-                  (p) => p.ckStreamer === parseInt(streamerId)
-                );
-                return streamerParticipant?.ckPosition === position;
-              });
-
-              const wins = positionGames.filter((ck) => {
-                const streamerParticipant = ck.participants.find(
-                  (p) => p.ckStreamer === parseInt(streamerId)
-                );
-                return getResult(ck.ckWinner, streamerParticipant.ckSide) === "승";
-              }).length;
-
-              const losses = positionGames.length - wins;
-              const winRate =
-                positionGames.length > 0
-                  ? (
-                      (wins / positionGames.length) * 100
-                    ).toFixed(1)
-                  : 0;
-
-              return (
-                <div key={position} className="col-md-2 col-sm-3">
-                  <div className="card text-center bg-dark border-secondary">
-                    <div className="card-body">
-                      <h6 className="card-title">{position}</h6>
-                      <div className="fs-5 fw-bold">
-                        {wins}W {losses}L
-                      </div>
-                      <small className="text-secondary">
-                        {winRate}%
-                      </small>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        
       </div>
     </div>
   );
