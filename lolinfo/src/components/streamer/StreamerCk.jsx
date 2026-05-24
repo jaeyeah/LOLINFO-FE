@@ -36,18 +36,67 @@ export default function StreamerCk() {
     return participant ? participant.streamerName : "알 수 없음";
   }
 
-  // 승리팀 판단
-  const getResult = (ckWinner, ckSide) => {
-    return ckWinner === ckSide ? "승" : "패";
+  const myStreamerId = Number(streamerId);
+  const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
+
+  const getMe = (ck) => {
+    return ck.participants.find((p) => p.ckStreamer === myStreamerId);
   };
 
-  // 상대팀 정보 (같은 CK에서 다른 팀)
-  const getOpponent = (ck, currentSide) => {
-    const opponentSide = currentSide === "레드" ? "블루" : "레드";
-    const opponent = ck.participants.find((p) => p.ckSide === opponentSide);
-    return opponent ? opponent.streamerName : "상대방";
+  const getLaneOpponent = (ck, me) => {
+    if (!me) return null;
+
+    const opponentSide = me.ckSide === "red" ? "blue" : "red";
+    return ck.participants.find(
+      (p) => p.ckSide === opponentSide && p.ckPosition === me.ckPosition
+    );
   };
 
+  const getResult = (ck, me) => {
+    if (!ck?.ckWinner || !me) return "미입력";
+    return ck.ckWinner === me.ckSide ? "승" : "패";
+  };
+
+  const getLaneOpponentStats = () => {
+    const stats = {};
+
+    ckList.forEach((ck) => {
+      const me = getMe(ck);
+      if (!me) return;
+
+      const opponent = getLaneOpponent(ck, me);
+      if (!opponent) return;
+
+      const result = getResult(ck, me);
+      if (result === "미입력") return;
+
+      const key = opponent.ckStreamer;
+      if (!stats[key]) {
+        stats[key] = {
+          ckStreamer: opponent.ckStreamer,
+          streamerName: opponent.streamerName,
+          position: me.ckPosition,
+          wins: 0,
+          losses: 0,
+          total: 0,
+        };
+      }
+
+      stats[key].total += 1;
+      if (result === "승") stats[key].wins += 1;
+      else stats[key].losses += 1;
+    });
+
+    return Object.values(stats).sort((a, b) => b.total - a.total);
+  };
+
+  const laneOpponentStats = getLaneOpponentStats();
+
+
+
+
+  
+// 로딩, 에러, 데이터 없음 상태 처리
   if (loading) {
     return (
       <div className="d-flex justify-content-center py-5">
@@ -88,7 +137,7 @@ export default function StreamerCk() {
                 const streamerParticipant = ck.participants.find(
                   (p) => p.ckStreamer === parseInt(streamerId)
                 );
-                return getResult(ck.ckWinner, streamerParticipant.ckSide) === "승";
+                return getResult(ck, streamerParticipant) === "승";
               }).length;
 
               const losses = positionGames.length - wins;
@@ -136,6 +185,43 @@ export default function StreamerCk() {
           </div>
         </div>
 
+        {/* ----- 맞라인 전적 ----- */}
+        <div className="mt-4">
+          <h4>맞라인 전적</h4>
+          <div className="table-responsive mt-2">
+            <table className="table table-hover table-dark text-center">
+              <thead>
+                <tr>
+                  <th>포지션</th>
+                  <th>상대방</th>
+                  <th>전적</th>
+                  <th>승률</th>
+                </tr>
+              </thead>
+              <tbody>
+                {laneOpponentStats.map((stat) => {
+                  const winRate = stat.total > 0 ? ((stat.wins / stat.total) * 100).toFixed(1) : 0;
+                  return (
+                    <tr key={stat.ckStreamer}>
+                      <td>{stat.position}</td>
+                      <td>{stat.streamerName}</td>
+                      <td>{stat.wins}W {stat.losses}L</td>
+                      <td>{winRate}%</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+
+
+
+
+
+
+
+        {/* ----- CK 전적 ----- */}
         <div className="mb-3">
           <h4>CK 전적</h4>
         </div>
@@ -159,8 +245,9 @@ export default function StreamerCk() {
 
                 if (!streamerParticipant) return null;
 
-                const result = getResult(ck.ckWinner, streamerParticipant.ckSide);
-                const opponent = getOpponent(ck, streamerParticipant.ckSide);
+                const result = getResult(ck, streamerParticipant);
+                const opponent = getLaneOpponent(ck, streamerParticipant);
+                const opponentName = opponent ? opponent.streamerName : "상대 없음";
                 const formattedDate = new Date(ck.ckDate)
                   .toISOString()
                   .split("T")[0];
@@ -197,13 +284,17 @@ export default function StreamerCk() {
                     <td>
                       <span
                         className={`badge ${
-                          result === "승" ? "bg-success" : "bg-danger"
+                          result === "승"
+                            ? "bg-success"
+                            : result === "패"
+                            ? "bg-danger"
+                            : "bg-secondary"
                         }`}
                       >
                         {result}
                       </span>
                     </td>
-                    <td className="text-start">vs {opponent}</td>
+                    <td className="text-start">vs {opponentName}</td>
                   </tr>
                 );
               })}
@@ -213,6 +304,7 @@ export default function StreamerCk() {
 
         
       </div>
+    </div>
     </div>
   );
 }
