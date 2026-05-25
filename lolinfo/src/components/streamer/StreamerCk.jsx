@@ -1,401 +1,371 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
-import { useParams, useOutletContext } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link, useParams, useOutletContext } from "react-router-dom";
+import Pagination from "../Pagination";
+
+const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
+const RESULT_STYLE = {
+  승리: "bg-primary text-white",
+  패배: "bg-danger text-white",
+};
 
 export default function StreamerCk() {
   const { streamerId } = useParams();
-  const { streamer } = useOutletContext();
+  const { streamer } = useOutletContext() ?? {};
+
   const [ckList, setCkList] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [pageVO, setPageVO] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const loadCkData = useCallback(async () => {
+  const [selectedCkId, setSelectedCkId] = useState(null);
+  const [participantCache, setParticipantCache] = useState({});
+  const [participantLoading, setParticipantLoading] = useState(false);
+  const [participantError, setParticipantError] = useState(null);
+
+  const myStreamerId = Number(streamerId);
+
+  const loadCkList = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const { data } = await axios.get(`/ck/streamer/${streamerId}`);
-      setCkList(data);
-      console.log("CK 데이터 로드 성공:", data);
+      const { data } = await axios.get(`/ck/streamer/${streamerId}`, {
+        params: { page },
+      });
+      //console.log("CK 목록 로드 성공", data);
+      setCkList(data.list ?? []);
+      setPageVO(data.pageVO ?? null);
+      setPage(data.pageVO?.page ?? data.page ?? page);
+      setTotalPage(data.pageVO?.totalPage ?? data.totalPage ?? 1);
     } catch (err) {
-      console.error("CK 데이터 로드 실패:", err);
-      setError("CK 데이터를 불러올 수 없습니다.");
+      //console.error("CK 목록 로드 실패", err);
+      setError("CK 목록을 불러오지 못했습니다.");
+      setCkList([]);
+      setTotalPage(1);
     } finally {
       setLoading(false);
     }
+  }, [page, streamerId]);
+
+  useEffect(() => {
+    setPage(1);
+    setSelectedCkId(null);
+    setParticipantCache({});
+    setParticipantError(null);
   }, [streamerId]);
 
   useEffect(() => {
-    loadCkData();
-  }, [streamerId, loadCkData]);
+    loadCkList();
+  }, [loadCkList]);
 
-  // 현재 스트리머 표시
-  const getStreamer = (ck) => {
-    const participant = ck.participants.find(
-      (p) => p.ckStreamer === Number(streamerId)
-    );
-    return participant ? participant.streamerName : "알 수 없음";
-  }
+  const fetchParticipants = useCallback(
+    async (ckId) => {
+      if (!ckId || participantCache[ckId]) return;
 
-  const myStreamerId = Number(streamerId);
-  const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
-
-  const getMe = (ck) => {
-    return ck.participants.find((p) => p.ckStreamer === myStreamerId);
-  };
-
-  const getLaneOpponent = (ck, me) => {
-    if (!me) return null;
-
-    const opponentSide = me.ckSide === "red" ? "blue" : "red";
-    return ck.participants.find(
-      (p) => p.ckSide === opponentSide && p.ckPosition === me.ckPosition
-    );
-  };
-
-  const getResult = (ck, me) => {
-    if (!ck?.ckWinner || !me) return "미입력";
-    return ck.ckWinner === me.ckSide ? "승" : "패";
-  };
-
-  const getLaneOpponentStats = () => {
-    const stats = {};
-
-    ckList.forEach((ck) => {
-      const me = getMe(ck);
-      if (!me) return;
-
-      const opponent = getLaneOpponent(ck, me);
-      if (!opponent) return;
-
-      const result = getResult(ck, me);
-      if (result === "미입력") return;
-
-      const key = opponent.ckStreamer;
-      if (!stats[key]) {
-        stats[key] = {
-          ckStreamer: opponent.ckStreamer,
-          streamerName: opponent.streamerName,
-          position: me.ckPosition,
-          wins: 0,
-          losses: 0,
-          total: 0,
-        };
+      try {
+        setParticipantLoading(true);
+        setParticipantError(null);
+        const { data } = await axios.get(`/ck/${ckId}/participant`);
+        setParticipantCache((prev) => ({
+          ...prev,
+          [ckId]: data,
+        }));
+      } catch (err) {
+        //console.error("CK 참가자 로드 실패", err);
+        setParticipantError("팀원 정보를 불러올 수 없습니다.");
+      } finally {
+        setParticipantLoading(false);
       }
+    },
+    [participantCache]
+  );
 
-      stats[key].total += 1;
-      if (result === "승") stats[key].wins += 1;
-      else stats[key].losses += 1;
-    });
+  useEffect(() => {
+    if (selectedCkId !== null) {
+      fetchParticipants(selectedCkId);
+    }
+  }, [selectedCkId, fetchParticipants]);
 
-    return Object.values(stats).sort((a, b) => b.total - a.total);
+  const selectedCk = useMemo(
+    () => ckList.find((ck) => ck.ckId === selectedCkId) ?? null,
+    [ckList, selectedCkId]
+  );
+
+  const selectedParticipants = useMemo(
+    () => participantCache[selectedCkId] ?? [],
+    [participantCache, selectedCkId]
+  );
+
+  const loadedParticipants = selectedCkId !== null && Object.prototype.hasOwnProperty.call(participantCache, selectedCkId);
+
+  const formatDate = (value) => {
+    if (!value) return "-";
+    try {
+      return new Date(value).toISOString().split("T")[0];
+    } catch {
+      return "-";
+    }
   };
 
-  const laneOpponentStats = getLaneOpponentStats();
-  const [openCkId, setOpenCkId] = useState(null);
-  const selectedCk = openCkId ? ckList.find((ck) => ck.ckId === openCkId) : null;
+  const sortByPosition = (a, b) =>
+    POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition);
 
-  const getPositionBadgeClass = (participant) => {
-    if (!participant) return "bg-secondary text-white";
-    return participant.ckStreamer === myStreamerId
-      ? "bg-warning text-dark"
-      : "bg-secondary text-white";
+  const getStatusClass = (result) => RESULT_STYLE[result] || "bg-secondary text-white";
+
+  const openModal = (ckId) => {
+    setSelectedCkId((current) => (current === ckId ? null : ckId));
+    setParticipantError(null);
   };
 
-  const getTeam = (ck, side) => {
-    return (ck.participants ?? [])
-      .filter((p) => p.ckSide === side)
-      .sort(
-        (a, b) =>
-          POSITION_ORDER.indexOf(a.ckPosition) -
-          POSITION_ORDER.indexOf(b.ckPosition)
-      );
+  const closeModal = () => {
+    setSelectedCkId(null);
+    setParticipantError(null);
   };
 
-  // 로딩, 에러, 데이터 없음 상태 처리
-  if (loading) {
-    return (
-      <div className="d-flex justify-content-center py-5">
-        <div className="spinner-border" role="status" />
-      </div>
-    );
-  }
+  const handlePageChange = (nextPage) => {
+    if (nextPage < 1 || nextPage > totalPage) return;
+    setPage(nextPage);
+    setSelectedCkId(null);
+  };
 
-  if (error) {
-    return <div className="alert alert-danger mt-3">{error}</div>;
-  }
+  const blockStart = pageVO?.blockStart ?? 1;
+  const blockFinish = pageVO?.blockFinish ?? 1;
 
-  if (ckList.length === 0) {
-    return (
-      <div className="alert alert-info mt-3">
-        참여한 CK가 없습니다.
-      </div>
-    );
-  }
+  const hasData = !loading && !error && ckList.length > 0;
 
   return (
-    <div className="row g-4">
-      <div className="col-12">
+    <>
+      <div className="row mb-3">
+        <div className="col">
+          <div className="card bg-dark border-secondary text-white p-3">
+            <h2 className="mb-1">CK 전적</h2>
+            <p className="mb-0 text-secondary">
+              {streamer?.streamerName ? `${streamer.streamerName}님의 CK 기록입니다.` : "스트리머의 CK 기록입니다."}
+            </p>
+          </div>
+        </div>
+      </div>
 
-        {/* ----- 포지션별 전적 ----- */}
-        <div className="mb-4">
-          <h4>포지션별 전적</h4>
-          <div className="row g-2 mt-2 justify-content-center">
-            {["TOP", "JUG", "MID", "AD", "SUP"].map((position) => {
-              const positionGames = ckList.filter((ck) => {
-                const streamerParticipant = ck.participants.find(
-                  (p) => p.ckStreamer === parseInt(streamerId)
-                );
-                return streamerParticipant?.ckPosition === position;
-              });
+      {loading && (
+        <div className="card bg-dark border-secondary text-white mb-3 p-4">
+          <div className="placeholder-glow">
+            <span className="placeholder col-6 mb-3"></span>
+            <span className="placeholder col-4 mb-3"></span>
+            <div className="row g-3">
+              {[...Array(3)].map((_, index) => (
+                <div key={index} className="col-12">
+                  <div className="placeholder-glow card bg-dark border-secondary p-3">
+                    <span className="placeholder col-12 mb-2"></span>
+                    <span className="placeholder col-8"></span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
-              const wins = positionGames.filter((ck) => {
-                const streamerParticipant = ck.participants.find(
-                  (p) => p.ckStreamer === parseInt(streamerId)
-                );
-                return getResult(ck, streamerParticipant) === "승";
-              }).length;
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
 
-              const losses = positionGames.length - wins;
-              const winRate =
-                positionGames.length > 0
-                  ? (
-                      (wins / positionGames.length) * 100
-                    ).toFixed(1)
-                  : 0;
+      {!loading && !error && ckList.length === 0 && (
+        <div className="alert alert-info" role="alert">
+          참여한 CK가 없습니다.
+        </div>
+      )}
 
-              return (
-                <div key={position} className="col-md-2 col-sm-3">
-                  <div className="card text-center bg-black border-secondary ">
+      {hasData && (
+        <>
+          <div className="card bg-dark border-secondary mb-3 d-none d-md-block">
+            <div className="table-responsive">
+              <table className="table table-dark table-hover mb-0 align-middle">
+                <thead className="table-secondary text-dark text-center">
+                  <tr>
+                    <th scope="col">날짜</th>
+                    <th scope="col">결과</th>
+                    <th scope="col">맞라인 상대</th>
+                    <th scope="col">메모</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ckList.map((ck) => (
+                    <tr key={ck.ckId}>
+                      <td>{formatDate(ck.ckDate)}</td>
+                      <td className="text-center">
+                        <span className={`badge ${getStatusClass(ck.ckResult)}`}>
+                          {ck.ckResult || "-"}
+                        </span>
+                      </td>
+                      <td>
+                        {ck.vsStreamerNo ? (
+                          <Link to={`/streamer/${ck.vsStreamerNo}`} className="text-decoration-none text-white">
+                            {ck.vsStreamerName || "-"}
+                          </Link>
+                        ) : (
+                          ck.vsStreamerName || "-"
+                        )}
+                      </td>
+                      <td>{ck.ckMemo || "-"}</td>
+                      <td className="text-center">
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-light"
+                          onClick={() => openModal(ck.ckId)}
+                        >
+                          팀원 보기
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="d-block d-md-none">
+            <div className="row g-3">
+              {ckList.map((ck) => (
+                <div key={ck.ckId} className="col-12">
+                  <div className="card bg-dark border-secondary">
                     <div className="card-body">
-                      <h6 className="card-title text-white">{position}</h6>
-                      <div className="fs-5 fw-bold text-white">
-                        {wins}W {losses}L
+                      <div className="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                          <div className="text-secondary small">{formatDate(ck.ckDate)}</div>
+                          <div className="h6 mb-1">
+                            vs {ck.vsStreamerNo ? (
+                              <Link to={`/streamer/${ck.vsStreamerNo}`} className="text-decoration-none text-white">
+                                {ck.vsStreamerName || "-"}
+                              </Link>
+                            ) : (
+                              ck.vsStreamerName || "-"
+                            )}
+                          </div>
+                        </div>
+                        <span className={`badge ${getStatusClass(ck.ckResult)}`}>
+                          {ck.ckResult || "-"}
+                        </span>
                       </div>
-
-                      {/* 승률 바 */}
-                      <div
-                        className="progress mt-2"
-                        style={{
-                          height: "8px",
-                          backgroundColor: "#222"
-                        }}
+                      <p className="text-secondary small mb-3">메모: {ck.ckMemo || "없음"}</p>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-light w-100"
+                        onClick={() => openModal(ck.ckId)}
                       >
-                        <div className={`progress-bar ${
-                            winRate >= 70 ? "bg-success"
-                            : winRate >= 50 ? "bg-primary"
-                            : winRate >= 30 ? "bg-warning" : "bg-danger"
-                          }`}
-                          role="progressbar" style={{ width: `${winRate}%` }}
-                        />
-                      </div>
-
-                      <small className="text-secondary mt-1 d-block">
-                        {winRate}%
-                      </small>
+                        팀원 보기
+                      </button>
                     </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="row g-4">
-          <div className="col-12 col-xl-4">
-            <div className="card bg-dark border-secondary h-100">
-              <div className="card-body">
-                <h4 className="card-title text-white mb-3">맞라인 전적</h4>
-                <div className="table-responsive">
-                  <table className="table table-hover table-dark text-center mb-0">
-                    <thead className="border-bottom border-white">
-                      <tr className="text-uppercase small fw-semibold text-white" style={{ letterSpacing: '0.05em' }}>
-                        <th>포지션</th>
-                        <th>상대방</th>
-                        <th>전적</th>
-                        <th>승률</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {laneOpponentStats.map((stat) => {
-                        const winRate = stat.total > 0 ? ((stat.wins / stat.total) * 100).toFixed(1) : 0;
-                        return (
-                          <tr key={stat.ckStreamer}>
-                            <td>{stat.position}</td>
-                            <td>{stat.streamerName}</td>
-                            <td>{stat.wins}W {stat.losses}L</td>
-                            <td>{winRate}%</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          <div className="col-12 col-xl-8">
-            <div className="card bg-dark border-secondary h-100">
-              <div className="card-body">
-                <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
-                  <h4 className="card-title text-white mb-2 mb-md-0">CK 전적</h4>
-                  <div className="text-secondary small">클릭하면 CK 팀원을 모달로 확인할 수 있습니다.</div>
-                </div>
-                <div className="table-responsive">
-                  <table className="table table-hover table-dark text-center mb-0">
-                    <thead className="border-bottom border-white">
-                      <tr className="text-uppercase small fw-semibold text-white" style={{ letterSpacing: '0.05em' }}>
-                        <th>날짜</th>
-                        <th>포지션</th>
-                        <th>결과</th>
-                        <th>상대방</th>
-                        <th>팀원</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ckList.map((ck) => {
-                        const streamerParticipant = getMe(ck);
-                        if (!streamerParticipant) return null;
-
-                        const result = getResult(ck, streamerParticipant);
-                        const opponent = getLaneOpponent(ck, streamerParticipant);
-                        const opponentName = opponent ? opponent.streamerName : "상대 없음";
-                        const formattedDate = new Date(ck.ckDate)
-                          .toISOString()
-                          .split("T")[0];
-                        const isOpen = openCkId === ck.ckId;
-
-                        return (
-                          <tr
-                            key={ck.ckId}
-                            className="text-center"
-                            style={{
-                              backgroundColor:
-                                result === "승"
-                                  ? "rgba(0, 123, 255, 0.1)"
-                                  : "rgba(80, 60, 62, 0.1)",
-                            }}
-                          >
-                            <td className="text-start">{formattedDate}</td>
-                            <td>
-                              <span className={`badge ${getPositionBadgeClass(streamerParticipant)}`}>
-                                {streamerParticipant.ckPosition}
-                              </span>
-                            </td>
-                            <td>
-                              <span
-                                className={`badge ${
-                                  result === "승"
-                                    ? "bg-success"
-                                    : result === "패"
-                                    ? "bg-danger"
-                                    : "bg-secondary"
-                                }`}
-                              >
-                                {result}
-                              </span>
-                            </td>
-                            <td className="text-start">vs {opponentName}</td>
-                            <td>
-                              <button
-                                className="btn btn-sm btn-outline-light"
-                                onClick={() => setOpenCkId(isOpen ? null : ck.ckId)}
-                              >
-                                {isOpen ? "닫기" : "팀원 보기"}
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 mt-4">
+            <Pagination
+              page={page}
+              totalPage={totalPage}
+              blockStart={blockStart}
+              blockFinish={blockFinish}
+              onPageChange={handlePageChange}
+            />
+            <div className="text-secondary small">
+              페이지 {page} / {totalPage}
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
 
       {selectedCk && (
         <div
-          className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-          style={{ backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 1050 }}
-          onClick={() => setOpenCkId(null)}
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-end align-items-md-center justify-content-center"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.75)", zIndex: 1050 }}
+          onClick={closeModal}
         >
           <div
-            className="card bg-dark text-white border-light shadow"
-            style={{ width: 'min(95%, 900px)', maxHeight: '90vh', overflowY: 'auto' }}
+            className="card bg-dark border-secondary text-white w-100 mx-3"
+            style={{ maxWidth: 960, maxHeight: "90vh", overflowY: "auto" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="card-header d-flex justify-content-between align-items-center border-bottom border-secondary">
-              <div className="h5 mb-0">{new Date(selectedCk.ckDate).toISOString().split('T')[0]}</div>
-              <button className="btn btn-sm btn-outline-light" onClick={() => setOpenCkId(null)}>
+            <div className="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 border-bottom border-secondary">
+              <div>
+                <h5 className="mb-1">{formatDate(selectedCk.ckDate)}</h5>
+                <div className="text-secondary">{selectedCk.ckMemo || "메모 없음"}</div>
+              </div>
+              <button className="btn btn-sm btn-outline-light" onClick={closeModal}>
                 닫기
               </button>
             </div>
             <div className="card-body">
-
-
-              <div className="row g-3">
-                <div className="col-12 col-md-6">
-                  <div className="p-3 rounded-3 border border-danger h-100">
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      <span className="fw-semibold text-danger">RED 팀</span>
-                      {selectedCk.ckWinner === 'red' && <span className="badge bg-danger">승리</span>}
-                    </div>
-                    {getTeam(selectedCk, 'red').map((p) => (
-                      <div
-                        key={p.ckParticipantId}
-                        className={`d-flex justify-content-between align-items-center py-2 border-bottom border-secondary ${
-                          p.ckStreamer === myStreamerId ? 'fw-bold text-warning' : ''
-                        }`}
-                      >
-                        <div>
-                          <span className={`badge ${getPositionBadgeClass(p)} me-2`}>{p.ckPosition}</span>
-                          {p.streamerName}
-                        </div>
-                        {getLaneOpponent(selectedCk, getMe(selectedCk))?.ckStreamer === p.ckStreamer && (
-                          <span className="badge bg-info text-dark">맞라인</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+              {participantLoading && (
+                <div className="d-flex justify-content-center py-4">
+                  <div className="spinner-border text-light" role="status" />
                 </div>
-                <div className="col-12 col-md-6">
-                  <div className="p-3 rounded-3 border border-primary h-100">
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      <span className="fw-semibold text-primary">BLUE 팀</span>
-                      {selectedCk.ckWinner === 'blue' && <span className="badge bg-primary">승리</span>}
-                    </div>
-                    {getTeam(selectedCk, 'blue').map((p) => (
-                      <div
-                        key={p.ckParticipantId}
-                        className={`d-flex justify-content-between align-items-center py-2 border-bottom border-secondary ${
-                          p.ckStreamer === myStreamerId ? 'fw-bold text-warning' : ''
-                        }`}
-                      >
-                        <div>
-                          <span className={`badge ${getPositionBadgeClass(p)} me-2`}>{p.ckPosition}</span>
-                          {p.streamerName}
-                        </div>
-                        {getLaneOpponent(selectedCk, getMe(selectedCk))?.ckStreamer === p.ckStreamer && (
-                          <span className="badge bg-info text-dark">맞라인</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              )}
 
-              {selectedCk.ckMemo && (
-                <div className="mt-4 text-secondary small">
-                  메모: {selectedCk.ckMemo}
+              {participantError && (
+                <div className="alert alert-danger" role="alert">
+                  {participantError}
+                </div>
+              )}
+
+              {!participantLoading && !participantError && !loadedParticipants && (
+                <div className="text-center text-secondary py-4">
+                  팀원 정보를 불러오는 중입니다.
+                </div>
+              )}
+
+              {!participantLoading && !participantError && loadedParticipants && selectedParticipants.length === 0 && (
+                <div className="text-center text-secondary py-4">
+                  참여한 팀원이 없습니다.
+                </div>
+              )}
+
+              {!participantLoading && !participantError && selectedParticipants.length > 0 && (
+                <div className="row g-3">
+                  {['red', 'blue'].map((side) => {
+                    const team = selectedParticipants
+                      .filter((p) => p.ckSide === side)
+                      .sort(sortByPosition);
+                    return (
+                      <div key={side} className="col-12 col-md-6">
+                        <div className={`p-3 rounded-3 border ${side === 'red' ? 'border-danger' : 'border-primary'}`}>
+                          <div className="d-flex justify-content-between align-items-center mb-3">
+                            <span className={side === 'red' ? 'text-danger fw-semibold' : 'text-primary fw-semibold'}>
+                              {side === 'red' ? 'RED 팀' : 'BLUE 팀'}
+                            </span>
+                            {selectedCk.ckWinner === side && (
+                              <span className={`badge ${side === 'red' ? 'bg-danger' : 'bg-primary'}`}>승리</span>
+                            )}
+                          </div>
+                          {team.map((participant) => (
+                            <div
+                              key={participant.ckParticipantId ?? participant.ckStreamer}
+                              className={`d-flex justify-content-between align-items-center py-2 border-bottom border-secondary ${
+                                participant.ckStreamer === myStreamerId ? 'fw-bold text-warning' : ''
+                              }`}
+                            >
+                              <div>
+                                <span className="badge bg-secondary text-white me-2">{participant.ckPosition}</span>
+                                {participant.streamerName}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
