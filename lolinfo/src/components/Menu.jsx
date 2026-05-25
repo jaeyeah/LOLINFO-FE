@@ -94,6 +94,11 @@ export default function Menu() {
                             </Link>
                         </li>
                         <li className="nav-item" onClick={closeMenu}>
+                            <Link className="nav-link fw-600" to="/ck">
+                                CK
+                            </Link>
+                        </li>
+                        <li className="nav-item" onClick={closeMenu}>
                             <Link className="nav-link fw-600" to="/streamer/654">
                                 멸망전
                             </Link>
