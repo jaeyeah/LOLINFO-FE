@@ -299,9 +299,11 @@ export default function CkList() {
                           ) : (
                             <div className="d-flex align-items-center justify-content-center gap-2">
                               <span>{formatDate(ck.ckDate)}</span>
-                              <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEditDate(ck)}>
-                                <FaEdit />
-                              </button>
+                              {isAdmin && 
+                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEditDate(ck)}>
+                                  <FaEdit />
+                                </button>
+                              }
                             </div>
                           )}
                         </td>
@@ -330,9 +332,11 @@ export default function CkList() {
                           ) : (
                             <div className="d-flex align-items-center justify-content-center gap-2">
                               <span>{ck.ckMemo || "-"}</span>
-                              <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEditMemo(ck)}>
-                                <FaEdit />
-                              </button>
+                              {isAdmin && 
+                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEditMemo(ck)}>
+                                  <FaEdit />
+                                </button>
+                              }
                             </div>
                           )}
                         </td>
