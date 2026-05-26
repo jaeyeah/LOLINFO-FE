@@ -2,6 +2,7 @@ import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams, useOutletContext } from "react-router-dom";
 import Pagination from "../Pagination";
+import { buildProfileUrl } from "../../utils/profileUrl";
 
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
 const RESULT_STYLE = {
@@ -26,7 +27,6 @@ export default function StreamerCk() {
   const [participantError, setParticipantError] = useState(null);
 
   const myStreamerId = Number(streamerId);
-
   const loadCkList = useCallback(async () => {
     try {
       setLoading(true);
@@ -68,9 +68,13 @@ export default function StreamerCk() {
         setParticipantLoading(true);
         setParticipantError(null);
         const { data } = await axios.get(`/ck/${ckId}/participant`);
+        const winner = data[0]?.ckWinner ?? null;
         setParticipantCache((prev) => ({
           ...prev,
-          [ckId]: data,
+          [ckId]: {
+            participants: data,
+            winner,
+          },
         }));
       } catch (err) {
         //console.error("CK 참가자 로드 실패", err);
@@ -94,11 +98,35 @@ export default function StreamerCk() {
   );
 
   const selectedParticipants = useMemo(
-    () => participantCache[selectedCkId] ?? [],
+    () => participantCache[selectedCkId]?.participants ?? [],
+    [participantCache, selectedCkId]
+  );
+
+  const selectedWinner = useMemo(
+    () => participantCache[selectedCkId]?.winner ?? null,
     [participantCache, selectedCkId]
   );
 
   const loadedParticipants = selectedCkId !== null && Object.prototype.hasOwnProperty.call(participantCache, selectedCkId);
+
+  const sortByPosition = (a, b) =>
+    POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition);
+
+  const redTeam = useMemo(
+    () =>
+      selectedParticipants
+        .filter((p) => p.ckSide === "red")
+        .sort(sortByPosition),
+    [selectedParticipants]
+  );
+
+  const blueTeam = useMemo(
+    () =>
+      selectedParticipants
+        .filter((p) => p.ckSide === "blue")
+        .sort(sortByPosition),
+    [selectedParticipants]
+  );
 
   const formatDate = (value) => {
     if (!value) return "-";
@@ -108,9 +136,6 @@ export default function StreamerCk() {
       return "-";
     }
   };
-
-  const sortByPosition = (a, b) =>
-    POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition);
 
   const getStatusClass = (result) => RESULT_STYLE[result] || "bg-secondary text-white";
 
@@ -289,7 +314,7 @@ export default function StreamerCk() {
         >
           <div
             className="card bg-dark border-secondary text-white w-100 mx-3"
-            style={{ maxWidth: 960, maxHeight: "90vh", overflowY: "auto" }}
+            style={{ maxWidth: 960, maxHeight: "90vh" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 border-bottom border-secondary">
@@ -301,7 +326,7 @@ export default function StreamerCk() {
                 닫기
               </button>
             </div>
-            <div className="card-body">
+            <div className="card-body ck-modal-body-scroll">
               {participantLoading && (
                 <div className="d-flex justify-content-center py-4">
                   <div className="spinner-border text-light" role="status" />
@@ -327,35 +352,59 @@ export default function StreamerCk() {
               )}
 
               {!participantLoading && !participantError && selectedParticipants.length > 0 && (
-                <div className="row g-3">
-                  {['red', 'blue'].map((side) => {
-                    const team = selectedParticipants
-                      .filter((p) => p.ckSide === side)
-                      .sort(sortByPosition);
+                <div className="d-grid gap-2">
+                  {POSITION_ORDER.map((position) => {
+                    const redParticipant = redTeam.find((p) => p.ckPosition === position);
+                    const blueParticipant = blueTeam.find((p) => p.ckPosition === position);
+                    const redWin = selectedWinner === "red";
+                    const blueWin = selectedWinner === "blue";
+
                     return (
-                      <div key={side} className="col-12 col-md-6">
-                        <div className={`p-3 rounded-3 border ${side === 'red' ? 'border-danger' : 'border-primary'}`}>
-                          <div className="d-flex justify-content-between align-items-center mb-3">
-                            <span className={side === 'red' ? 'text-danger fw-semibold' : 'text-primary fw-semibold'}>
-                              {side === 'red' ? 'RED 팀' : 'BLUE 팀'}
-                            </span>
-                            {selectedCk.ckWinner === side && (
-                              <span className={`badge ${side === 'red' ? 'bg-danger' : 'bg-primary'}`}>승리</span>
-                            )}
-                          </div>
-                          {team.map((participant) => (
-                            <div
-                              key={participant.ckParticipantId ?? participant.ckStreamer}
-                              className={`d-flex justify-content-between align-items-center py-2 border-bottom border-secondary ${
-                                participant.ckStreamer === myStreamerId ? 'fw-bold text-warning' : ''
-                              }`}
+                      <div key={position} className="ck-participant-line">
+                        <div className="ck-participant-slot justify-content-end">
+                          {redParticipant ? (
+                            <Link
+                              to={`/streamer/${redParticipant.ckStreamer}`}
+                              className={`ck-participant-card red ${redWin ? "win" : ""} text-white text-decoration-none justify-content-end`}
                             >
-                              <div>
-                                <span className="badge bg-secondary text-white me-2">{participant.ckPosition}</span>
-                                {participant.streamerName}
+                              <div className="ck-participant-info text-end">
+                                <div className="ck-participant-name">{redParticipant.streamerName || "-"}</div>
+                                <div className="ck-participant-meta">{redParticipant.ckPosition || position}</div>
                               </div>
-                            </div>
-                          ))}
+                              <img
+                                src={buildProfileUrl(redParticipant.streamerSoopId)}
+                                alt={redParticipant.streamerName || "Red 팀원"}
+                                className="ck-participant-avatar"
+                              />
+                            </Link>
+                          ) : (
+                            <div className="ck-participant-card none justify-content-center">참가 없음</div>
+                          )}
+                        </div>
+
+                        <div className="ck-participant-vs">
+                          <span className="badge bg-secondary text-white">VS</span>
+                        </div>
+
+                        <div className="ck-participant-slot justify-content-start">
+                          {blueParticipant ? (
+                            <Link
+                              to={`/streamer/${blueParticipant.ckStreamer}`}
+                              className={`ck-participant-card blue ${blueWin ? "win" : ""} text-white text-decoration-none justify-content-start`}
+                            >
+                              <img
+                                src={buildProfileUrl(blueParticipant.streamerSoopId)}
+                                alt={blueParticipant.streamerName || "Blue 팀원"}
+                                className="ck-participant-avatar"
+                              />
+                              <div className="ck-participant-info text-start">
+                                <div className="ck-participant-name">{blueParticipant.streamerName || "-"}</div>
+                                <div className="ck-participant-meta">{blueParticipant.ckPosition || position}</div>
+                              </div>
+                            </Link>
+                          ) : (
+                            <div className="ck-participant-card none justify-content-center">참가 없음</div>
+                          )}
                         </div>
                       </div>
                     );
