@@ -183,13 +183,9 @@ export default function CkList() {
                         <td>{formatDate(ck.ckDate)}</td>
                         <td>{ck.ckMemo || "-"}</td>
                         <td>
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-outline-light"
+                          <button type="button" className="btn btn-sm btn-outline-light"
                             onClick={() => openParticipantModal(ck.ckId)}
-                          >
-                            팀원 보기
-                          </button>
+                            > 팀원 보기 </button>
                         </td>
                       </tr>
                     ))}
@@ -200,15 +196,11 @@ export default function CkList() {
           )}
 
           {selectedCkId !== null && (
-            <div
-              className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-              style={{ backgroundColor: "rgba(0, 0, 0, 0.75)", zIndex: 1050 }}
-              onClick={closeModal}
-            >
-              <div
-                className="card bg-dark border-secondary text-white w-100 mx-3"
-                style={{ maxWidth: 960 }}
-                onClick={(e) => e.stopPropagation()}
+            <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+               onClick={closeModal} style={{ backgroundColor: "rgba(0, 0, 0, 0.75)", zIndex: 1050 }}
+              >
+              <div className="card bg-dark border-secondary text-white w-100 mx-3"
+                onClick={(e) => e.stopPropagation()} style={{ maxWidth: 960 }}
               >
                 <div className="card-header d-flex justify-content-between align-items-center">
                   <div>
@@ -221,7 +213,7 @@ export default function CkList() {
                     닫기
                   </button>
                 </div>
-                <div className="card-body">
+                <div className="card-body ck-modal-body-scroll">
                   {participantLoading && (
                     <div className="d-flex justify-content-center py-4">
                       <div className="spinner-border text-light" role="status" />
@@ -239,7 +231,7 @@ export default function CkList() {
                   )}
 
                   {!participantLoading && !participantError && selectedParticipantData.length > 0 && (
-                    <div className="row gy-3">
+                    <div className="d-grid gap-2">
                       {POSITION_ORDER.map((position) => {
                         const redParticipant = redTeam.find((p) => p.ckPosition === position);
                         const blueParticipant = blueTeam.find((p) => p.ckPosition === position);
@@ -247,103 +239,45 @@ export default function CkList() {
                         const blueWin = selectedWinner === "blue";
 
                         return (
-                          <div key={position} className="col-12">
-                            <div className="row gx-2 gy-2 align-items-center">
-                              <div className="col-12 col-md-5">
-                                <div className={`card h-100 border ${redWin ? "border-danger bg-danger bg-opacity-10" : "border-secondary bg-dark"}`}>
-                                  <div className="card-body py-3 px-3">
-                                    {redParticipant ? (
-                                      <Link
-                                        to={`/streamer/${redParticipant.ckStreamer}`}
-                                        className="text-white text-decoration-none d-flex flex-column flex-md-row align-items-center justify-content-center justify-content-md-start gap-3 text-center text-md-start flex-wrap"
-                                      >
-                                        <div className="flex-fill">
-                                          <div className="fw-bold text-white mb-1 d-flex align-items-center gap-2 justify-content-center justify-content-md-start">
-                                            {redParticipant.streamerName}
-                                            {redWin && <span className="badge bg-danger">승리</span>}
-                                          </div>
-                                        </div>
-                                        <div>
-                                          <img
-                                            src={buildProfileUrl(redParticipant.streamerSoopId)}
-                                            alt={redParticipant.streamerName}
-                                            className="rounded-circle border border-danger"
-                                            style={{ width: 48, height: 48, objectFit: "cover" }}
-                                          />
-                                        </div>
-                                        <div>
-                                          <span className="badge rounded-pill bg-danger bg-opacity-75 px-3 py-2">
-                                            {position}
-                                          </span>
-                                        </div>
-                                      </Link>
-                                    ) : (
-                                      <div className="d-flex flex-column flex-md-row align-items-center justify-content-center justify-content-md-start gap-3 text-center text-md-start flex-wrap">
-                                        <div className="flex-fill">
-                                          <div className="fw-bold text-white mb-1">참가 없음</div>
-                                        </div>
-                                        <div className="rounded-circle border border-danger bg-secondary bg-opacity-25" style={{ width: 48, height: 48 }} />
-                                        <div>
-                                          <span className="badge rounded-pill bg-danger bg-opacity-75 px-3 py-2">
-                                            {position}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    )}
+                          <div key={position} className="ck-participant-line">
+                            <div className="ck-participant-slot justify-content-end">
+                              {redParticipant ? (
+                                <Link to={`/streamer/${redParticipant.ckStreamer}`}
+                                  className={`ck-participant-card red ${redWin ? "win" : ""} text-white text-decoration-none justify-content-end`}
+                                >
+                                  <div className="ck-participant-info text-end">
+                                    <div className="ck-participant-name">{redParticipant.streamerName || "-"}</div>
+                                    <div className="ck-participant-meta">{redParticipant.ckPosition || position}</div>
                                   </div>
-                                </div>
-                              </div>
+                                  <img src={buildProfileUrl(redParticipant.streamerSoopId)}
+                                    className="ck-participant-avatar" alt={redParticipant.streamerName || "Red 팀원"}
+                                  />
+                                </Link>
+                              ) : (
+                                <div className="ck-participant-card none justify-content-center">참가 없음</div>
+                              )}
+                            </div>
 
-                              <div className="col-12 col-md-2 d-flex align-items-center justify-content-center">
-                                <div className="badge rounded-pill bg-white bg-opacity-10 text-white fs-5 py-2 px-3">
-                                  VS
-                                </div>
-                              </div>
+                            <div className="ck-participant-vs">
+                              <span className="badge bg-secondary text-white">VS</span>
+                            </div>
 
-                              <div className="col-12 col-md-5">
-                                <div className={`card h-100 border ${blueWin ? "border-primary bg-primary bg-opacity-10" : "border-secondary bg-dark"}`}>
-                                  <div className="card-body py-3 px-3">
-                                    {blueParticipant ? (
-                                      <Link
-                                        to={`/streamer/${blueParticipant.ckStreamer}`}
-                                        className="text-white text-decoration-none d-flex flex-column flex-md-row align-items-center justify-content-center justify-content-md-end gap-3 text-center text-md-end flex-wrap"
-                                      >
-                                        <div>
-                                          <span className="badge rounded-pill bg-primary bg-opacity-75 px-3 py-2">
-                                            {position}
-                                          </span>
-                                        </div>
-                                        <div>
-                                          <img
-                                            src={buildProfileUrl(blueParticipant.streamerSoopId)}
-                                            alt={blueParticipant.streamerName}
-                                            className="rounded-circle border border-primary"
-                                            style={{ width: 48, height: 48, objectFit: "cover" }}
-                                          />
-                                        </div>
-                                        <div className="flex-fill">
-                                          <div className="fw-bold text-white mb-1 d-flex align-items-center gap-2 justify-content-center justify-content-md-end">
-                                            {blueParticipant.streamerName}
-                                            {blueWin && <span className="badge bg-primary">승리</span>}
-                                          </div>
-                                        </div>
-                                      </Link>
-                                    ) : (
-                                      <div className="d-flex flex-column flex-md-row align-items-center justify-content-center justify-content-md-end gap-3 text-center text-md-end flex-wrap">
-                                        <div>
-                                          <span className="badge rounded-pill bg-primary bg-opacity-75 px-3 py-2">
-                                            {position}
-                                          </span>
-                                        </div>
-                                        <div className="rounded-circle border border-primary bg-secondary bg-opacity-25" style={{ width: 48, height: 48 }} />
-                                        <div className="flex-fill">
-                                          <div className="fw-bold text-white mb-1">참가 없음</div>
-                                        </div>
-                                      </div>
-                                    )}
+                            <div className="ck-participant-slot justify-content-start">
+                              {blueParticipant ? (
+                                <Link to={`/streamer/${blueParticipant.ckStreamer}`}
+                                  className={`ck-participant-card blue ${blueWin ? "win" : ""} text-white text-decoration-none justify-content-start`}
+                                >
+                                  <img  src={buildProfileUrl(blueParticipant.streamerSoopId)}
+                                    className="ck-participant-avatar" alt={blueParticipant.streamerName || "Blue 팀원"}
+                                  />
+                                  <div className="ck-participant-info text-start">
+                                    <div className="ck-participant-name">{blueParticipant.streamerName || "-"}</div>
+                                    <div className="ck-participant-meta">{blueParticipant.ckPosition || position}</div>
                                   </div>
-                                </div>
-                              </div>
+                                </Link>
+                              ) : (
+                                <div className="ck-participant-card none justify-content-center">참가 없음</div>
+                              )}
                             </div>
                           </div>
                         );
