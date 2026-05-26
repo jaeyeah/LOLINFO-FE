@@ -3,10 +3,15 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "../Pagination";
 import { buildProfileUrl } from "../../utils/profileUrl";
+import { adminState } from "../../utils/jotai";
+import { useAtomValue } from "jotai";
 
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
 
 export default function CkList() {
+
+  const isAdmin = useAtomValue(adminState);
+
   const [ckList, setCkList] = useState([]);
   const [page, setPage] = useState(1);
   const [pageData, setPageData] = useState({
@@ -61,7 +66,7 @@ export default function CkList() {
         setParticipantError(null);
         const { data } = await axios.get(`/ck/${ckId}/participant`);
         const winner = data[0]?.ckWinner ?? null;
-        console.log("참가자 정보 로드 성공", { ckId, data, winner });
+        //console.log("참가자 정보 로드 성공", { ckId, data, winner });
         setParticipantCache((prev) => ({
           ...prev,
           [ckId]: {
@@ -133,6 +138,20 @@ export default function CkList() {
     }
   };
 
+  // CK 삭제
+      const deleteCk = useCallback(async(ckId)=>{
+        try{
+            await axios.delete(`/ck/${ckId}`);
+            loadCkList();
+            console.log("CK 삭제 실행");
+        }catch (err) {
+            console.error("CK 삭제 실패", err);
+        }
+    })
+
+
+
+
   return (
     <>
       <div className="row mb-3">
@@ -172,9 +191,12 @@ export default function CkList() {
                 <table className="table table-dark table-striped mb-0 align-middle">
                   <thead className="text-center table-secondary text-dark ">
                     <tr>
-                      <th scope="col">CK 날짜</th>
-                      <th scope="col">CK 메모</th>
-                      <th scope="col">팀원</th>
+                      <th scope="col-2">CK 날짜</th>
+                      <th scope="col-7">CK 메모</th>
+                      <th scope="col-2">팀원</th>
+                      {isAdmin && 
+                        <th scope="col-1">기능</th>
+                      }
                     </tr>
                   </thead>
                   <tbody>
@@ -187,6 +209,13 @@ export default function CkList() {
                             onClick={() => openParticipantModal(ck.ckId)}
                             > 팀원 보기 </button>
                         </td>
+                        {isAdmin && 
+                        <td>
+                          <button type="button" className="btn btn-sm btn-outline-danger"
+                            onClick={() => deleteCk(ck.ckId)}
+                            > 삭제 </button> 
+                        </td>
+                        }
                       </tr>
                     ))}
                   </tbody>
