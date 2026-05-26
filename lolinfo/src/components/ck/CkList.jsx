@@ -5,6 +5,7 @@ import Pagination from "../Pagination";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import { adminState } from "../../utils/jotai";
 import { useAtomValue } from "jotai";
+import { FaEdit } from "react-icons/fa";
 
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
 
@@ -31,6 +32,13 @@ export default function CkList() {
   const [participantCache, setParticipantCache] = useState({});
   const [participantLoading, setParticipantLoading] = useState(false);
   const [participantError, setParticipantError] = useState(null);
+
+  // CK 항목 부분 수정 상태
+  const [editingDateId, setEditingDateId] = useState(null);
+  const [editingMemoId, setEditingMemoId] = useState(null);
+  const [editDateValue, setEditDateValue] = useState("");
+  const [editMemoValue, setEditMemoValue] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const loadCkList = useCallback(async () => {
     try {
@@ -93,6 +101,70 @@ export default function CkList() {
       fetchParticipants(selectedCkId);
     }
   }, [selectedCkId, fetchParticipants]);
+
+  const handleEditDate = useCallback((ck) => {
+    setEditingDateId(ck.ckId);
+    setEditDateValue(ck.ckDate ? new Date(ck.ckDate).toISOString().slice(0, 10) : "");
+  }, []);
+
+  const handleCancelDate = useCallback(() => {
+    setEditingDateId(null);
+    setEditDateValue("");
+  }, []);
+
+  const handleSaveDate = useCallback(async (ckId) => {
+    if (!editDateValue) {
+      alert("변경할 날짜를 입력해주세요.");
+      return;
+    }
+
+    try {
+      setIsUpdating(true);
+      const { data } = await axios.patch(`/ck/${ckId}`, { ckDate: editDateValue });
+      setCkList((prev) =>
+        prev.map((ck) => (ck.ckId === ckId ? { ...ck, ckDate: data.ckDate ?? editDateValue } : ck))
+      );
+      setEditingDateId(null);
+      setEditDateValue("");
+    } catch (err) {
+      console.error("CK 날짜 수정 실패", err);
+      alert("CK 날짜를 수정하지 못했습니다.");
+    } finally {
+      setIsUpdating(false);
+    }
+  }, [editDateValue]);
+
+  const handleEditMemo = useCallback((ck) => {
+    setEditingMemoId(ck.ckId);
+    setEditMemoValue(ck.ckMemo ?? "");
+  }, []);
+
+  const handleCancelMemo = useCallback(() => {
+    setEditingMemoId(null);
+    setEditMemoValue("");
+  }, []);
+
+  const handleSaveMemo = useCallback(async (ckId) => {
+    if (!editMemoValue.trim()) {
+      alert("메모를 입력해주세요.");
+      return;
+    }
+
+    try {
+      setIsUpdating(true);
+      const { data } = await axios.patch(`/ck/${ckId}`, { ckMemo: editMemoValue });
+      setCkList((prev) =>
+        prev.map((ck) => (ck.ckId === ckId ? { ...ck, ckMemo: data.ckMemo ?? editMemoValue } : ck))
+      );
+      setEditingMemoId(null);
+      setEditMemoValue("");
+    } catch (err) {
+      console.error("CK 메모 수정 실패", err);
+      alert("CK 메모를 수정하지 못했습니다.");
+    } finally {
+      setIsUpdating(false);
+    }
+  }, [editMemoValue]);
 
   const openParticipantModal = useCallback(
     (ckId) => {
@@ -202,8 +274,68 @@ export default function CkList() {
                   <tbody>
                     {ckList.map((ck) => (
                       <tr key={ck.ckId} className="border-secondary text-center">
-                        <td>{formatDate(ck.ckDate)}</td>
-                        <td>{ck.ckMemo || "-"}</td>
+                        <td>
+                          {editingDateId === ck.ckId ? (
+                            <div className="d-flex align-items-center justify-content-center gap-2">
+                              <input
+                                type="date"
+                                className="form-control form-control-sm"
+                                value={editDateValue}
+                                onChange={(e) => setEditDateValue(e.target.value)}
+                                style={{ maxWidth: 170 }}
+                              />
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-outline-light"
+                                onClick={() => handleSaveDate(ck.ckId)}
+                                disabled={isUpdating}
+                              >
+                                저장
+                              </button>
+                              <button type="button" className="btn btn-sm btn-outline-secondary" onClick={handleCancelDate}>
+                                취소
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="d-flex align-items-center justify-content-center gap-2">
+                              <span>{formatDate(ck.ckDate)}</span>
+                              <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEditDate(ck)}>
+                                <FaEdit />
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                        <td>
+                          {editingMemoId === ck.ckId ? (
+                            <div className="d-flex align-items-center justify-content-center gap-2">
+                              <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                value={editMemoValue}
+                                onChange={(e) => setEditMemoValue(e.target.value)}
+                                style={{ minWidth: 200 }}
+                              />
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-outline-light"
+                                onClick={() => handleSaveMemo(ck.ckId)}
+                                disabled={isUpdating}
+                              >
+                                저장
+                              </button>
+                              <button type="button" className="btn btn-sm btn-outline-secondary" onClick={handleCancelMemo}>
+                                취소
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="d-flex align-items-center justify-content-center gap-2">
+                              <span>{ck.ckMemo || "-"}</span>
+                              <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEditMemo(ck)}>
+                                <FaEdit />
+                              </button>
+                            </div>
+                          )}
+                        </td>
                         <td>
                           <button type="button" className="btn btn-sm btn-outline-light"
                             onClick={() => openParticipantModal(ck.ckId)}
