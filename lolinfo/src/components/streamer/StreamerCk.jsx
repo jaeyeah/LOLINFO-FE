@@ -25,6 +25,10 @@ export default function StreamerCk() {
   const [participantCache, setParticipantCache] = useState({});
   const [participantLoading, setParticipantLoading] = useState(false);
   const [participantError, setParticipantError] = useState(null);
+  const [vsPositionStats, setVsPositionStats] = useState([]);
+  const [vsLoading, setVsLoading] = useState(false);
+  const [vsError, setVsError] = useState(null);
+  const [expandedVsStreamerNo, setExpandedVsStreamerNo] = useState(null);
 
   const myStreamerId = Number(streamerId);
   const loadCkList = useCallback(async () => {
@@ -54,11 +58,34 @@ export default function StreamerCk() {
     setSelectedCkId(null);
     setParticipantCache({});
     setParticipantError(null);
+    setVsPositionStats([]);
+    setVsLoading(false);
+    setVsError(null);
+    setExpandedVsStreamerNo(null);
+  }, [streamerId]);
+
+  const loadVsStats = useCallback(async () => {
+    try {
+      setVsLoading(true);
+      setVsError(null);
+      const { data } = await axios.get(`/ck/${streamerId}/vs`);
+      setVsPositionStats(data ?? []);
+    } catch (err) {
+      console.error("맞라인 전적 로드 실패", err);
+      setVsError("맞라인 전적을 불러오지 못했습니다.");
+      setVsPositionStats([]);
+    } finally {
+      setVsLoading(false);
+    }
   }, [streamerId]);
 
   useEffect(() => {
     loadCkList();
   }, [loadCkList]);
+
+  useEffect(() => {
+    loadVsStats();
+  }, [loadVsStats]);
 
   const fetchParticipants = useCallback(
     async (ckId) => {
@@ -112,6 +139,13 @@ export default function StreamerCk() {
   const sortByPosition = (a, b) =>
     POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition);
 
+  const getWinRateColor = (rate) => {
+    if (rate >= 70) return "#2ecc71";
+    if (rate >= 55) return "#4dabf7";
+    if (rate >= 45) return "#f6c23e";
+    return "#e74c3c";
+  };
+
   const redTeam = useMemo(
     () =>
       selectedParticipants
@@ -126,6 +160,65 @@ export default function StreamerCk() {
         .filter((p) => p.ckSide === "blue")
         .sort(sortByPosition),
     [selectedParticipants]
+  );
+
+  const positionSummaryStats = useMemo(() => {
+    const base = POSITION_ORDER.map((pos) => ({
+      ckPosition: pos,
+      winCount: 0,
+      loseCount: 0,
+      totalCount: 0,
+      winRate: 0,
+    }));
+
+    vsPositionStats.forEach((stat) => {
+      const entry = base.find((item) => item.ckPosition === stat.ckPosition);
+      if (entry) {
+        entry.winCount += stat.winCount ?? 0;
+        entry.loseCount += stat.loseCount ?? 0;
+        entry.totalCount += stat.totalCount ?? 0;
+      }
+    });
+
+    return base.map((item) => ({
+      ...item,
+      winRate: item.totalCount ? Number(((item.winCount / item.totalCount) * 100).toFixed(1)) : 0,
+    }));
+  }, [vsPositionStats]);
+
+  const vsSummaryStats = useMemo(() => {
+    const map = {};
+
+    vsPositionStats.forEach((stat) => {
+      const key = stat.vsStreamerNo;
+      if (!map[key]) {
+        map[key] = {
+          vsStreamerNo: stat.vsStreamerNo,
+          vsStreamerName: stat.vsStreamerName ?? "-",
+          winCount: 0,
+          loseCount: 0,
+          totalCount: 0,
+        };
+      }
+      map[key].winCount += stat.winCount ?? 0;
+      map[key].loseCount += stat.loseCount ?? 0;
+      map[key].totalCount += stat.totalCount ?? 0;
+    });
+
+    return Object.values(map)
+      .map((item) => ({
+        ...item,
+        winRate: item.totalCount ? Number(((item.winCount / item.totalCount) * 100).toFixed(1)) : 0,
+      }))
+      .sort((a, b) => b.totalCount - a.totalCount);
+  }, [vsPositionStats]);
+
+  const expandedVsPositionStats = useMemo(
+    () =>
+      vsPositionStats
+        .filter((stat) => stat.vsStreamerNo === expandedVsStreamerNo)
+        .sort((a, b) => POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition)),
+    [vsPositionStats, expandedVsStreamerNo]
   );
 
   const formatDate = (value) => {
@@ -158,7 +251,8 @@ export default function StreamerCk() {
   const blockStart = pageVO?.blockStart ?? 1;
   const blockFinish = pageVO?.blockFinish ?? 1;
 
-  const hasData = !loading && !error && ckList.length > 0;
+  const showMainContent = !loading && !error;
+  const hasCkRecords = ckList.length > 0;
 
   return (
     <>
@@ -198,109 +292,262 @@ export default function StreamerCk() {
         </div>
       )}
 
-      {!loading && !error && ckList.length === 0 && (
-        <div className="alert alert-info" role="alert">
-          참여한 CK가 없습니다.
-        </div>
-      )}
-
-      {hasData && (
+      {showMainContent && (
         <>
-          <div className="card bg-dark border-secondary mb-3 d-none d-md-block">
-            <div className="table-responsive">
-              <table className="table table-dark table-hover mb-0 align-middle">
-                <thead className="table-secondary text-dark text-center">
-                  <tr>
-                    <th scope="col">날짜</th>
-                    <th scope="col">결과</th>
-                    <th scope="col">맞라인 상대</th>
-                    <th scope="col">메모</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {ckList.map((ck) => (
-                    <tr key={ck.ckId}>
-                      <td>{formatDate(ck.ckDate)}</td>
-                      <td className="text-center">
-                        <span className={`badge ${getStatusClass(ck.ckResult)}`}>
-                          {ck.ckResult || "-"}
-                        </span>
-                      </td>
-                      <td>
-                        {ck.vsStreamerNo ? (
-                          <Link to={`/streamer/${ck.vsStreamerNo}`} className="text-decoration-none text-white">
-                            {ck.vsStreamerName || "-"}
-                          </Link>
-                        ) : (
-                          ck.vsStreamerName || "-"
-                        )}
-                      </td>
-                      <td>{ck.ckMemo || "-"}</td>
-                      <td className="text-center">
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-outline-light"
-                          onClick={() => openModal(ck.ckId)}
-                        >
-                          팀원 보기
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <div className="card bg-dark border-secondary text-white mb-3">
+            <div className="card-header bg-white text-dark border-secondary">
+              <h5 className="mb-0 fw-bold section-title">포지션별 총 전적</h5>
+            </div>
+            <div className="card-body">
+              <div className="d-flex flex-wrap gap-3 justify-content-center">
+                {positionSummaryStats.map((stat) => (
+                  <div
+                    key={stat.ckPosition}
+                    className={`position-summary-card ${stat.totalCount === 0 ? "inactive" : ""}`}
+                  >
+                    <div className="position-summary-label">{stat.ckPosition}</div>
+                    {stat.totalCount > 0 ? (
+                      <>
+                        <div className="position-summary-record">
+                          <span className={`${stat.winCount == 0 ? "text-secondary" : "text-white"} fw-semibold fs-5`}>{stat.winCount}승</span>
+                          <span className={`${stat.loseCount == 0 ? "text-secondary" : "text-danger"} fw-semibold fs-5`}>{stat.loseCount}패</span>
+                        </div>
+                        <div className="position-summary-bar bg-white bg-opacity-10 rounded-pill">
+                          <div
+                            className="position-summary-bar-fill rounded-pill"
+                            style={{
+                              width: `${stat.winRate}%`,
+                              backgroundColor: getWinRateColor(stat.winRate),
+                            }}
+                          />
+                        </div>
+                        <div className="text-secondary small mt-1">승률 {stat.winRate}%</div>
+                      </>
+                    ) : (
+                      <div className="position-summary-empty">전적 없음</div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="d-block d-md-none">
-            <div className="row g-3">
-              {ckList.map((ck) => (
-                <div key={ck.ckId} className="col-12">
-                  <div className="card bg-dark border-secondary">
-                    <div className="card-body">
-                      <div className="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                          <div className="text-secondary small">{formatDate(ck.ckDate)}</div>
-                          <div className="h6 mb-1">
-                            vs {ck.vsStreamerNo ? (
-                              <Link to={`/streamer/${ck.vsStreamerNo}`} className="text-decoration-none text-white">
-                                {ck.vsStreamerName || "-"}
-                              </Link>
-                            ) : (
-                              ck.vsStreamerName || "-"
-                            )}
+
+          {/* 맞라인 상대 전적 */}
+          <div className="row g-3">
+            <div className="col-12 col-xl-4">
+              <div className="card bg-dark border-secondary h-100">
+                <div className="card-header bg-white border-secondary d-flex justify-content-between align-items-center">
+                  <h5 className="mb-0 fw-bold section-title">맞라인 상대별 전적</h5>
+                </div>
+                <div className="card-body">
+                  {vsLoading && (
+                    <div className="d-flex justify-content-center py-4">
+                      <div className="spinner-border text-light" role="status" />
+                    </div>
+                  )}
+
+                  {vsError && (
+                    <div className="alert alert-danger" role="alert">
+                      {vsError}
+                    </div>
+                  )}
+
+                  {!vsLoading && !vsError && vsSummaryStats.length === 0 && (
+                    <div className="text-center text-secondary py-4">
+                      맞라인 상대 전적이 없습니다.
+                    </div>
+                  )}
+
+                  {/* 맞라인 상대전적 파트 */}
+                  {!vsLoading && !vsError && vsSummaryStats.length > 0 && (
+                    <div className="list-group list-group-flush">
+                      {vsSummaryStats.map((vs) => (
+                        <div key={vs.vsStreamerNo} className="list-group-item bg-dark border-secondary text-white py-3 vs-item">
+                          <div className="d-flex justify-content-between align-items-center gap-3">
+                            <div className="min-w-0">
+                              <div className="fw-semibold text-truncate vs-item-name">
+                                <Link to={`/streamer/${vs.vsStreamerNo}`} className="fs-6 text-decoration-none text-white">
+                                  vs <span className="text-white fs-5">{vs.vsStreamerName}</span>
+                                  <span className="ms-3 text-secondary small vs-item-record mt-1">
+                                    {vs.totalCount}전 {vs.winCount}승 {vs.loseCount}패
+                                  </span>
+                                </Link>
+                              </div>
+                            </div>
+                            <div className="text-end">
+                              <span className="fw-semibold mb-2 vs-item-rate me-3 fs-5">{vs.winRate}%</span>
+                              <button type="button" className="btn btn-sm btn-outline-light"
+                                    onClick={() => setExpandedVsStreamerNo((current) =>
+                                    current === vs.vsStreamerNo ? null : vs.vsStreamerNo )}>
+                                {expandedVsStreamerNo === vs.vsStreamerNo ? "접기" : "상세 전적"}
+                              </button>
+                            </div>
                           </div>
+                          {/* VS 게이지바 */}
+                          <div className="vs-item-bar bg-white bg-opacity-10 rounded-pill mt-3">
+                            <div
+                              className="vs-item-bar-fill rounded-pill"
+                              style={{
+                                width: `${vs.winRate}%`,
+                                backgroundColor: getWinRateColor(vs.winRate),
+                              }}
+                            />
+                          </div>
+                          {/* 포지션별 vs전적 */}
+                          {expandedVsStreamerNo === vs.vsStreamerNo && (
+                            <div className="mt-3 ms-4">
+                              {expandedVsPositionStats.length === 0 ? (
+                                <div className="text-secondary small">포지션별 전적이 없습니다.</div>
+                              ) : (
+                                <div className="detail-list">
+                                  {expandedVsPositionStats.map((item) => (
+                                    <div className="detail-row rounded-3 p-2 mt-1"  key={`${item.vsStreamerNo}-${item.ckPosition}`} >
+                                      <div className="d-flex align-items-center justify-content-between gap-3">
+                                        <div className="min-w-0">
+                                          <div className="text-white small fw-semibold">
+                                            <span className="text-white small fw-semibold fs-5">
+                                             {item.ckPosition}
+                                            </span>
+                                            <span className="ms-2 text-secondary smaller mt-1">
+                                              {item.totalCount}전 : {item.winCount}승 {item.loseCount}패
+                                            </span>
+                                          </div>
+                                        </div>
+                                        <div className="text-white small fw-semibold fs-5">{item.winRate}%</div>
+                                      </div>
+                                      <div className="detail-bar bg-white bg-opacity-10 rounded-pill mt-2">
+                                        <div
+                                          className="detail-bar-fill rounded-pill"
+                                          style={{
+                                            width: `${item.winRate}%`,
+                                            backgroundColor: getWinRateColor(item.winRate),
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
-                        <span className={`badge ${getStatusClass(ck.ckResult)}`}>
-                          {ck.ckResult || "-"}
-                        </span>
-                      </div>
-                      <p className="text-secondary small mb-3">메모: {ck.ckMemo || "없음"}</p>
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-outline-light w-100"
-                        onClick={() => openModal(ck.ckId)}
-                      >
-                        팀원 보기
-                      </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* 전체 CK 전적 */}
+            <div className="col-12 col-xl-8">
+              {hasCkRecords ? (
+                <>
+                  <div className="card bg-dark border-secondary mb-3 d-none d-md-block">
+                    <div className="table-responsive">
+                      <table className="table table-dark table-hover mb-0 align-middle">
+                        <thead className="table-secondary text-dark text-center">
+                          <tr>
+                            <th scope="col">날짜</th>
+                            <th scope="col">결과</th>
+                            <th scope="col">맞라인 상대</th>
+                            <th scope="col">메모</th>
+                            <th scope="col"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {ckList.map((ck) => (
+                            <tr key={ck.ckId}>
+                              <td>{formatDate(ck.ckDate)}</td>
+                              <td className="text-center">
+                                <span className={`badge ${getStatusClass(ck.ckResult)}`}>
+                                  {ck.ckResult || "-"}
+                                </span>
+                              </td>
+                              <td>
+                                {ck.vsStreamerNo ? (
+                                  <Link to={`/streamer/${ck.vsStreamerNo}`} className="text-decoration-none text-white">
+                                    {ck.vsStreamerName || "-"}
+                                  </Link>
+                                ) : (
+                                  ck.vsStreamerName || "-"
+                                )}
+                              </td>
+                              <td>{ck.ckMemo || "-"}</td>
+                              <td className="text-center">
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-outline-light"
+                                  onClick={() => openModal(ck.ckId)}
+                                >
+                                  팀원 보기
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 mt-4">
-            <Pagination
-              page={page}
-              totalPage={totalPage}
-              blockStart={blockStart}
-              blockFinish={blockFinish}
-              onPageChange={handlePageChange}
-            />
-            <div className="text-secondary small">
-              페이지 {page} / {totalPage}
+                  <div className="d-block d-md-none">
+                    <div className="row g-3">
+                      {ckList.map((ck) => (
+                        <div key={ck.ckId} className="col-12">
+                          <div className="card bg-dark border-secondary">
+                            <div className="card-body">
+                              <div className="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                  <div className="text-secondary small">{formatDate(ck.ckDate)}</div>
+                                  <div className="h6 mb-1">
+                                    vs {ck.vsStreamerNo ? (
+                                      <Link to={`/streamer/${ck.vsStreamerNo}`} className="text-decoration-none text-white">
+                                        {ck.vsStreamerName || "-"}
+                                      </Link>
+                                    ) : (
+                                      ck.vsStreamerName || "-"
+                                    )}
+                                  </div>
+                                </div>
+                                <span className={`badge ${getStatusClass(ck.ckResult)}`}>
+                                  {ck.ckResult || "-"}
+                                </span>
+                              </div>
+                              <p className="text-secondary small mb-3">메모: {ck.ckMemo || "없음"}</p>
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-outline-light w-100"
+                                onClick={() => openModal(ck.ckId)}
+                              >
+                                팀원 보기
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-2 mt-4">
+                    <Pagination
+                      page={page}
+                      totalPage={totalPage}
+                      blockStart={blockStart}
+                      blockFinish={blockFinish}
+                      onPageChange={handlePageChange}
+                    />
+                    <div className="text-secondary small">
+                      페이지 {page} / {totalPage}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="card bg-dark border-secondary text-white">
+                  <div className="card-body text-center text-secondary py-4">
+                    참여한 CK가 없습니다.
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </>

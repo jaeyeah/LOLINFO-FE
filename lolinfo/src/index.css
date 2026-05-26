@@ -128,3 +128,124 @@
     font-size: 0.72rem;
   }
 }
+
+.position-summary-card {
+  min-width: 140px;
+  max-width: 170px;
+  flex: 1 1 140px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.position-summary-card:hover:not(.inactive) {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.position-summary-card.inactive {
+  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.02);
+  pointer-events: none;
+}
+
+.position-summary-label {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.position-summary-record {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+.position-summary-bar {
+  height: 8px;
+  overflow: hidden;
+}
+
+.position-summary-bar-fill {
+  height: 100%;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.position-summary-empty {
+  color: #868e96;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+.vs-item {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.vs-item:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.vs-item-name {
+  font-size: 0.95rem;
+}
+
+.vs-item-record {
+  line-height: 1.4;
+}
+
+.vs-item-rate {
+  font-size: 0.95rem;
+}
+
+.vs-item-bar {
+  height: 8px;
+  overflow: hidden;
+}
+
+.vs-item-bar-fill {
+  height: 100%;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.detail-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 0.85rem;
+}
+
+.detail-row {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color 0.2s ease;
+}
+
+.detail-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.detail-bar {
+  height: 8px;
+  overflow: hidden;
+}
+
+.detail-bar-fill {
+  height: 100%;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+@media (max-width: 767.98px) {
+  .position-summary-card {
+    min-width: 45%;
+    max-width: 48%;
+  }
+
+  .position-summary-record {
+    gap: 0.5rem;
+  }
+}
