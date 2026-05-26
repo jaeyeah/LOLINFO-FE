@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Link} from "react-router-dom"
+import "../tournament/Tournament.css";
 import "./Streamer.css";
 import "./Search.css";
 import { FaHome, FaSearch } from "react-icons/fa";
@@ -60,28 +61,57 @@ export default function StreamerList() {
         setKeyword("");
     }, [keyword, page]);
 
+    const renderTrophies = (count, type) => {
+        const bigCount = Math.floor((count || 0) / 5);
+        const smallCount = (count || 0) % 5;
+
+        if (bigCount === 0 && smallCount === 0) {
+            return (
+                <div className="trophy-list trophy-empty">
+                    <span className="record-none">기록 없음</span>
+                </div>
+            );
+        }
+
+        return (
+            <div className={`trophy-list trophy-${type}`}>
+                {Array.from({ length: bigCount }).map((_, index) => (
+                    <span key={`big-${type}-${index}`} className="trophy trophy-big">🏆</span>
+                ))}
+                {Array.from({ length: smallCount }).map((_, index) => (
+                    <span key={`small-${type}-${index}`} className="trophy trophy-small">🏆</span>
+                ))}
+            </div>
+        );
+    };
+
     //render
     return (<>
-    {/* 검색영역 */}
-    <div className="row justify-content-center">
+    <h2 className="section-title text-center">Soop : 공식 스트리머 목록</h2>
+    <div className="row mt-3 justify-content-center">
         <div className="col-12 col-xl-8">
-            <div className="row align-items-center">
-                <div className="col-10 col-md-10 d-flex align-items-center flex-nowrap">
-                    <Link to="/streamer" className="ms-2 streamer-btn p-2 btn btn-click">공식</Link>
-                    <Link to="/streamerTotal" className="ms-2 streamer-btn p-2 btn btn-nonClick">전체</Link>
-                    <div className="ms-3 input-group search-wrapper">
-                        {/* 검색창 */}
-                        <input type="text" className="search form-control search-bar text-light" value={keyword}
-                            placeholder="스트리머" onChange={e => setKeyword(e.target.value)}
-                            onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }} />
-                        {/* 검색 버튼 */}
+            <div className="streamer-control-panel">
+                <div className="streamer-toggle-group">
+                    <Link to="/streamer" className="streamer-btn btn btn-click">공식</Link>
+                    <Link to="/streamerTotal" className="streamer-btn btn btn-nonClick">전체</Link>
+                </div>
+                <div className="search-wrapper flex-grow-1">
+                    <div className="input-group streamer-search-group">
+                        <input
+                            type="text"
+                            className="search form-control search-bar text-light"
+                            value={keyword}
+                            placeholder="스트리머 검색"
+                            onChange={e => setKeyword(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
+                        />
                         <button className="search btn btn-success" onClick={handleSearch}>
                             <FaSearch className="fs-4" />
                         </button>
                     </div>
                 </div>
                 {isAdmin === true && (
-                    <div className="col-2 text-end">
+                    <div className="streamer-admin-action">
                         <Link to="/streamer/insert" className="btn btn-success">등록</Link>
                     </div>
                 )}
@@ -96,61 +126,46 @@ export default function StreamerList() {
     )}
     {error && <p className="text-danger">{error}</p>}
     {/* 스트리머 목록 */}
-    <div className="row mt-2 justify-content-center">
-        <div className="col-12 col-xl-8 streamer-wrapper">
+    <div className="row mt-3 justify-content-center">
+        <div className="col-12 col-xl-8 streamer-list-wrapper">
             {streamerList.map((streamer)=>(
-                <div key={streamer.streamerNo} className="card streamer-card mb-3">
-                    <div className="row g-0 align-items-center">
-                        <div className="col-3 d-flex">
-                            <Link to={`/streamer/${streamer.streamerNo}`} className="streamer-link d-flex w-100 h-100 justify-content-center">
-                                <img src={streamer.streamerProfile} className="streamer-profile img-fluid rounded-start" />
-                            </Link>
-                        </div>
-                        <div className="col-9">
-                            <div className="card-body d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span className="card-title">{streamer.streamerName} </span>
-                                    <span className="card-text">{streamer.streamerSoopId}</span>
-                                </div>
-                                <div className="text-end">
-                                    <Link to={streamer.streamerStation} className="btn btn-station ms-3" target="_blank" rel="noopener noreferrer"><FaHome className="fs-4"/></Link>
-                                    <Link to={`/streamer/${streamer.streamerNo}`} className="btn btn-station ms-2" target="_blank" rel="noopener noreferrer">상세</Link>
-                                </div>
+                <div key={streamer.streamerNo} className="card tournament-card mb-3 streamer-tournament-card">
+                    <Link to={`/streamer/${streamer.streamerNo}`} className=" streamer-card-link">
+                        <div className="row g-0 tournament-row">
+                            <div className="col-2 year-tag streamer-profile-box ">
+                                <img src={streamer.streamerProfile} className="streamer-profile" alt={streamer.streamerName} />
                             </div>
-                            
-                            <div className="row card-body text-center stat-box">
-                                <div className="col">
-                                    <span className="card-text text-white">우승 </span>
-                                    <hr/>
-                                    <span className={`badge stat-badge card-text ${streamer.officialRanking1 > 0 && 'streamer-stat1'}`}>
-                                        {streamer.officialRanking1} 회
-                                    </span>
+                            <div className="col-10 period-box">
+                                <div className="period-box-header team-badge">
+                                    <div className="col">
+                                        <span className="text-light fs-5">{streamer.streamerName}</span>
+                                        <span className="text-muted"> @{streamer.streamerSoopId}</span>
+                                    </div>
                                 </div>
-                                <div className="col">
-                                    <span className="card-text text-white">준우승 </span>
-                                    <hr/>
-                                    <span className={`badge stat-badge card-text ${streamer.officialRanking2 > 0 && 'streamer-stat2'}`}>
-                                        {streamer.officialRanking2} 회
-                                    </span>
-                                </div>
-                                <div className="col">
-                                    <span className="card-text text-white">4강 </span>
-                                    <hr/>
-                                    <span className={`badge stat-badge card-text ${streamer.officialRanking3 > 0 && 'streamer-stat3'}`}>
-                                        {streamer.officialRanking3} 회
-                                    </span>
+                                <div className="period-box-body">
+                                    <div className="col streamer-period-player">
+                                        <div className="record-title record-champion">우승 : {streamer.officialRanking1} 회</div>
+                                        {renderTrophies(streamer.officialRanking1, "champion")}
+                                    </div>
+                                    <div className="col streamer-period-player">
+                                        <div className="record-title record-second">준우승 : {streamer.officialRanking2} 회</div>
+                                        {renderTrophies(streamer.officialRanking2, "second")}
+                                    </div>
+                                    <div className="col streamer-period-player">
+                                        <div className="record-title record-semi">4강 : {streamer.officialRanking3} 회</div>
+                                        {renderTrophies(streamer.officialRanking3, "semi")}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                    </div>
+                    </Link>
                 </div>
             ))}
         </div>
     </div>
     {/* 페이지네이션 */}
-    <div className ="row mt-1">
-        <div className="col-6 offset-3">
+    <div className ="row mt-3">
+        <div className="col-12 d-flex justify-content-center">
             <Pagination
                 page={page}
                 totalPage={pageData.totalPage}
