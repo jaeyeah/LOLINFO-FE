@@ -1,12 +1,13 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import StreamerList from "./streamer/StreamerList";
 import StreamerTotalList from "./streamer/StreamerTotalList";
 import StreamerInsert from "./streamer/StreamerInsert";
 import StreamerEdit from "./streamer/StreamerEdit";
 import StreamerDetail from "./streamer/StreamerDetail";
+import StreamerDetailInfo from "./streamer/StreamerDetailInfo";
 import StreamerTournaments from "./streamer/StreamerTournaments";
-import StreamerCk from "./streamer/StreamerCk";
+import StreamerCkRecords from "./streamer/StreamerCkRecords";
 
 import TournamentList from "./tournament/TournamentList";
 import TournamentDetail from "./tournament/TournamentDetail";
@@ -44,9 +45,11 @@ return (<>
                 <Route path="/streamer/insert" element={<StreamerInsert />} />
                 <Route path="/streamer/edit/:streamerId" element={<StreamerEdit />} />
                 <Route path="/streamer/:streamerId" element={<StreamerDetail />}>
+                    <Route index element={<StreamerDetailInfo />} />
                     <Route path="tournaments" element={<StreamerTournaments />} />
-                    <Route path="ck" element={<StreamerCk />} />
-                </Route> 
+                    <Route path="ck-records" element={<StreamerCkRecords />} />
+                    <Route path="ck" element={<Navigate to="ck-records" replace />} />
+                </Route>
 
                 {/* 대회 */}
                 <Route path="/tournament" element={<TournamentList />} />
