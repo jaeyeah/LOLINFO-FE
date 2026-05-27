@@ -256,7 +256,7 @@ export default function StreamerCk() {
 
   return (
     <>
-      <div className="row mb-3">
+      <div className="row mt-3 mb-3">
         <div className="col">
           <div className="card bg-dark border-secondary text-white p-3">
             <h2 className="mb-1">CK 전적</h2>
@@ -458,13 +458,13 @@ export default function StreamerCk() {
                         <tbody>
                           {ckList.map((ck) => (
                             <tr key={ck.ckId}>
-                              <td>{formatDate(ck.ckDate)}</td>
+                              <td className="text-center">{formatDate(ck.ckDate)}</td>
                               <td className="text-center">
                                 <span className={`badge ${getStatusClass(ck.ckResult)}`}>
                                   {ck.ckResult || "-"}
                                 </span>
                               </td>
-                              <td>
+                              <td className="text-center">
                                 {ck.vsStreamerNo ? (
                                   <Link to={`/streamer/${ck.vsStreamerNo}`} className="text-decoration-none text-white">
                                     {ck.vsStreamerName || "-"}
@@ -473,13 +473,10 @@ export default function StreamerCk() {
                                   ck.vsStreamerName || "-"
                                 )}
                               </td>
-                              <td>{ck.ckMemo || "-"}</td>
+                              <td className="text-center">{ck.ckMemo || "-"}</td>
                               <td className="text-center">
-                                <button
-                                  type="button"
-                                  className="btn btn-sm btn-outline-light"
-                                  onClick={() => openModal(ck.ckId)}
-                                >
+                                <button type="button" className="btn btn-sm btn-outline-light"
+                                  onClick={() => openModal(ck.ckId)}>
                                   팀원 보기
                                 </button>
                               </td>
@@ -514,11 +511,8 @@ export default function StreamerCk() {
                                 </span>
                               </div>
                               <p className="text-secondary small mb-3">메모: {ck.ckMemo || "없음"}</p>
-                              <button
-                                type="button"
-                                className="btn btn-sm btn-outline-light w-100"
-                                onClick={() => openModal(ck.ckId)}
-                              >
+                              <button type="button" className="btn btn-sm btn-outline-light w-100"
+                                onClick={() => openModal(ck.ckId)}>
                                 팀원 보기
                               </button>
                             </div>
@@ -639,11 +633,8 @@ export default function StreamerCk() {
                               to={`/streamer/${blueParticipant.ckStreamer}`}
                               className={`ck-participant-card blue ${blueWin ? "win" : ""} text-white text-decoration-none justify-content-start`}
                             >
-                              <img
-                                src={buildProfileUrl(blueParticipant.streamerSoopId)}
-                                alt={blueParticipant.streamerName || "Blue 팀원"}
-                                className="ck-participant-avatar"
-                              />
+                              <img src={buildProfileUrl(blueParticipant.streamerSoopId)} alt={blueParticipant.streamerName || "Blue 팀원"}
+                                className="ck-participant-avatar" />
                               <div className="ck-participant-info text-start">
                                 <div className="ck-participant-name">{blueParticipant.streamerName || "-"}</div>
                                 <div className="ck-participant-meta">{blueParticipant.ckPosition || position}</div>
