@@ -151,7 +151,7 @@ export default function CkInsert() {
       };
       const response = await axios.post("/ck/", payload);
       console.log("CK 등록 성공", response);
-      navigate("/"); // 메인페이지
+      navigate("/ck");
     } catch (err) {
       console.log("CK 등록 실패");
       console.log("err.response.status", err.response?.status);
