@@ -1,4 +1,5 @@
 import { Link, useOutletContext } from "react-router-dom";
+import "./StreamerDetailInfo.css";
 
 export default function StreamerDetailInfo() {
   const { streamer, streamerTeam, host, staff, deleteStaff } = useOutletContext();
@@ -44,7 +45,7 @@ export default function StreamerDetailInfo() {
                     {hostItem.tournamentYear}
                   </div>
                   <div
-                    className={`col-2 badge fs-6
+                    className={`col-2 badge fs-6 tier-badge
                               ${hostItem.tournamentTierType === "천상계" ? "top-tier text-dark"
                       : hostItem.tournamentTierType === "지상계" ? "bottom-tier"
                       : "all-tier"
@@ -80,8 +81,8 @@ export default function StreamerDetailInfo() {
                   <span className={`col-2 text-center fs-6 ${staffItem.staffRole === '감독' ? "badge bg-white text-dark" : "badge bg-secondary"}`}>
                     {staffItem.staffRole}
                   </span>
-                  <div className="col-2">{staffItem.tournamentName}</div>
-                  <div className="col-3 fw-600">{staffItem.teamName}</div>
+                  <div className="col-2 staff-wrap">{staffItem.tournamentName}</div>
+                  <div className="col-3 fw-600 staff-wrap">{staffItem.teamName}</div>
                   <span className={`col-2 text-center ${staffItem.teamRanking === '우승' ? "badge bg-warning text-dark"
                       : staffItem.teamRanking === "준우승" ? "badge bg-secondary"
                       : staffItem.teamRanking === "4강" ? "badge text-light"

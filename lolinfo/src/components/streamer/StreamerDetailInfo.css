@@ -1,0 +1,39 @@
+.tier-badge{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-size:0.9rem; /* default badge text size */
+  padding:0.25rem 0.5rem;
+}
+
+/* scale badge text down on small screens so it doesn't overflow the fixed col width */
+@media (max-width:576px){
+  .tier-badge{
+    font-size:clamp(0.6rem, 2.2vw, 0.8rem);
+    padding:0.2rem 0.4rem;
+  }
+  /* allow names to wrap naturally into a couple lines on mobile */
+  .staff-wrap{
+    white-space:normal;
+    word-break:normal;
+    overflow-wrap:break-word;
+    hyphens:auto;
+  }
+}
+
+/* Desktop / default behavior: avoid breaking inside words (prevents single-character stacking) */
+.staff-wrap{
+  white-space:normal;
+  word-break:keep-all; /* for CJK, prevents breaking between characters */
+  overflow-wrap:break-word;
+}
+
+/* fallback text-truncate utility (Bootstrap provides this, but ensure availability) */
+.text-truncate{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
