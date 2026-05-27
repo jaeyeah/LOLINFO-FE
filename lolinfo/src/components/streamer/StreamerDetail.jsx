@@ -106,7 +106,7 @@ export default function StreamerDetail() {
     {error && <p className="text-danger">{error}</p>}
     {/* 스트리머 상세 */}
     <div className="streamer-wrapper">
-      <div className="card streamer-card mb-4">
+      <div className="card streamer-card">
         <div className="card-body">
           {/* 상단: 프로필 + 이름 + 버튼들 */}
           <div className="row align-items-center">
@@ -126,14 +126,15 @@ export default function StreamerDetail() {
                 )}
             </div>
           </div>
-          <hr />
-
-            <Outlet context={{ streamer, streamerTeam, host, staff }} />
           </div>
         </div>
+        {/* 중첩 라우트 렌더링 */}
+        <Outlet context={{ streamer, streamerTeam, host, staff }} />
       </div>
 
-    {/* 중첩 라우트 렌더링 */}
+    
+
+
     </>)
 
 }
