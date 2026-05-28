@@ -67,6 +67,7 @@ axios.interceptors.response.use(
                 return axios(originalRequest);
             } catch (refreshError) {
                 store.set(clearLoginState);
+                alert("로그인 시간이 만료되었습니다. 다시 로그인해주세요.");
                 location.href = "/member/login";
                 return Promise.reject(refreshError);
             }

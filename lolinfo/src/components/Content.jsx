@@ -21,6 +21,8 @@ import CkInsert from "./ck/CkInsert";
 import MemberJoin from "./member/MemberJoin";
 import MemberLogin from "./member/MemberLogin";
 
+import AdminMain from "./admin/AdminMain";
+import AdminMemberPage from "./admin/AdminMemberPage";
 
 export default function Content(){
 
@@ -38,6 +40,11 @@ return (<>
                 <Route path="/member/join" element={<MemberJoin/>} />
                 <Route path="/member/login" element={<MemberLogin/>} />
 
+                {/* 관리자 */}
+                <Route path="/admin" element={<AdminMain/>}>
+                    <Route index element={<AdminMemberPage/>}/>
+                    <Route path="member" element={<AdminMemberPage/>}/>
+                </Route>
 
                 {/* 스트리머 */}
                 <Route path="/streamer" element={<StreamerList />} />

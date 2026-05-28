@@ -1,0 +1,158 @@
+/* AdminMember.css */
+
+/* 검색창 영역 */
+.member-search-box {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* 커스텀 테이블 (div로 구현 or table 태그) */
+.admin-table-container {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.admin-table {
+    width: 100%;
+    color: #e0e0e0;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    background-color: #2c2c2c;
+    padding: 15px;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid #444;
+}
+
+.admin-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #333;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.admin-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.05); /* 호버 효과 */
+    cursor: pointer;
+}
+
+/* 등급 뱃지 스타일 */
+.grade-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: white; /* 글자색 흰색 통일 */
+    display: inline-block;
+    min-width: 80px; /* 너비 고정해서 보기 좋게 */
+    text-align: center;
+}
+
+.grade-admin { background-color: #dc3545; }    /* 관리자: 빨강 */
+.grade-excellent { background-color: #0d6efd; } /* 우수회원: 파랑 */
+.grade-general { background-color: #6c757d; }   /* 일반회원: 회색 */
+
+/* 📱 모바일 반응형 (Card View 변환) */
+@media (max-width: 768px) {
+    
+    /* 1. 테이블 구조 깨기 */
+    .admin-table, 
+    .admin-table thead, 
+    .admin-table tbody, 
+    .admin-table th, 
+    .admin-table td, 
+    .admin-table tr { 
+        display: block; 
+    }
+
+    /* 2. 헤더(제목 줄) 숨기기 */
+    .admin-table thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    /* 3. 각 행(tr)을 카드처럼 디자인 */
+    .admin-table tr { 
+        margin-bottom: 15px; 
+        border: 1px solid #333;
+        border-radius: 8px;
+        background-color: #252525;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    /* 카드 호버 효과 제거 (터치 시 깜빡임 방지) */
+    .admin-table tr:hover {
+        background-color: #252525; 
+    }
+
+    /* 4. 각 셀(td) 스타일 - 라벨 붙이기 */
+    .admin-table td { 
+        border: none;
+        border-bottom: 1px dashed #444; 
+        position: relative;
+        padding: 10px 0;
+        padding-left: 0; /* 기존 패딩 제거 */
+        text-align: left; /* 왼쪽 정렬 */
+        display: flex;
+        justify-content: space-between; /* 좌우 끝으로 배치 */
+        align-items: center;
+    }
+
+    .admin-table td:last-child {
+        border-bottom: none; /* 마지막 줄은 밑줄 제거 */
+    }
+
+    /* ⭐ 가상 요소(::before)로 라벨 추가 */
+    /* td:nth-of-type(1) -> 첫 번째 td (아이디) */
+    .admin-table td:nth-of-type(1)::before { 
+        content: "아이디"; 
+        font-weight: bold; color: #adb5bd; 
+    }
+    .admin-table td:nth-of-type(2)::before { 
+        content: "닉네임"; 
+        font-weight: bold; color: #adb5bd; 
+    }
+    .admin-table td:nth-of-type(3)::before { 
+        content: "가입일"; 
+        font-weight: bold; color: #adb5bd; 
+    }
+    .admin-table td:nth-of-type(4)::before { 
+        content: "등급 관리"; 
+        font-weight: bold; color: #adb5bd; 
+    }
+    .admin-table td:nth-of-type(5)::before { 
+        content: "회원 관리"; 
+        font-weight: bold; color: #adb5bd; 
+    }
+
+    /* 5. 셀렉트 박스와 버튼 크기 키우기 (터치 편하게) */
+    .admin-table select {
+        width: 100% !important; /* 꽉 채우기 */
+        max-width: 150px; /* 너무 커지지 않게 제한 */
+    }
+    
+    .admin-table button {
+        width: 100%;
+        max-width: 100px;
+    }
+
+    /* 6. 검색창도 세로로 배치 */
+    .member-search-box {
+        flex-direction: column;
+    }
+    
+    .member-search-box select,
+    .member-search-box input,
+    .member-search-box button {
+        width: 100% !important;
+    }
+}
