@@ -220,7 +220,7 @@ export default function StreamerTournaments() {
             </div>
           ))
         ) : (
-          <div className="alert alert-secondary mt-2">개최한 대회가 없습니다.</div>
+          <div className="alert alert-secondary mt-2">참여한 비공식 대회가 없습니다.</div>
         )}
       </div>
     </div>

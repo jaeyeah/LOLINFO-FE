@@ -117,9 +117,9 @@ export default function MemberLogin(){
 
         <div className="row mt-3 text-center d-flex justify-content-center">
             <div className="col text-nowrap">
-                {/* <Link className="text-decoration-none fs-5 login-link" to="/member/join"> */}
+                <Link className="text-decoration-none fs-5 login-link" to="/member/join">
                     <FaUserPlus className="mb-1 me-2" /> 회원가입
-                {/* </Link> */}
+                </Link>
             </div>
             {/* <div className="col text-nowrap">
                 <Link className="text-decoration-none fs-5 login-link" to="#">아이디/비밀번호 찾기</Link>

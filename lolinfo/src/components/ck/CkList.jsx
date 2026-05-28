@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Pagination from "../Pagination";
 import { buildProfileUrl } from "../../utils/profileUrl";
-import { adminState } from "../../utils/jotai";
+import { adminState, loginState } from "../../utils/jotai";
 import { useAtomValue } from "jotai";
 import { FaEdit } from "react-icons/fa";
 
@@ -12,6 +12,7 @@ const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
 export default function CkList() {
 
   const isAdmin = useAtomValue(adminState);
+  const isLogin = useAtomValue(loginState);
 
   const [ckList, setCkList] = useState([]);
   const [page, setPage] = useState(1);
@@ -233,6 +234,11 @@ export default function CkList() {
             <p className="mb-0 text-secondary">
               CK 목록은 최소 데이터만 조회하며 팀원 상세 정보는 별도 API로 분리됩니다.
             </p>
+            {isLogin && (
+              <Link className="btn btn-dark border-secondary mt-3" to="/ck/insert">
+                CK 등록
+              </Link>
+            )}
           </div>
         </div>
       </div>
