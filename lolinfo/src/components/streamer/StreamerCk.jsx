@@ -259,10 +259,50 @@ export default function StreamerCk() {
       <div className="row mt-3 mb-3">
         <div className="col">
           <div className="card bg-dark border-secondary text-white p-3">
-            <h2 className="mb-1">CK 전적</h2>
-            <p className="mb-0 text-secondary">
-              {streamer?.streamerName ? `${streamer.streamerName}님의 CK 기록입니다.` : "스트리머의 CK 기록입니다."}
-            </p>
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <h2 className="mb-1">CK 전적</h2>
+                <p className="mb-0 text-secondary">
+                  {streamer?.streamerName ? `${streamer.streamerName}님의 CK 기록입니다.` : "스트리머의 CK 기록입니다."}
+                </p>
+              </div>
+              <div className="text-end" style={{ minWidth: "150px" }}>
+                <div className="fs-5 fw-bold text-white mb-2">
+                  {(() => {
+                    const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount, 0);
+                    const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount, 0);
+                    return `${totalWins}승 ${totalLoses}패`;
+                  })()}
+                </div>
+                <div className="bg-white bg-opacity-10 rounded-pill" style={{ height: "8px", marginBottom: "6px" }}>
+                  {(() => {
+                    const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount, 0);
+                    const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount, 0);
+                    const totalGames = totalWins + totalLoses;
+                    const totalWinRate = totalGames ? Number(((totalWins / totalGames) * 100).toFixed(1)) : 0;
+                    return (
+                      <div
+                        className="rounded-pill"
+                        style={{
+                          width: `${totalWinRate}%`,
+                          height: "100%",
+                          backgroundColor: getWinRateColor(totalWinRate),
+                        }}
+                      />
+                    );
+                  })()}
+                </div>
+                <div className="text-secondary small">
+                  {(() => {
+                    const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount, 0);
+                    const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount, 0);
+                    const totalGames = totalWins + totalLoses;
+                    const totalWinRate = totalGames ? Number(((totalWins / totalGames) * 100).toFixed(1)) : 0;
+                    return `승률 ${totalWinRate}%`;
+                  })()}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
