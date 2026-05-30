@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -29,30 +29,46 @@ export default function AdminMemberPage() {
     const [keyword, setKeyword] = useState('');
 
     // 1. 회원 목록 불러오기 (검색 포함)
-    const fetchMembers = useCallback(async () => {
+    const fetchMembers = async (targetPage = page, targetType = searchType, targetKeyword = keyword) => {
         if (!loginId) return;
+
         setLoading(true);
         try {
-            const res = await axios.get(`/admin/members`, {
-                params: {
-                    page : page,
-                    type: searchType,
-                    keyword: keyword
-                }
-            });
+            const trimmedKeyword = targetKeyword.trim();
+            const params = { page: targetPage };
+
+            if (trimmedKeyword !== "") {
+                params.type = targetType;
+                params.keyword = trimmedKeyword;
+            }
+
+            const res = await axios.get(`/admin/members`, { params });
             setMemberList(res.data.list);
             setPageData(res.data.pageVO);
         } catch (error) {
             console.error("회원 목록 로드 실패", error);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
-    }, [loginId, searchType, keyword, page]);
+    };
 
     // 초기 로딩
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
-        // 로그인 정보가 있으면 로드
-        if (loginId) fetchMembers();
+        if (loginId) fetchMembers(page);
     }, [loginId, page]);
+
+    const handleSearch = () => {
+        setPage(1);
+        fetchMembers(1, searchType, keyword);
+    };
+
+    const handleReset = () => {
+        setSearchType('memberId');
+        setKeyword('');
+        setPage(1);
+        fetchMembers(1, 'memberId', '');
+    };
 
     // 2. 상세 페이지 이동 핸들러
     const handleRowClick = (memberId) => {
@@ -142,11 +158,14 @@ export default function AdminMemberPage() {
                     placeholder="검색어를 입력하세요..."
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
-                    onKeyUp={(e) => e.key === 'Enter' && fetchMembers()}
+                    onKeyUp={(e) => e.key === 'Enter' && handleSearch()}
                 />
 
-                <button className="btn btn-primary" onClick={fetchMembers}>
-                    🔍 검색
+                <button className="btn btn-primary text-nowrap" onClick={handleSearch}>
+                    🔍
+                </button>
+                <button className="btn btn-outline-light text-nowrap" onClick={handleReset}>
+                    초기화
                 </button>
             </div>
 

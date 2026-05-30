@@ -36,7 +36,7 @@ export default function AdminMain() {
                 <div className="list-group list-group-flush">
                     {/* 메뉴 클릭 시 모바일에서는 사이드바가 닫혀야 편함 -> onClick={closeSidebar} */}
                     
-                    <NavLink to="/admin/member" className="list-group-item list-group-item-action admin-menu-item" onClick={closeSidebar}>
+                    <NavLink to="/admin/member" className="list-group-item admin-menu-item" onClick={closeSidebar}>
                         👥 회원 관리
                     </NavLink>
                 </div>
