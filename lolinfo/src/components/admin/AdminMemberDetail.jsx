@@ -51,7 +51,7 @@ export default function AdminMemberDetail() {
 
         try {
             await axios.patch(
-                `/admin/members/${memberId}/grade?grade=${newGrade}`);
+                `/admin/members/${memberId}/memberLevel?memberLevel=${newGrade}`);
 
             Swal.fire({
                 icon: 'success',
@@ -110,7 +110,7 @@ export default function AdminMemberDetail() {
 
     return (
         <div className="admin-detail-container text-white">
-            
+            s
             {/* 상단 헤더 */}
             <div className="d-flex align-items-center flex-wrap gap-3 mb-4 border-bottom border-secondary pb-3">
                 <button className="btn btn-outline-light d-flex align-items-center gap-2 text-nowrap"

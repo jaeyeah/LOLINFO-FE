@@ -26,8 +26,8 @@
 
 /* 메뉴 아이템 스타일 */
 .admin-menu-item {
-    background-color: transparent;
-    color: #e0e0e0 !important;
+    background-color: #2b2f38 !important;  ;
+    color: #9c9c9c !important;
     border: none !important;
     border-left: 4px solid transparent !important;
     padding: 15px 20px;
