@@ -1,0 +1,450 @@
+/* Board Write Page Styles */
+
+.board-write-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 20px 0;
+}
+
+.board-write-card {
+    background-color: #353535;
+    border-radius: 0.8em;
+    border: 1px solid #454545;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 800px;
+    color: #ffffff;
+}
+
+.board-write-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: #ffd700;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.board-write-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #e0e0e0;
+    margin-bottom: 0.3rem;
+}
+
+.form-label .required {
+    color: #ff6b6b;
+    margin-left: 0.3rem;
+}
+
+.board-select,
+.board-input,
+.board-textarea {
+    background-color: #3d4257 !important;
+    border: 1px solid #454545 !important;
+    color: #ffffff !important;
+    border-radius: 0.5em;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.board-select:focus,
+.board-input:focus,
+.board-textarea:focus {
+    background-color: #3d4257 !important;
+    border-color: #ffd700 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3) !important;
+    outline: none !important;
+}
+
+.board-select option {
+    background-color: #2c2c2c;
+    color: #ffffff;
+}
+
+.board-input::placeholder,
+.board-textarea::placeholder {
+    color: #999999;
+}
+
+.board-textarea {
+    resize: vertical;
+    min-height: 250px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.board-input {
+    height: 44px;
+}
+
+.text-muted {
+    color: #999999 !important;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.board-button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    justify-content: center;
+}
+
+.board-submit-btn,
+.board-cancel-btn {
+    min-width: 120px;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 0.5em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.board-submit-btn {
+    background-color: #ea8685;
+    color: #ffffff;
+}
+
+.board-submit-btn:hover:not(:disabled) {
+    background-color: #d97573;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(234, 134, 133, 0.4);
+}
+
+.board-submit-btn:disabled {
+    background-color: #999999;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.board-cancel-btn {
+    background-color: #454545;
+    color: #e0e0e0;
+}
+
+.board-cancel-btn:hover:not(:disabled) {
+    background-color: #555555;
+    color: #ffffff;
+}
+
+.board-cancel-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .board-write-card {
+        padding: 1.5rem;
+    }
+
+    .board-write-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .board-write-form {
+        gap: 1rem;
+    }
+
+    .board-button-group {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .board-submit-btn,
+    .board-cancel-btn {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .board-input,
+    .board-select,
+    .board-textarea {
+        padding: 0.6rem !important;
+        font-size: 0.95rem;
+    }
+
+    .board-textarea {
+        min-height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .board-write-container {
+        padding: 10px;
+    }
+
+    .board-write-card {
+        padding: 1rem;
+    }
+
+    .board-write-title {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+    }
+
+    .board-textarea {
+        min-height: 150px;
+    }
+}
+
+/* Bootstrap override for better styling */
+.form-control:disabled,
+.form-control[readonly] {
+    background-color: #2c2c2c !important;
+    color: #999999 !important;
+}
+
+/* Board List Page Styles */
+
+.board-list-container {
+    padding: 20px 0;
+}
+
+.board-list-card {
+    background-color: #353535;
+    border-radius: 0.8em;
+    border: 1px solid #454545;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+}
+
+.board-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.board-list-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #ffd700;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.board-write-btn {
+    background-color: #ea8685;
+    color: #ffffff;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 0.5em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.board-write-btn:hover {
+    background-color: #d97573;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(234, 134, 133, 0.4);
+}
+
+.board-category-filter {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.category-btn {
+    padding: 0.5rem 1rem;
+    background-color: #454545;
+    color: #e0e0e0;
+    border: 1px solid #554545;
+    border-radius: 0.4em;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.category-btn:hover {
+    background-color: #555555;
+    border-color: #ffd700;
+    color: #ffd700;
+}
+
+.category-btn.active {
+    background-color: #ea8685;
+    border-color: #ea8685;
+    color: #ffffff;
+}
+
+.board-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.board-item {
+    background-color: #3d4257;
+    border: 1px solid #454545;
+    border-radius: 0.5em;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.board-item:hover {
+    background-color: #444555;
+    border-color: #ffd700;
+    transform: translateX(5px);
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.2);
+}
+
+.board-item-header {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.board-category-badge {
+    display: inline-block;
+    background-color: #ea8685;
+    color: #ffffff;
+    padding: 0.3rem 0.8rem;
+    border-radius: 0.3em;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.board-item-title {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #ffd700;
+    font-weight: 600;
+    word-break: break-word;
+    flex: 1;
+}
+
+.board-item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #999999;
+    border-top: 1px solid #454545;
+    padding-top: 0.75rem;
+}
+
+.board-writer {
+    color: #c0c0c0;
+    font-weight: 500;
+}
+
+.board-date {
+    color: #888888;
+}
+
+.board-loading,
+.board-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #999999;
+    font-size: 1.1rem;
+}
+
+.board-empty p {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .board-list-card {
+        padding: 1.5rem;
+    }
+
+    .board-list-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .board-list-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .board-list-header h1 {
+        margin: 0;
+    }
+
+    .board-write-btn {
+        width: 100%;
+    }
+
+    .board-item-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .board-category-badge {
+        display: inline-block;
+    }
+}
+
+@media (max-width: 480px) {
+    .board-list-container {
+        padding: 10px;
+    }
+
+    .board-list-card {
+        padding: 1rem;
+    }
+
+    .board-list-title {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .board-item {
+        padding: 1rem;
+    }
+
+    .board-item-title {
+        font-size: 1rem;
+    }
+
+    .board-item-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+
+    .category-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+}

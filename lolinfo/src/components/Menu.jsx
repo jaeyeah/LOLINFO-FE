@@ -118,6 +118,11 @@ export default function Menu() {
                         {/* 우측 메뉴 */}
 
                         {isLogin === true ? (<>  {/* 로그인 시 나와야 하는 화면 */}
+                            <li className="nav-item" onClick={closeMenu}>
+                                <Link className="nav-link" to="/board/write">
+                                    <span>글쓰기</span>
+                                </Link>
+                            </li>
                             {isAdmin === true ? (
                                 <>
                                 <li className="nav-item" onClick={closeMenu}>
