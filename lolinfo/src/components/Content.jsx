@@ -20,6 +20,8 @@ import CkList from "./ck/CkList";
 import CkInsert from "./ck/CkInsert";
 import MemberJoin from "./member/MemberJoin";
 import MemberLogin from "./member/MemberLogin";
+import BoardWrite from "./board/BoardWrite";
+import BoardList from "./board/BoardList";
 
 import AdminMain from "./admin/AdminMain";
 import AdminMemberPage from "./admin/AdminMemberPage";
@@ -71,6 +73,10 @@ return (<>
                 {/* CK */}
                 <Route path="/ck" element={<CkList/>}/>
                 <Route path="/ck/insert" element={<CkInsert/>}/>
+
+                {/* 게시판 */}
+                <Route path="/board" element={<BoardList/>}/>
+                <Route path="/board/write" element={<BoardWrite/>}/>
 
             </Routes>
         </div>
