@@ -108,21 +108,21 @@ export default function Menu() {
                                 SLL
                             </Link>
                         </li>
-                        <li className="nav-item" onClick={closeMenu}>
-                            <Link className="nav-link fw-600" target="_blank" to="https://www.sooplive.co.kr/">
-                                <img src="https://res.sooplive.co.kr/images/svg/soop_logo.svg" width="50" height="23"/>
-                            </Link>
-                        </li>
+                        {isLogin === true ? (<>  {/* 로그인 시 나와야 하는 화면 */}
+                            <li className="nav-item" onClick={closeMenu}>
+                                <Link className="nav-link" to="/board">
+                                    <span>게시판</span>
+                                </Link>
+                            </li>
+                            </>
+                        ) : (<> </> )} {/* 비로그인 시 나와야 하는 화면 */}
                     </ul>
                     <ul className="navbar-nav ms-auto">
                         {/* 우측 메뉴 */}
 
                         {isLogin === true ? (<>  {/* 로그인 시 나와야 하는 화면 */}
-                            <li className="nav-item" onClick={closeMenu}>
-                                <Link className="nav-link" to="/board/write">
-                                    <span>글쓰기</span>
-                                </Link>
-                            </li>
+     
+
                             {isAdmin === true ? (
                                 <>
                                 <li className="nav-item" onClick={closeMenu}>

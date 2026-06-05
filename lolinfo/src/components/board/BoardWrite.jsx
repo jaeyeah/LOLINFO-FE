@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { accessTokenState } from "../../utils/jotai";
+import { accessTokenState, loginIdState } from "../../utils/jotai";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -7,19 +7,34 @@ import Swal from "sweetalert2";
 import "./Board.css";
 
 const CATEGORIES = [
-    { value: "문의", label: "문의" },
-    { value: "신고", label: "신고" },
-    { value: "건의", label: "건의" },
     { value: "자유", label: "자유" },
+    { value: "제보", label: "제보" },
+    { value: "신고", label: "신고" },
 ];
+
+// Byte 기준 상수
+const TITLE_BYTE_LIMIT = 50;
+const CONTENT_BYTE_LIMIT = 3000;
+
+// Byte 길이 계산 함수
+const getByteLength = (value) => {
+    return new TextEncoder().encode(value).length;
+};
+
+// Byte 제한 검증 함수
+const isWithinByteLimit = (value, limit) => {
+    return getByteLength(value) <= limit;
+};
 
 export default function BoardWrite() {
     const accessToken = useAtomValue(accessTokenState);
+    const loginId = useAtomValue(loginIdState);
     const navigate = useNavigate();
+
 
     // Form state
     const [form, setForm] = useState({
-        boardCategory: "문의",
+        boardCategory: "자유",
         boardTitle: "",
         boardContent: "",
     });
@@ -42,9 +57,21 @@ export default function BoardWrite() {
         }
     }, [accessToken, navigate]);
 
-    // Form change handler
+    // Form change handler (Byte 기준 검증)
     const handleChangeForm = useCallback((e) => {
         const { name, value } = e.target;
+
+        // Byte 제한 확인
+        const byteLimit =
+            name === "boardTitle" ? TITLE_BYTE_LIMIT :
+            name === "boardContent" ? CONTENT_BYTE_LIMIT :
+            null;
+
+        // Byte 제한을 초과하면 상태값 변경 안 함
+        if (byteLimit && !isWithinByteLimit(value, byteLimit)) {
+            return;
+        }
+
         setForm((prev) => ({
             ...prev,
             [name]: value,
@@ -134,22 +161,24 @@ export default function BoardWrite() {
     }
 
     return (
-        <div className="board-write-container">
-            <div className="board-write-card">
-                <h1 className="board-write-title">게시글 작성</h1>
+        <div className="insert-form d-f">
+            <div className="row">
+                <div className="col text-center">
+                    <h2>게시글 작성</h2>
+                    <hr />
+                </div>
+            </div>
 
-                <form onSubmit={handleSubmitForm} className="board-write-form">
-                    {/* 카테고리 */}
-                    <div className="form-group">
-                        <label htmlFor="boardCategory" className="form-label">
-                            카테고리
-                        </label>
+            <form onSubmit={handleSubmitForm}>
+                {/* 카테고리 */}
+                <div className="row mt-2">
+                    <label className="col-sm-3 col-form-label">카테고리</label>
+                    <div className="col-sm-9">
                         <select
-                            id="boardCategory"
                             name="boardCategory"
                             value={form.boardCategory}
                             onChange={handleChangeForm}
-                            className="form-control board-select"
+                            className="form-control"
                         >
                             {CATEGORIES.map((category) => (
                                 <option key={category.value} value={category.value}>
@@ -158,63 +187,76 @@ export default function BoardWrite() {
                             ))}
                         </select>
                     </div>
+                </div>
 
-                    {/* 제목 */}
-                    <div className="form-group">
-                        <label htmlFor="boardTitle" className="form-label">
-                            제목 <span className="required">*</span>
-                        </label>
+                {/* 제목 */}
+                <div className="row mt-2">
+                    <label className="col-sm-3 col-form-label">
+                        제목 <span style={{ color: "#ff6b6b" }}>*</span>
+                    </label>
+                    <div className="col-sm-9">
                         <input
                             type="text"
-                            id="boardTitle"
                             name="boardTitle"
                             value={form.boardTitle}
                             onChange={handleChangeForm}
-                            className="form-control board-input"
+                            className="form-control"
                             placeholder="제목을 입력해주세요"
-                            maxLength="200"
                         />
-                        <small className="text-muted">
-                            {form.boardTitle.length}/200
+                        <small style={{ color: "#999999" }}>
+                            {getByteLength(form.boardTitle)}/{TITLE_BYTE_LIMIT} Byte
                         </small>
                     </div>
+                </div>
 
-                    {/* 내용 */}
-                    <div className="form-group">
-                        <label htmlFor="boardContent" className="form-label">
-                            내용 <span className="required">*</span>
-                        </label>
+                {/* 내용 */}
+                <div className="row mt-2">
+                    <label className="col-sm-3 col-form-label">
+                        내용 <span style={{ color: "#ff6b6b" }}>*</span>
+                    </label>
+                    <div className="col-sm-9">
                         <textarea
-                            id="boardContent"
                             name="boardContent"
                             value={form.boardContent}
                             onChange={handleChangeForm}
-                            className="form-control board-textarea"
+                            className="form-control"
                             placeholder="내용을 입력해주세요"
                             rows="10"
+                            style={{
+                                resize: "vertical",
+                                whiteSpace: "pre-wrap",
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word",
+                            }}
                         ></textarea>
+                        <small style={{ color: "#999999" }}>
+                            {getByteLength(form.boardContent)}/{CONTENT_BYTE_LIMIT} Byte
+                        </small>
                     </div>
+                </div>
 
-                    {/* 버튼 그룹 */}
-                    <div className="board-button-group">
+                {/* 버튼 그룹 */}
+                <div className="row mt-3">
+                    <div className="col-sm-3"></div>
+                    <div className="col-sm-9">
                         <button
                             type="submit"
-                            className="btn btn-primary board-submit-btn"
+                            className="btn btn-primary"
                             disabled={isLoading}
                         >
                             {isLoading ? "등록 중..." : "등록"}
                         </button>
                         <button
                             type="button"
-                            className="btn btn-secondary board-cancel-btn"
+                            className="btn btn-secondary ms-2"
                             onClick={() => navigate("/board")}
                             disabled={isLoading}
                         >
                             취소
                         </button>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     );
 }

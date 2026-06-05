@@ -14,7 +14,7 @@ export default function BoardList() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState("전체");
 
-    const CATEGORIES = ["전체", "문의", "신고", "건의", "자유"];
+    const CATEGORIES = ["전체", "자유", "제보", "신고"];
 
     // 게시판 목록 조회
     useEffect(() => {
