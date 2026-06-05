@@ -12,6 +12,20 @@ const CATEGORIES = [
     { value: "신고", label: "신고" },
 ];
 
+// Byte 기준 상수
+const TITLE_BYTE_LIMIT = 50;
+const CONTENT_BYTE_LIMIT = 3000;
+
+// Byte 길이 계산 함수
+const getByteLength = (value) => {
+    return new TextEncoder().encode(value).length;
+};
+
+// Byte 제한 검증 함수
+const isWithinByteLimit = (value, limit) => {
+    return getByteLength(value) <= limit;
+};
+
 export default function BoardWrite() {
     const accessToken = useAtomValue(accessTokenState);
     const loginId = useAtomValue(loginIdState);
@@ -43,9 +57,21 @@ export default function BoardWrite() {
         }
     }, [accessToken, navigate]);
 
-    // Form change handler
+    // Form change handler (Byte 기준 검증)
     const handleChangeForm = useCallback((e) => {
         const { name, value } = e.target;
+
+        // Byte 제한 확인
+        const byteLimit =
+            name === "boardTitle" ? TITLE_BYTE_LIMIT :
+            name === "boardContent" ? CONTENT_BYTE_LIMIT :
+            null;
+
+        // Byte 제한을 초과하면 상태값 변경 안 함
+        if (byteLimit && !isWithinByteLimit(value, byteLimit)) {
+            return;
+        }
+
         setForm((prev) => ({
             ...prev,
             [name]: value,
@@ -176,10 +202,9 @@ export default function BoardWrite() {
                             onChange={handleChangeForm}
                             className="form-control"
                             placeholder="제목을 입력해주세요"
-                            maxLength="200"
                         />
                         <small style={{ color: "#999999" }}>
-                            {form.boardTitle.length}/200
+                            {getByteLength(form.boardTitle)}/{TITLE_BYTE_LIMIT} Byte
                         </small>
                     </div>
                 </div>
@@ -204,6 +229,9 @@ export default function BoardWrite() {
                                 overflowWrap: "break-word",
                             }}
                         ></textarea>
+                        <small style={{ color: "#999999" }}>
+                            {getByteLength(form.boardContent)}/{CONTENT_BYTE_LIMIT} Byte
+                        </small>
                     </div>
                 </div>
 
