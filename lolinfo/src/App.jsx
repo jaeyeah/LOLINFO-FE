@@ -1,12 +1,17 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter } from "react-router-dom"
 import Content from "./components/Content.jsx"
 // import Menu from './components/Menu'
 import './App.css'
 import Menu from './components/Menu.jsx'
+import { trackDailyVisit } from './utils/visitTracker'
 
 function App() {
   const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    trackDailyVisit()
+  }, [])
 
   return (
     <>
