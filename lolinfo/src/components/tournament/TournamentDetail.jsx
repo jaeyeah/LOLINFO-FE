@@ -273,9 +273,9 @@ export default function TournamentDetail(){
                     </button>
                 )}
                 {!isLogin && (
-                    <div className="text-muted small mt-2">
+                    <span className="text-secondary ms-2 small mt-2">
                         로그인 후 스크림 전적을 등록할 수 있습니다.
-                    </div>
+                    </span>
                 )}
             </div>
             {isAdmin === true && (
