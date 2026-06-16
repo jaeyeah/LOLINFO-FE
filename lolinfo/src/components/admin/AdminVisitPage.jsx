@@ -14,7 +14,7 @@ export default function AdminVisitPage() {
             try {
                 const res = await axios.get('/visit/');
                 let data = res.data || [];
-
+                console.log('방문 통계 데이터:', data);
                 // Ensure recent dates appear first if backend not sorted
                 data = data.slice().sort((a, b) => (a.visitDate > b.visitDate ? -1 : a.visitDate < b.visitDate ? 1 : 0));
 
@@ -39,6 +39,9 @@ export default function AdminVisitPage() {
             return d;
         }
     };
+    const maxVisitCount = Math.max(
+        ...visits.map(v => v.visitCount || 0),1
+    );
 
     return (
         <div className="admin-member-container text-white">
@@ -56,7 +59,6 @@ export default function AdminVisitPage() {
                                 <th className="p-3">날짜</th>
                                 <th className="p-3">전체 방문자 수</th>
                                 <th className="p-3">로그인 방문자 수</th>
-                                <th className="p-3">비로그인 방문자 수</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,13 +66,18 @@ export default function AdminVisitPage() {
                                 <tr><td colSpan="4" className="py-5 text-white">데이터가 없습니다.</td></tr>
                             ) : (
                                 visits.map((v, idx) => {
-                                    const nonLogin = (v.visitorCount || 0) - (v.loginVisitorCount || 0);
                                     return (
                                         <tr key={idx} className="border-bottom border-secondary">
                                             <td className="p-3">{formatDate(v.visitDate)}</td>
-                                            <td className="p-3">{v.visitorCount ?? 0}</td>
-                                            <td className="p-3">{v.loginVisitorCount ?? 0}</td>
-                                            <td className="p-3">{nonLogin}</td>
+                                            <td className="p-3">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <span style={{ minWidth: "50px" }}>{v.visitCount ?? 0}</span>
+                                                    <div className="progress flex-grow-1" style={{ height: "20px", minWidth: "120px" }} >
+                                                        <div className="progress-bar bg-success" role="progressbar"style={{width: `${((v.visitCount || 0) / maxVisitCount) * 100}%` }}> </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="p-3">{v.VisitorLogin ?? 0}</td>
                                         </tr>
                                     )
                                 })
