@@ -263,7 +263,8 @@ export default function TournamentDetail(){
                                 <label className="col-sm-3 col-form-label text-white">레드팀</label>
                                 <div className="col-sm-9">
                                     <select id="scrimRedTeam" name="scrimRedTeam" className="form-select" value={scrimForm.scrimRedTeam} onChange={handleScrimFormChange}>
-                                        <option value="">팀 선택</option>
+                                        <option value=""> ▼ 팀 선택</option>
+                                        <option value="">----------</option>
                                         {team.map((teamItem) => (
                                             <option key={teamItem.teamId} value={teamItem.teamId} >
                                                 {teamItem.teamName}
@@ -276,7 +277,8 @@ export default function TournamentDetail(){
                                 <label className="col-sm-3 col-form-label text-white">블루팀</label>
                                 <div className="col-sm-9">
                                     <select id="scrimBlueTeam" name="scrimBlueTeam" className="form-select" value={scrimForm.scrimBlueTeam} onChange={handleScrimFormChange}>
-                                        <option value="">팀 선택</option>
+                                        <option value=""> ▼ 팀 선택</option>
+                                        <option value="">----------</option>
                                         {team.map((teamItem) => (
                                             <option key={teamItem.teamId} value={teamItem.teamId}>
                                                 {teamItem.teamName}
