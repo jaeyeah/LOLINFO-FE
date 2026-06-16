@@ -77,7 +77,7 @@ export default function AdminVisitPage() {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="p-3">{v.VisitorLogin ?? 0}</td>
+                                            <td className="p-3">{v.VisitLogin ?? 0}</td>
                                         </tr>
                                     )
                                 })
