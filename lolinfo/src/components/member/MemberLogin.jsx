@@ -35,8 +35,13 @@ export default function MemberLogin(){
     const [login, setLogin] = useState(null); // null 시도x -> true or false
     const sendLogin = useCallback(async()=>{
         try{
+            //uuid 불러오기 : 방문통계용
+            const visitorId = localStorage.getItem("sooplol_visitor_id");
+            
             //로그인 시도
-            const {data} = await axios.post("/member/login", member);
+            const {data} = await axios.post("/member/login", member,{
+                headers : { "VisitorId" : visitorId}
+            });
 
             // Authorization에 accesstoken 저장
             axios.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
