@@ -33,6 +33,8 @@ export default function TournamentDetail(){
         scrimBlueScore: 0,
         scrimDate: new Date().toISOString().split("T")[0],
     });
+    const [showVsRecordModal, setShowVsRecordModal] = useState(false);
+
     //로딩중 설정
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -87,7 +89,7 @@ export default function TournamentDetail(){
         try {
             setScrimRecordError(null);
             const {data} = await axios.get(`/scrim/record/${tournamentId}`);
-            console.log("팀별 스크림 승률 데이터:", data);
+            //console.log("팀별 스크림 승률 데이터:", data);
             setScrimRecordList(data);
         } catch (error) {
             console.error("팀별 스크림 승률 로딩 오류", error);
@@ -163,9 +165,11 @@ export default function TournamentDetail(){
             setSelectedScrimTeam(team);
             setVsRecordList([]);
             setVsRecordLoading(true);
+            setShowVsRecordModal(true);
 
             const resp = await axios.get(`/scrim/${tournamentId}/${team.teamId}`);
             setVsRecordList(resp.data);
+            //console.log("상대전적 데이터:", resp.data);
         } catch (e) {
             console.error("상대전적 조회 실패", e);
             alert("상대전적 조회에 실패했습니다.");
@@ -498,7 +502,7 @@ export default function TournamentDetail(){
                 {/* 추후, 관리자만 수정가능하도록 지정 */}
                 <div className="ms-auto d-flex gap-2 align-items-center">
                     <button type="button" className="ms-1 btn btn-sm btn-outline-dark"
-                        data-bs-toggle="modal" data-bs-target="#vsRecordModal" onClick={() => openVsRecordModal(team)}>
+                         onClick={() => openVsRecordModal(team)}>
                         상세전적
                     </button>
                     {isAdmin === true && (
@@ -566,7 +570,9 @@ export default function TournamentDetail(){
         ))}                </div>
             </div>        </div>
 
-        <div className="modal fade" id="vsRecordModal" tabIndex="-1" aria-hidden="true">
+        {showVsRecordModal && (
+        <div className="modal fade show d-block" id="vsRecordModal" 
+            style={{ backgroundColor: "rgba(0,0,0,0.5)" }} tabIndex="-1" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content bg-dark text-light border-secondary">
                     <div className="modal-header border-secondary">
@@ -576,7 +582,7 @@ export default function TournamentDetail(){
                         <button
                             type="button"
                             className="btn-close btn-close-white"
-                            data-bs-dismiss="modal"
+                            onClick={() => setShowVsRecordModal(false)}
                             aria-label="Close"
                         ></button>
                     </div>
@@ -612,16 +618,12 @@ export default function TournamentDetail(){
                             </div>
                         )}
                     </div>
-                    <div className="modal-footer border-secondary">
-                        <button
-                            type="button"
-                            className="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                        >
-                            닫기
-                        </button>
-                    </div>
+                    {/* <div className="modal-footer border-secondary">
+                    </div> */}
                 </div>
             </div>
         </div>
+        )}
+
+
 </>)}
