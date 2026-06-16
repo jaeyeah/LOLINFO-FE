@@ -315,7 +315,7 @@ export default function TournamentDetail(){
                     <div className="modal-content insert-form p-0">
                         <div className="modal-header">
                             <h5 className="modal-title text-white">스크림 등록</h5>
-                            <button type="button" className="btn-close" aria-label="Close" onClick={closeScrimModal}></button>
+                            <button type="button" className="btn-close" onClick={closeScrimModal}></button>
                         </div>
                         <div className="modal-body">
                             <div className="row mt-2">
@@ -572,7 +572,7 @@ export default function TournamentDetail(){
 
         {showVsRecordModal && (
         <div className="modal fade show d-block" id="vsRecordModal" 
-            style={{ backgroundColor: "rgba(0,0,0,0.5)" }} tabIndex="-1" aria-hidden="true">
+            style={{ backgroundColor: "rgba(0,0,0,0.5)" }} tabIndex="-1">
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content bg-dark text-light border-secondary">
                     <div className="modal-header border-secondary">
@@ -583,7 +583,6 @@ export default function TournamentDetail(){
                             type="button"
                             className="btn-close btn-close-white"
                             onClick={() => setShowVsRecordModal(false)}
-                            aria-label="Close"
                         ></button>
                     </div>
                     <div className="modal-body">
