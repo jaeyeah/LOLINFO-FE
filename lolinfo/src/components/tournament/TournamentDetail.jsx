@@ -164,7 +164,7 @@ export default function TournamentDetail(){
             setVsRecordList([]);
             setVsRecordLoading(true);
 
-            const resp = await axios.get(`/scrim/vs/${tournamentId}/${team.teamId}`);
+            const resp = await axios.get(`/scrim/${tournamentId}/${team.teamId}`);
             setVsRecordList(resp.data);
         } catch (e) {
             console.error("상대전적 조회 실패", e);
