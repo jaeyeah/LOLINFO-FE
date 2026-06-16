@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../utils/axios";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
@@ -16,6 +16,15 @@ export default function TournamentDetail(){
     const [tournament, setTournament] = useState({});
     const [team, setTeam] = useState([]);
     const [hostList, setHostList] = useState([]);
+    const [showScrimModal, setShowScrimModal] = useState(false);
+    const [scrimForm, setScrimForm] = useState({
+        scrimTournament: Number(tournamentId),
+        scrimRedTeam: "",
+        scrimBlueTeam: "",
+        scrimRedScore: 0,
+        scrimBlueScore: 0,
+        scrimDate: new Date().toISOString().split("T")[0],
+    });
     //로딩중 설정
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -93,6 +102,81 @@ export default function TournamentDetail(){
         }
     })
 
+    const openScrimModal = useCallback(() => {
+        if (!isLogin) return;
+
+        setScrimForm({
+            scrimTournament: Number(tournamentId),
+            scrimRedTeam: "",
+            scrimBlueTeam: "",
+            scrimRedScore: 0,
+            scrimBlueScore: 0,
+            scrimDate: new Date().toISOString().split("T")[0],
+        });
+        setShowScrimModal(true);
+    }, [isLogin, tournamentId]);
+
+    const closeScrimModal = useCallback(() => {
+        setShowScrimModal(false);
+    }, []);
+
+    const handleScrimFormChange = (event) => {
+        const { name, value } = event.target;
+        setScrimForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const submitScrim = async () => {
+        if (!isLogin) {
+            alert("로그인이 필요합니다.");
+            return;
+        }
+
+        if (!scrimForm.scrimRedTeam || !scrimForm.scrimBlueTeam) {
+            alert("레드팀과 블루팀을 선택해주세요.");
+            return;
+        }
+
+        if (Number(scrimForm.scrimRedTeam) === Number(scrimForm.scrimBlueTeam)) {
+            alert("같은 팀끼리는 등록할 수 없습니다.");
+            return;
+        }
+
+        if (Number(scrimForm.scrimRedScore) < 0 || Number(scrimForm.scrimBlueScore) < 0) {
+            alert("점수는 0 이상의 숫자여야 합니다.");
+            return;
+        }
+
+        try {
+            await axios.post(`/scrim/`, {
+                scrimTournament: Number(scrimForm.scrimTournament),
+                scrimRedTeam: Number(scrimForm.scrimRedTeam),
+                scrimBlueTeam: Number(scrimForm.scrimBlueTeam),
+                scrimRedScore: Number(scrimForm.scrimRedScore),
+                scrimBlueScore: Number(scrimForm.scrimBlueScore),
+                scrimDate: scrimForm.scrimDate,
+            });
+
+            alert("스크림 전적이 등록되었습니다.");
+            closeScrimModal();
+            setScrimForm({
+                scrimTournament: Number(tournamentId),
+                scrimRedTeam: "",
+                scrimBlueTeam: "",
+                scrimRedScore: 0,
+                scrimBlueScore: 0,
+                scrimDate: new Date().toISOString().split("T")[0],
+            });
+            loadTeamData();
+            loadData();
+        } catch (error) {
+            console.error("스크림 등록 실패", error);
+            alert("스크림 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
+        }
+    };
+
     //render
     return(<>
         <h2 className="text-center page-title p-3">{tournament.tournamentName} : 대회 상세</h2>
@@ -140,13 +224,86 @@ export default function TournamentDetail(){
         </div>
 
         {/*  */}
-        {isAdmin === true && (
-            <div className="col text-end">
-                <Link to={`/team/insert/${tournamentId}`} className="btn btn-success">+TEAM</Link>
-                <Link to={`/tournament/edit/${tournamentId}`} className="p-1 fs-5 ms-1 btn btn-warning"><FaEdit/></Link>
+        <div className="d-flex justify-content-between align-items-center mb-3 gap-2">
+            <div>
+                {isLogin ? (
+                    <button type="button" className="btn btn-primary" onClick={openScrimModal}>
+                        스크림 등록
+                    </button>
+                ) : (
+                    <button type="button" className="btn btn-primary" disabled>
+                        스크림 등록
+                    </button>
+                )}
+                {!isLogin && (
+                    <div className="text-muted small mt-2">
+                        로그인 후 스크림 전적을 등록할 수 있습니다.
+                    </div>
+                )}
+            </div>
+            {isAdmin === true && (
+                <div className="text-end">
+                    <Link to={`/team/insert/${tournamentId}`} className="btn btn-success me-1">+TEAM</Link>
+                    <Link to={`/tournament/edit/${tournamentId}`} className="p-1 fs-5 btn btn-warning"><FaEdit/></Link>
+                </div>
+            )}
+        </div>
+
+        {showScrimModal && (
+            <div className="modal fade show d-block" tabIndex="-1" role="dialog" aria-modal="true" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+                <div className="modal-dialog modal-dialog-centered" role="document">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">스크림 등록</h5>
+                            <button type="button" className="btn-close" aria-label="Close" onClick={closeScrimModal}></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="mb-3">
+                                <label htmlFor="scrimRedTeam" className="form-label">레드팀</label>
+                                <select id="scrimRedTeam" name="scrimRedTeam" className="form-select" value={scrimForm.scrimRedTeam} onChange={handleScrimFormChange}>
+                                    <option value="">팀 선택</option>
+                                    {team.map((teamItem) => (
+                                        <option key={teamItem.teamId} value={teamItem.teamId}>
+                                            {teamItem.teamName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="scrimBlueTeam" className="form-label">블루팀</label>
+                                <select id="scrimBlueTeam" name="scrimBlueTeam" className="form-select" value={scrimForm.scrimBlueTeam} onChange={handleScrimFormChange}>
+                                    <option value="">팀 선택</option>
+                                    {team.map((teamItem) => (
+                                        <option key={teamItem.teamId} value={teamItem.teamId}>
+                                            {teamItem.teamName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="row">
+                                <div className="col-6 mb-3">
+                                    <label htmlFor="scrimRedScore" className="form-label">레드팀 스코어</label>
+                                    <input id="scrimRedScore" name="scrimRedScore" type="number" min="0" className="form-control" value={scrimForm.scrimRedScore} onChange={handleScrimFormChange} />
+                                </div>
+                                <div className="col-6 mb-3">
+                                    <label htmlFor="scrimBlueScore" className="form-label">블루팀 스코어</label>
+                                    <input id="scrimBlueScore" name="scrimBlueScore" type="number" min="0" className="form-control" value={scrimForm.scrimBlueScore} onChange={handleScrimFormChange} />
+                                </div>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="scrimDate" className="form-label">스크림 날짜</label>
+                                <input id="scrimDate" name="scrimDate" type="date" className="form-control" value={scrimForm.scrimDate} onChange={handleScrimFormChange} />
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" onClick={closeScrimModal}>취소</button>
+                            <button type="button" className="btn btn-primary" onClick={submitScrim}>등록</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         )}
-        
+
         <div className="team-list mt-4">
         {team.map((team) => (
             <div className={`team-card
