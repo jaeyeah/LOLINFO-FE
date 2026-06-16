@@ -39,6 +39,10 @@ export default function AdminMain() {
                     <NavLink to="/admin/member" className="list-group-item admin-menu-item" onClick={closeSidebar}>
                         👥 회원 관리
                     </NavLink>
+
+                    <NavLink to="/admin/visit" className="list-group-item admin-menu-item" onClick={closeSidebar}>
+                        📈 방문 통계
+                    </NavLink>
                 </div>
             </div>
 

@@ -25,6 +25,7 @@ import BoardList from "./board/BoardList";
 
 import AdminMain from "./admin/AdminMain";
 import AdminMemberPage from "./admin/AdminMemberPage";
+import AdminVisitPage from "./admin/AdminVisitPage";
 
 export default function Content(){
 
@@ -46,6 +47,7 @@ return (<>
                 <Route path="/admin" element={<AdminMain/>}>
                     <Route index element={<AdminMemberPage/>}/>
                     <Route path="member" element={<AdminMemberPage/>}/>
+                    <Route path="visit" element={<AdminVisitPage/>}/>
                 </Route>
 
                 {/* 스트리머 */}
