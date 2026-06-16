@@ -17,7 +17,11 @@ export default function TournamentDetail(){
     const [tournament, setTournament] = useState({});
     const [team, setTeam] = useState([]);
     const [hostList, setHostList] = useState([]);
+    const [scrimList, setScrimList] = useState([]);
+    const [scrimRecordList, setScrimRecordList] = useState([]);
     const [showScrimModal, setShowScrimModal] = useState(false);
+    const [scrimError, setScrimError] = useState(null);
+    const [scrimRecordError, setScrimRecordError] = useState(null);
     const [scrimForm, setScrimForm] = useState({
         scrimTournament: Number(tournamentId),
         scrimRedTeam: "",
@@ -65,11 +69,40 @@ export default function TournamentDetail(){
         }
     }, []); 
 
+    const loadScrimList = useCallback( async() => {
+        try {
+            setScrimError(null);
+            const {data} = await axios.get(`/scrim/${tournamentId}`);
+            setScrimList(data);
+        } catch (error) {
+            console.error("스크림 목록 로딩 오류", error);
+            setScrimError("스크림 목록을 불러오지 못했습니다.");
+        }
+    }, [tournamentId]);
+
+    const loadScrimRecordList = useCallback( async() => {
+        try {
+            setScrimRecordError(null);
+            const {data} = await axios.get(`/scrim/record/${tournamentId}`);
+            setScrimRecordList(data);
+        } catch (error) {
+            console.error("팀별 스크림 승률 로딩 오류", error);
+            setScrimRecordError("팀별 스크림 승률을 불러오지 못했습니다.");
+        }
+    }, [tournamentId]);
+
     useEffect(()=>{
+        if (!tournamentId) return;
         loadData();
         loadTeamData();
         loadHostData();
     },[loadData, loadTeamData, loadHostData]);
+
+    useEffect(()=>{
+        if (!tournamentId) return;
+        loadScrimList();
+        loadScrimRecordList();
+    },[tournamentId]);
 
     const deleteHost = useCallback(async(hostStreamer, hostTournament)=>{
         try{
@@ -170,6 +203,8 @@ export default function TournamentDetail(){
                 scrimBlueScore: 0,
                 scrimDate: new Date().toISOString().split("T")[0],
             });
+            await loadScrimList();
+            await loadScrimRecordList();
             loadTeamData();
             loadData();
         } catch (error) {
@@ -315,7 +350,102 @@ export default function TournamentDetail(){
             </div>
         )}
 
-        <div className="team-list mt-4">
+        {/* 스크림 정보 및 팀 목록 */}
+        <div className="row mt-4 g-3">
+            {/* 왼쪽: 팀별 스크림 승률 및 전체 스크림 목록 */}
+            <div className="col-lg-4 col-12">
+                {/* 팀별 스크림 승률 */}
+                <div className="mb-4">
+                    <h4 className="mb-3">팀별 스크림 승률</h4>
+                    {scrimRecordError && (
+                        <div className="alert alert-danger mb-3" role="alert">
+                            {scrimRecordError}
+                        </div>
+                    )}
+                    <div className="card bg-dark border-secondary text-white">
+                        {scrimRecordList.length === 0 ? (
+                            <div className="card-body text-center">
+                                등록된 스크림 전적이 없습니다.
+                            </div>
+                        ) : (
+                            <div className="table-responsive">
+                                <table className="table table-dark table-striped mb-0 align-middle">
+                                    <thead className="text-center table-secondary text-dark">
+                                        <tr>
+                                            <th>팀명</th>
+                                            <th>세트 전적</th>
+                                            <th className="text-end">승률</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {scrimRecordList.map(record => (
+                                            <tr key={`${record.scrimTournament}-${record.scrimTeam}`} className="border-secondary">
+                                                <td>{record.teamName}</td>
+                                                <td className="text-center">{record.scrimWinCount}승 {record.scrimLoseCount}패</td>
+                                                <td className="text-end fw-bold" style={{ color: "#ffc107" }}>{record.scrimWinRate}%</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* 전체 스크림 목록 */}
+                <div>
+                    <h4 className="mb-3">전체 스크림 목록</h4>
+                    {scrimError && (
+                        <div className="alert alert-danger mb-3" role="alert">
+                            {scrimError}
+                        </div>
+                    )}
+                    <div className="card bg-dark border-secondary text-white">
+                        {scrimList.length === 0 ? (
+                            <div className="card-body text-center">
+                                등록된 스크림 기록이 없습니다.
+                            </div>
+                        ) : (
+                            <div className="table-responsive">
+                                <table className="table table-dark table-striped mb-0 align-middle">
+                                    <thead className="text-center table-secondary text-dark">
+                                        <tr>
+                                            <th>날짜</th>
+                                            <th>대전 결과</th>
+                                            <th>승리팀</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {scrimList.map(scrim => (
+                                            <tr key={scrim.scrimId} className="border-secondary text-center">
+                                                <td>
+                                                    <small>{scrim.scrimDate?.substring(0, 10)}</small>
+                                                </td>
+                                                <td>
+                                                    <div className="d-flex align-items-center justify-content-center gap-2">
+                                                        <span className="badge bg-danger">RED</span>
+                                                        <span className="fw-bold">{scrim.scrimRedName}</span>
+                                                        <span className="mx-2 fw-bold" style={{ color: "#ffc107" }}>{scrim.scrimRedScore}:{scrim.scrimBlueScore}</span>
+                                                        <span className="fw-bold">{scrim.scrimBlueName}</span>
+                                                        <span className="badge bg-primary">BLUE</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span style={{ color: "#28a745", fontWeight: "bold" }}>{scrim.scrimWinnerName}</span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* 오른쪽: 기존 팀 목록 */}
+            <div className="col-lg-8 col-12">
+                <div className="team-list">
         {team.map((team) => (
             <div className={`team-card
                 ${team.teamRanking === "우승" ? "is-champion" : ""}
@@ -390,6 +520,6 @@ export default function TournamentDetail(){
                 </div>
             </div>
             </div>
-        ))}
-        </div>
+        ))}                </div>
+            </div>        </div>
 </>)}
