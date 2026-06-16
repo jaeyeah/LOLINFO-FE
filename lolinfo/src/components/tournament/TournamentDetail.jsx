@@ -22,6 +22,9 @@ export default function TournamentDetail(){
     const [showScrimModal, setShowScrimModal] = useState(false);
     const [scrimError, setScrimError] = useState(null);
     const [scrimRecordError, setScrimRecordError] = useState(null);
+    const [selectedScrimTeam, setSelectedScrimTeam] = useState(null);
+    const [vsRecordList, setVsRecordList] = useState([]);
+    const [vsRecordLoading, setVsRecordLoading] = useState(false);
     const [scrimForm, setScrimForm] = useState({
         scrimTournament: Number(tournamentId),
         scrimRedTeam: "",
@@ -154,6 +157,22 @@ export default function TournamentDetail(){
     const closeScrimModal = useCallback(() => {
         setShowScrimModal(false);
     }, []);
+
+    const openVsRecordModal = async (team) => {
+        try {
+            setSelectedScrimTeam(team);
+            setVsRecordList([]);
+            setVsRecordLoading(true);
+
+            const resp = await axios.get(`/scrim/vs/${tournamentId}/${team.teamId}`);
+            setVsRecordList(resp.data);
+        } catch (e) {
+            console.error("상대전적 조회 실패", e);
+            alert("상대전적 조회에 실패했습니다.");
+        } finally {
+            setVsRecordLoading(false);
+        }
+    };
 
     const handleScrimFormChange = (event) => {
         const { name, value } = event.target;
@@ -477,12 +496,18 @@ export default function TournamentDetail(){
                 #{team.teamRanking}
                 {team.teamName && <span className="team-name ms-2 p-1">{team.teamName} </span> }
                 {/* 추후, 관리자만 수정가능하도록 지정 */}
-                {isAdmin === true && (
-                    <div className="ms-auto">
-                        <Link to={`/team/edit/${team.teamId}`} className="p-1 fs-5 ms-1 btn btn-warning"><FaEdit/></Link>
-                        <button className="p-1 ms-1 fs-5 btn btn-danger" onClick={() => deleteTeam(team.teamId)}><MdDelete/></button>
-                    </div>
-                )}
+                <div className="ms-auto d-flex gap-2 align-items-center">
+                    <button type="button" className="ms-1 btn btn-sm btn-outline-dark"
+                        data-bs-toggle="modal" data-bs-target="#vsRecordModal" onClick={() => openVsRecordModal(team)}>
+                        상세전적
+                    </button>
+                    {isAdmin === true && (
+                        <>
+                            <Link to={`/team/edit/${team.teamId}`} className="p-1 fs-5 ms-1 btn btn-warning"><FaEdit/></Link>
+                            <button className="p-1 ms-1 fs-5 btn btn-danger" onClick={() => deleteTeam(team.teamId)}><MdDelete/></button>
+                        </>
+                    )}
+                </div>
             </div>
             {/* 감독 표시 */}
             {team.staffId !== null && (
@@ -540,4 +565,63 @@ export default function TournamentDetail(){
             </div>
         ))}                </div>
             </div>        </div>
+
+        <div className="modal fade" id="vsRecordModal" tabIndex="-1" aria-hidden="true">
+            <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content bg-dark text-light border-secondary">
+                    <div className="modal-header border-secondary">
+                        <h5 className="modal-title">
+                            {selectedScrimTeam?.teamName} 스크림 상대전적
+                        </h5>
+                        <button
+                            type="button"
+                            className="btn-close btn-close-white"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div className="modal-body">
+                        {vsRecordLoading ? (
+                            <div className="text-center text-secondary py-3">
+                                상대전적을 불러오는 중입니다...
+                            </div>
+                        ) : vsRecordList.length === 0 ? (
+                            <div className="text-center text-secondary py-3">
+                                등록된 상대전적이 없습니다.
+                            </div>
+                        ) : (
+                            <div className="table-responsive">
+                                <table className="table table-dark table-sm table-striped text-center align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>상대팀</th>
+                                            <th>세트 전적</th>
+                                            <th>승률</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {vsRecordList.map(record => (
+                                            <tr key={record.vsTeam}>
+                                                <td>{record.vsTeamName}</td>
+                                                <td>{record.vsWinCount}승 {record.vsLoseCount}패</td>
+                                                <td>{record.vsWinRate}%</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                    <div className="modal-footer border-secondary">
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                        >
+                            닫기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 </>)}
