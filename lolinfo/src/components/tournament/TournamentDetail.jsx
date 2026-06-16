@@ -84,6 +84,7 @@ export default function TournamentDetail(){
         try {
             setScrimRecordError(null);
             const {data} = await axios.get(`/scrim/record/${tournamentId}`);
+            console.log("팀별 스크림 승률 데이터:", data);
             setScrimRecordList(data);
         } catch (error) {
             console.error("팀별 스크림 승률 로딩 오류", error);
@@ -351,12 +352,12 @@ export default function TournamentDetail(){
         )}
 
         {/* 스크림 정보 및 팀 목록 */}
-        <div className="row mt-4 g-3">
+        <div className="row g-3">
             {/* 왼쪽: 팀별 스크림 승률 및 전체 스크림 목록 */}
             <div className="col-lg-4 col-12">
                 {/* 팀별 스크림 승률 */}
                 <div className="mb-4">
-                    <h4 className="mb-3">팀별 스크림 승률</h4>
+                    <h4 className="mb-3 detail-section-title">팀별 스크림 승률</h4>
                     {scrimRecordError && (
                         <div className="alert alert-danger mb-3" role="alert">
                             {scrimRecordError}
@@ -372,17 +373,25 @@ export default function TournamentDetail(){
                                 <table className="table table-dark table-striped mb-0 align-middle">
                                     <thead className="text-center table-secondary text-dark">
                                         <tr>
-                                            <th>팀명</th>
-                                            <th>세트 전적</th>
-                                            <th className="text-end">승률</th>
+                                            <th style={{ width: "40%" }}>팀명</th>
+                                            <th style={{ width: "30%" }}>세트 전적</th>
+                                            <th style={{ width: "30%" }}>승률</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {scrimRecordList.map(record => (
-                                            <tr key={`${record.scrimTournament}-${record.scrimTeam}`} className="border-secondary">
+                                            <tr key={`${record.scrimTournament}-${record.scrimTeam}`} className="border-secondary text-center">
                                                 <td>{record.teamName}</td>
-                                                <td className="text-center">{record.scrimWinCount}승 {record.scrimLoseCount}패</td>
-                                                <td className="text-end fw-bold" style={{ color: "#ffc107" }}>{record.scrimWinRate}%</td>
+                                                <td className="text-center">{record.scrimWinCount}승 {record.scrimLoseCount}패 
+                                                </td>
+                                                <td>
+                                                    <div className="progress position-relative" style={{ height: "24px", width: "100%" }}>
+                                                        <div  className={`progress-bar ${ record.scrimWinRate <= 40 ? "bg-danger"
+                                                            : record.scrimWinRate < 50 ? "bg-warning"
+                                                            : record.scrimWinRate < 60 ? "bg-secondary" : "bg-primary" }`} style={{ width: `${record.scrimWinRate}%` }} />
+                                                        <span className="position-absolute top-50 end-0 translate-middle-y pe-2 fw-bold text-dark fs-6" style={{ zIndex: 1 }}> {record.scrimWinRate}%</span>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -394,7 +403,7 @@ export default function TournamentDetail(){
 
                 {/* 전체 스크림 목록 */}
                 <div>
-                    <h4 className="mb-3">전체 스크림 목록</h4>
+                    <h4 className="mb-3 detail-section-title">전체 스크림 목록</h4>
                     {scrimError && (
                         <div className="alert alert-danger mb-3" role="alert">
                             {scrimError}
@@ -412,29 +421,37 @@ export default function TournamentDetail(){
                                         <tr>
                                             <th>날짜</th>
                                             <th>대전 결과</th>
-                                            <th>승리팀</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {scrimList.map(scrim => (
-                                            <tr key={scrim.scrimId} className="border-secondary text-center">
-                                                <td>
-                                                    <small>{scrim.scrimDate?.substring(0, 10)}</small>
-                                                </td>
-                                                <td>
-                                                    <div className="d-flex align-items-center justify-content-center gap-2">
-                                                        <span className="badge bg-danger">RED</span>
-                                                        <span className="fw-bold">{scrim.scrimRedName}</span>
-                                                        <span className="mx-2 fw-bold" style={{ color: "#ffc107" }}>{scrim.scrimRedScore}:{scrim.scrimBlueScore}</span>
-                                                        <span className="fw-bold">{scrim.scrimBlueName}</span>
-                                                        <span className="badge bg-primary">BLUE</span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span style={{ color: "#28a745", fontWeight: "bold" }}>{scrim.scrimWinnerName}</span>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                        {scrimList.map(scrim => {
+                                            const redWon = scrim.scrimWinner === scrim.scrimRedTeam;
+                                            const blueWon = scrim.scrimWinner === scrim.scrimBlueTeam;
+                                            return (
+                                                <tr key={scrim.scrimId} className="border-secondary text-center">
+                                                    <td>
+                                                        {new Date(scrim.scrimDate).toLocaleDateString("ko-KR")}
+                                                    </td>
+                                                    <td>
+                                                        <div className="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                                                            <div className="d-flex align-items-center gap-1">
+                                                                <span className={`badge ${redWon ? 'bg-success' : blueWon ? 'bg-danger' : 'bg-secondary'}`}>
+                                                                    {redWon ? '승' : blueWon ? '패' : '무'}
+                                                                </span>
+                                                                <span>{scrim.scrimRedName}</span>
+                                                            </div>
+                                                            <span className="mx-2 fw-bold" style={{ color: "#ffc107" }}>{scrim.scrimRedScore}:{scrim.scrimBlueScore}</span>
+                                                            <div className="d-flex align-items-center gap-1">
+                                                                <span>{scrim.scrimBlueName}</span>
+                                                                <span className={`badge ${blueWon ? 'bg-success' : redWon ? 'bg-danger' : 'bg-secondary'}`}>
+                                                                    {blueWon ? '승' : redWon ? '패' : '무'}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </div>
@@ -445,6 +462,7 @@ export default function TournamentDetail(){
 
             {/* 오른쪽: 기존 팀 목록 */}
             <div className="col-lg-8 col-12">
+                <h4 className="mb-3 detail-section-title">Team</h4>
                 <div className="team-list">
         {team.map((team) => (
             <div className={`team-card
