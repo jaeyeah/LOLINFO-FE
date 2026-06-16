@@ -6,6 +6,7 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
+import "./Tournament.css";
 
 export default function TournamentDetail(){
 
@@ -252,52 +253,60 @@ export default function TournamentDetail(){
         {showScrimModal && (
             <div className="modal fade show d-block" tabIndex="-1" role="dialog" aria-modal="true" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
                 <div className="modal-dialog modal-dialog-centered" role="document">
-                    <div className="modal-content">
+                    <div className="modal-content insert-form p-0">
                         <div className="modal-header">
-                            <h5 className="modal-title">스크림 등록</h5>
+                            <h5 className="modal-title text-white">스크림 등록</h5>
                             <button type="button" className="btn-close" aria-label="Close" onClick={closeScrimModal}></button>
                         </div>
                         <div className="modal-body">
-                            <div className="mb-3">
-                                <label htmlFor="scrimRedTeam" className="form-label">레드팀</label>
-                                <select id="scrimRedTeam" name="scrimRedTeam" className="form-select" value={scrimForm.scrimRedTeam} onChange={handleScrimFormChange}>
-                                    <option value="">팀 선택</option>
-                                    {team.map((teamItem) => (
-                                        <option key={teamItem.teamId} value={teamItem.teamId}>
-                                            {teamItem.teamName}
-                                        </option>
-                                    ))}
-                                </select>
+                            <div className="row mt-2">
+                                <label className="col-sm-3 col-form-label text-white">레드팀</label>
+                                <div className="col-sm-9">
+                                    <select id="scrimRedTeam" name="scrimRedTeam" className="form-select" value={scrimForm.scrimRedTeam} onChange={handleScrimFormChange}>
+                                        <option value="">팀 선택</option>
+                                        {team.map((teamItem) => (
+                                            <option key={teamItem.teamId} value={teamItem.teamId} >
+                                                {teamItem.teamName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
-                            <div className="mb-3">
-                                <label htmlFor="scrimBlueTeam" className="form-label">블루팀</label>
-                                <select id="scrimBlueTeam" name="scrimBlueTeam" className="form-select" value={scrimForm.scrimBlueTeam} onChange={handleScrimFormChange}>
-                                    <option value="">팀 선택</option>
-                                    {team.map((teamItem) => (
-                                        <option key={teamItem.teamId} value={teamItem.teamId}>
-                                            {teamItem.teamName}
-                                        </option>
-                                    ))}
-                                </select>
+                            <div className="row mt-2">
+                                <label className="col-sm-3 col-form-label text-white">블루팀</label>
+                                <div className="col-sm-9">
+                                    <select id="scrimBlueTeam" name="scrimBlueTeam" className="form-select" value={scrimForm.scrimBlueTeam} onChange={handleScrimFormChange}>
+                                        <option value="">팀 선택</option>
+                                        {team.map((teamItem) => (
+                                            <option key={teamItem.teamId} value={teamItem.teamId}>
+                                                {teamItem.teamName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
-                            <div className="row">
-                                <div className="col-6 mb-3">
-                                    <label htmlFor="scrimRedScore" className="form-label">레드팀 스코어</label>
+                            <div className="row mt-2">
+                                <label className="col-sm-3 col-form-label text-white">레드팀 승리</label>
+                                <div className="col-sm-9">
                                     <input id="scrimRedScore" name="scrimRedScore" type="number" min="0" className="form-control" value={scrimForm.scrimRedScore} onChange={handleScrimFormChange} />
                                 </div>
-                                <div className="col-6 mb-3">
-                                    <label htmlFor="scrimBlueScore" className="form-label">블루팀 스코어</label>
+                            </div>
+                            <div className="row mt-2">
+                                <label className="col-sm-3 col-form-label text-white">블루팀 승리</label>
+                                <div className="col-sm-9">
                                     <input id="scrimBlueScore" name="scrimBlueScore" type="number" min="0" className="form-control" value={scrimForm.scrimBlueScore} onChange={handleScrimFormChange} />
                                 </div>
                             </div>
-                            <div className="mb-3">
-                                <label htmlFor="scrimDate" className="form-label">스크림 날짜</label>
-                                <input id="scrimDate" name="scrimDate" type="date" className="form-control" value={scrimForm.scrimDate} onChange={handleScrimFormChange} />
+                            <div className="row mt-2">
+                                <label className="col-sm-3 col-form-label text-white">스크림 날짜</label>
+                                <div className="col-sm-9">
+                                    <input id="scrimDate" name="scrimDate" type="date" className="form-control" value={scrimForm.scrimDate} onChange={handleScrimFormChange} />
+                                </div>
                             </div>
                         </div>
-                        <div className="modal-footer">
+                        <div className="modal-footer d-flex justify-content-between">
                             <button type="button" className="btn btn-secondary" onClick={closeScrimModal}>취소</button>
-                            <button type="button" className="btn btn-primary" onClick={submitScrim}>등록</button>
+                            <button type="button" className="btn btn-lg btn-insert" onClick={submitScrim}>등록</button>
                         </div>
                     </div>
                 </div>
