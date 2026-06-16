@@ -7,7 +7,7 @@ import { accessTokenState, loginIdState, loginLevelState, loginNicknameState, re
 import "./Member.css";
 import { FaUserPlus } from "react-icons/fa";
 import { cleanExpiredViews } from '../../utils/localStorage/cleanStorage';
-
+import Swal from "sweetalert2";
 
 
 export default function MemberLogin(){
@@ -38,10 +38,26 @@ export default function MemberLogin(){
             //uuid 불러오기 : 방문통계용
             const visitorId = localStorage.getItem("sooplol_visitor_id");
             
+             // 로딩창 표시
+            Swal.fire({
+                title: "로그인 중입니다",
+                text: "잠시만 기다려주세요.",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+            });
+
+
+
             //로그인 시도
             const {data} = await axios.post("/member/login", member,{
                 headers : { "VisitorId" : visitorId}
             });
+            // 로딩창 닫기
+            Swal.close();
 
             // Authorization에 accesstoken 저장
             axios.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
@@ -59,11 +75,21 @@ export default function MemberLogin(){
             cleanExpiredViews();
             // 화면이동
             navigate("/");
+            
         }
         catch(err){
+            // 로딩창 닫기
+            Swal.close();
             setLogin(false);
             setLoginResult(false);
             console.log("로그인 실패");
+            Swal.fire({
+                icon: "error",
+                title: "로그인 실패",
+                text: "아이디 또는 비밀번호를 확인해주세요.",
+                confirmButtonText: "확인",
+                confirmButtonColor: "#ea8685",
+            });
         }
     },[member])
 
