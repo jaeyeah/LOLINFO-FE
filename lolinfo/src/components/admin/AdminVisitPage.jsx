@@ -51,10 +51,8 @@ export default function AdminVisitPage() {
     };
 
     useEffect(() => {
-        fetchVisits(mode);
-    }, [mode, selectedMonth, selectedYear]);
-
-    
+        fetchVisits('month');
+    }, []);
 
     const formatDate = (value, mode) => {
         if (!value) return '';
@@ -85,13 +83,16 @@ export default function AdminVisitPage() {
                 <div className="d-flex flex-wrap align-items-center gap-2 admin-visit-input-row">
                     {mode === 'month' ? (
                         <label className="mb-0 text-nowrap">
-                            <input className="form-control form-control-sm ms-2"  type="month" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}/>
+                            <input className="form-control form-control-sm ms-2" type="month" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} />
                         </label>
                     ) : (
                         <label className="mb-0 text-nowrap">
-                            <input className="form-control form-control-sm ms-2"  type="number" min="1900"  max="2100"  value={selectedYear}  onChange={(e) => setSelectedYear(e.target.value)} />
+                            <input className="form-control form-control-sm ms-2" type="number" min="1900" max="2100" value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} />
                         </label>
                     )}
+                    <button className="btn btn-sm btn-light" type="button" onClick={() => fetchVisits(mode)}>
+                        조회
+                    </button>
                 </div>
             </div>
 

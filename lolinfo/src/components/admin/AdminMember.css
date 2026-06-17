@@ -23,6 +23,40 @@
     border-collapse: collapse;
 }
 
+.admin-use-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.admin-use-summary-card {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 16px 20px;
+    min-width: 180px;
+}
+
+.admin-use-table {
+    width: 100%;
+    color: #e0e0e0;
+    border-collapse: collapse;
+}
+
+.admin-use-table th,
+.admin-use-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #333;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.admin-use-table th {
+    background-color: #2c2c2c;
+    font-weight: bold;
+}
+
 .admin-table th {
     background-color: #2c2c2c;
     padding: 15px;
@@ -167,7 +201,7 @@
         left: -9999px;
     }
 
-    /* .admin-visit-table td:nth-of-type(1)::before { 
+    .admin-visit-table td:nth-of-type(1)::before { 
         content: "날짜"; 
         font-weight: bold; color: #adb5bd; 
     }
@@ -178,7 +212,44 @@
     .admin-visit-table td:nth-of-type(3)::before { 
         content: "로그인 방문자"; 
         font-weight: bold; color: #adb5bd; 
-    } */
+    }
+    .admin-visit-table td:nth-of-type(4)::before { 
+        content: "비로그인 방문자"; 
+        font-weight: bold; color: #adb5bd; 
+    }
+
+    .admin-use-summary {
+        gap: 1rem;
+    }
+
+    .admin-use-summary-card {
+        background-color: #1f1f1f;
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 16px 20px;
+        min-width: 180px;
+    }
+
+    .admin-use-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .admin-use-table td:nth-of-type(1)::before {
+        content: "날짜";
+        font-weight: bold; color: #adb5bd;
+    }
+
+    .admin-use-table td:nth-of-type(2)::before {
+        content: "기능";
+        font-weight: bold; color: #adb5bd;
+    }
+
+    .admin-use-table td:nth-of-type(3)::before {
+        content: "이용횟수";
+        font-weight: bold; color: #adb5bd;
+    }
 
     .admin-visit-filter {
         gap: 0.5rem;
