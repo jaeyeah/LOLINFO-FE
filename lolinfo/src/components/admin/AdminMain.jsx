@@ -43,6 +43,10 @@ export default function AdminMain() {
                     <NavLink to="/admin/visit" className="list-group-item admin-menu-item" onClick={closeSidebar}>
                         📈 방문 통계
                     </NavLink>
+
+                    <NavLink to="/admin/visit-use" className="list-group-item admin-menu-item" onClick={closeSidebar}>
+                        🧭 기능별 통계
+                    </NavLink>
                 </div>
             </div>
 
