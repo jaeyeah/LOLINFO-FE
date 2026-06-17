@@ -134,6 +134,9 @@
         font-weight: bold; color: #adb5bd; 
     }
 
+
+
+
     /* 5. 셀렉트 박스와 버튼 크기 키우기 (터치 편하게) */
     .admin-table select {
         width: 100% !important; /* 꽉 채우기 */
@@ -154,5 +157,26 @@
     .member-search-box input,
     .member-search-box button {
         width: 100% !important;
+    }
+
+
+ /* -------- Admin visit table----------- */
+    .admin-visit-table thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .admin-visit-table td:nth-of-type(1)::before { 
+        content: ""; 
+        font-weight: bold; color: #adb5bd; 
+    }
+    .admin-visit-table td:nth-of-type(2)::before { 
+        content: ""; 
+        font-weight: bold; color: #adb5bd; 
+    }
+    .admin-visit-table td:nth-of-type(3)::before { 
+        content: ""; 
+        font-weight: bold; color: #adb5bd; 
     }
 }

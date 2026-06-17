@@ -32,12 +32,12 @@ export default function AdminVisitPage() {
 
     const formatDate = (d) => {
         if (!d) return '';
-        try {
-            const iso = new Date(d).toISOString();
-            return iso.slice(0, 10);
-        } catch (e) {
-            return d;
-        }
+        
+        const date = new Date(d);
+        const year = String(date.getFullYear()).slice(2);
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}년 ${month}/${day}`;
     };
     const maxVisitCount = Math.max(
         ...visits.map(v => v.visitCount || 0),1
@@ -53,7 +53,7 @@ export default function AdminVisitPage() {
                 <div className="text-danger">{error}</div>
             ) : (
                 <div className="admin-table-container">
-                    <table className="admin-table w-100 text-center">
+                    <table className="admin-visit-table w-100 text-center">
                         <thead>
                             <tr className="bg-secondary text-white bg-opacity-25">
                                 <th className="p-3">날짜</th>
@@ -77,7 +77,7 @@ export default function AdminVisitPage() {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="p-3">{v.VisitLogin ?? 0}</td>
+                                            <td className="p-3">{v.visitLogin ?? 0}</td>
                                         </tr>
                                     )
                                 })
