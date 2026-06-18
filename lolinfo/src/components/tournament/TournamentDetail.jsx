@@ -5,7 +5,7 @@ import { buildProfileUrl } from "../../utils/profileUrl";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useAtomValue } from "jotai";
-import { adminState, loginState } from "../../utils/jotai";
+import { adminState, loginIdState, loginState } from "../../utils/jotai";
 import "./Tournament.css";
 import "./Scrim.css";
 
@@ -13,6 +13,7 @@ export default function TournamentDetail(){
 
     const isLogin = useAtomValue(loginState);
     const isAdmin = useAtomValue(adminState);
+    const loginId = useAtomValue(loginIdState);
 
     const {tournamentId} = useParams();
     const [tournament, setTournament] = useState({});
@@ -527,11 +528,12 @@ export default function TournamentDetail(){
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            {isAdmin && (
+                                                            {(isAdmin || scrim.scrimCreatedBy === loginId) ? (
                                                                 <td>
                                                                     <button className="btn btn-sm btn-warning" onClick={() => startEditScrim(scrim)}>수정</button>
                                                                     <button className="btn btn-sm btn-danger" onClick={() => deleteScrim(scrim.scrimId)}>삭제</button>
                                                                 </td>
+                                                                ):( <></>
                                                             )}
                                                     </>
                                                     )}
