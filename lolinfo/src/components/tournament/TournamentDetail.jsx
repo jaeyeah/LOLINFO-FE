@@ -238,6 +238,40 @@ export default function TournamentDetail(){
     };
 
     // 스크림 수정
+    // 수정을 위한 useState
+    const [editScrimId, setEditScrimId] = useState(null);
+    const [editScrimForm, setEditScrimForm] = useState({
+        scrimDate: new Date().toISOString().split("T")[0],
+        scrimRedScore: 0,
+        scrimBlueScore: 0,
+    });
+    const startEditScrim = (scrim) => {
+        setEditScrimId(scrim.scrimId);
+        setEditScrimForm({
+            scrimDate: scrim.scrimDate,
+            scrimRedScore: scrim.scrimRedScore,
+            scrimBlueScore: scrim.scrimBlueScore,
+        });
+    };
+    // 스크림 수정 저장
+    const updateScrim = async () => {
+        try {
+            await axios.patch("/scrim/", {
+                scrimId: editScrimId,
+                scrimDate: editScrimForm.scrimDate,
+                scrimRedScore: Number(editScrimForm.scrimRedScore),
+                scrimBlueScore: Number(editScrimForm.scrimBlueScore),
+            });
+
+            setEditScrimId(null);
+            loadScrimList();
+            loadScrimRecordList();
+        } catch (error) {
+            console.error("스크림 수정 실패", error);
+            alert("스크림 수정 중 오류가 발생했습니다.");
+        }
+    };
+
 
 
 
@@ -472,30 +506,68 @@ export default function TournamentDetail(){
                                             const blueWon = scrim.scrimWinner === scrim.scrimBlueTeam;
                                             return (
                                                 <tr key={scrim.scrimId} className="border-secondary text-center">
-                                                    <td>
-                                                        {new Date(scrim.scrimDate).toLocaleDateString("ko-KR")}
-                                                    </td>
-                                                    <td>
-                                                        <div className="d-flex align-items-center justify-content-center gap-2 flex-wrap">
-                                                            <div className="d-flex align-items-center gap-1">
-                                                                <span className={`badge ${redWon ? 'bg-success' : blueWon ? 'bg-danger' : 'bg-secondary'}`}>
-                                                                    {redWon ? '승' : blueWon ? '패' : '무'}
-                                                                </span>
-                                                                <span>{scrim.scrimRedName}</span>
-                                                            </div>
-                                                            <span className="mx-2 fw-bold" style={{ color: "#ffc107" }}>{scrim.scrimRedScore}:{scrim.scrimBlueScore}</span>
-                                                            <div className="d-flex align-items-center gap-1">
-                                                                <span>{scrim.scrimBlueName}</span>
-                                                                <span className={`badge ${blueWon ? 'bg-success' : redWon ? 'bg-danger' : 'bg-secondary'}`}>
-                                                                    {blueWon ? '승' : redWon ? '패' : '무'}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    {isAdmin && (
+                                                    {editScrimId === scrim.scrimId ? (
+                                                        <>
+                                                            <td>
+                                                                <input type="date" className="form-control form-control-sm" value={editScrimForm.scrimDate}
+                                                                    onChange={(e) => setEditScrimForm((prev) => ({ ...prev, scrimDate: e.target.value }))}
+                                                                />
+                                                            </td>
+
+                                                            <td>
+                                                                <div className="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                                                                    <span>{scrim.scrimRedName}</span>
+                                                                    <input type="text" className="form-control form-control-sm" value={editScrimForm.scrimRedScore}
+                                                                        onChange={(e) => setEditScrimForm((prev) => ({ ...prev, scrimRedScore: e.target.value }))}
+                                                                    />
+                                                                    <span>:</span>
+                                                                    <input type="text" className="form-control form-control-sm" value={editScrimForm.scrimBlueScore}
+                                                                        onChange={(e) => setEditScrimForm((prev) => ({ ...prev, scrimBlueScore: e.target.value }))}
+                                                                    />
+                                                                    <span>{scrim.scrimBlueName}</span>
+                                                                </div>
+                                                            </td>
+
+                                                            <td>
+                                                                <div className="d-flex gap-2 justify-content-center">
+                                                                    <button className="btn btn-sm btn-success" onClick={updateScrim}>
+                                                                        저장
+                                                                    </button>
+                                                                    <button className="btn btn-sm btn-secondary" onClick={() => {setEditScrimId(null); }}>
+                                                                        취소
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </>
+                                                    ) : ( <>
                                                         <td>
-                                                            <button className="btn btn-sm btn-danger" onClick={() => deleteScrim(scrim.scrimId)}>삭제</button>
+                                                            {new Date(scrim.scrimDate).toLocaleDateString("ko-KR")}
                                                         </td>
+                                                        <td>
+                                                            <div className="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                                                                <div className="d-flex align-items-center gap-1">
+                                                                    <span className={`badge ${redWon ? 'bg-success' : blueWon ? 'bg-danger' : 'bg-secondary'}`}>
+                                                                        {redWon ? '승' : blueWon ? '패' : '무'}
+                                                                    </span>
+                                                                    <span>{scrim.scrimRedName}</span>
+                                                                </div>
+                                                                <span className="mx-2 fw-bold" style={{ color: "#ffc107" }}>{scrim.scrimRedScore}:{scrim.scrimBlueScore}</span>
+                                                                <div className="d-flex align-items-center gap-1">
+                                                                    <span>{scrim.scrimBlueName}</span>
+                                                                    <span className={`badge ${blueWon ? 'bg-success' : redWon ? 'bg-danger' : 'bg-secondary'}`}>
+                                                                        {blueWon ? '승' : redWon ? '패' : '무'}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        
+                                                        {isAdmin && (
+                                                            <td>
+                                                                <button className="btn btn-sm btn-warning" onClick={() => setEditScrimId(scrim.scrimId)}>수정</button>
+                                                                <button className="btn btn-sm btn-danger" onClick={() => deleteScrim(scrim.scrimId)}>삭제</button>
+                                                            </td>
+                                                        )}
+                                                    </>
                                                     )}
                                                 </tr>
                                             );
