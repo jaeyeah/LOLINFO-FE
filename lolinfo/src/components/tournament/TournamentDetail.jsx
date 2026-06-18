@@ -237,6 +237,25 @@ export default function TournamentDetail(){
         }
     };
 
+    // 스크림 수정
+
+
+
+    // 스크림 삭제
+    const deleteScrim = async (scrimId) => {
+        if (!window.confirm("정말로 이 스크림 전적을 삭제하시겠습니까?")) {
+            return;
+        }
+        try {
+            await axios.delete(`/scrim/${scrimId}`);
+            loadScrimList();
+            loadScrimRecordList();
+        } catch (error) {
+            console.error("스크림 삭제 실패", error);
+            alert("스크림 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
+        }
+    };
+
     //render
     return(<>
         <h2 className="text-center page-title p-3">{tournament.tournamentName} : 대회 상세</h2>
@@ -444,6 +463,7 @@ export default function TournamentDetail(){
                                         <tr>
                                             <th>날짜</th>
                                             <th>대전 결과</th>
+                                            {isAdmin && <th>관리</th>}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -472,6 +492,11 @@ export default function TournamentDetail(){
                                                             </div>
                                                         </div>
                                                     </td>
+                                                    {isAdmin && (
+                                                        <td>
+                                                            <button className="btn btn-sm btn-danger" onClick={() => deleteScrim(scrim.scrimId)}>삭제</button>
+                                                        </td>
+                                                    )}
                                                 </tr>
                                             );
                                         })}
