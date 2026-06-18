@@ -255,15 +255,18 @@ export default function TournamentDetail(){
         scrimBlueScore: 0,
         scrimHour: 0,
     });
-    const startEditScrim = (scrim) => {
+    const startEditScrim = useCallback((scrim) => {
         setEditScrimId(scrim.scrimId);
+
         setEditScrimForm({
-            scrimDate: scrim.scrimDate,
-            scrimRedScore: scrim.scrimRedScore,
-            scrimBlueScore: scrim.scrimBlueScore,
-            scrimHour: scrim.scrimHour,
+            scrimId: scrim.scrimId,
+            scrimDate: String(scrim.scrimDate).slice(0, 10),
+            scrimHour: scrim.scrimHour ?? "",
+            scrimRedScore: scrim.scrimRedScore ?? 0,
+            scrimBlueScore: scrim.scrimBlueScore ?? 0,
+            scrimMatchType: scrim.scrimMatchType ?? "스크림",
         });
-    };
+    }, []);
     // 스크림 수정 저장
     const updateScrim = async () => {
         try {
@@ -467,7 +470,7 @@ export default function TournamentDetail(){
 
                                                             <td>
                                                                 <div className="d-flex align-items-center justify-content-center gap-2 flex-wrap">
-                                                                    <span class="text-secondary">{scrim.scrimRedName}</span>
+                                                                    <span className="text-secondary">{scrim.scrimRedName}</span>
                                                                     <input type="number" min="0" max="5" style={{ width: "60px" }} className="form-control form-control-sm" value={editScrimForm.scrimRedScore}
                                                                         onChange={(e) => setEditScrimForm((prev) => ({ ...prev, scrimRedScore: e.target.value }))}
                                                                     />
@@ -475,7 +478,7 @@ export default function TournamentDetail(){
                                                                     <input type="number" min="0" max="5" style={{ width: "60px" }} className="form-control form-control-sm" value={editScrimForm.scrimBlueScore}
                                                                         onChange={(e) => setEditScrimForm((prev) => ({ ...prev, scrimBlueScore: e.target.value }))}
                                                                     />
-                                                                    <span class="text-secondary">{scrim.scrimBlueName}</span>
+                                                                    <span className="text-secondary">{scrim.scrimBlueName}</span>
                                                                 </div>
                                                             </td>
 
@@ -526,7 +529,7 @@ export default function TournamentDetail(){
                                                             </td>
                                                             {isAdmin && (
                                                                 <td>
-                                                                    <button className="btn btn-sm btn-warning" onClick={() => setEditScrimId(scrim.scrimId)}>수정</button>
+                                                                    <button className="btn btn-sm btn-warning" onClick={() => startEditScrim(scrim)}>수정</button>
                                                                     <button className="btn btn-sm btn-danger" onClick={() => deleteScrim(scrim.scrimId)}>삭제</button>
                                                                 </td>
                                                             )}

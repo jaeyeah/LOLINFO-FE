@@ -13,12 +13,12 @@
     left: 0;
     top: 8px;
     bottom: 8px;
-    width: 4px;
+    width: 6px;
     border-radius: 4px;
 }
 
 .match-official > td:first-child::before {
-    background-color: #dadada;
+    background-color: #06ff06d7;
 }
 
 .match-semifinal > td:first-child::before {
