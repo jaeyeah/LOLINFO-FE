@@ -7,6 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
 import "./Tournament.css";
+import "./Scrim.css";
 
 export default function TournamentDetail(){
 
@@ -32,6 +33,8 @@ export default function TournamentDetail(){
         scrimRedScore: 0,
         scrimBlueScore: 0,
         scrimDate: new Date().toISOString().split("T")[0],
+        scrimHour: 0,
+        scrimMatchType: "",
     });
     const [showVsRecordModal, setShowVsRecordModal] = useState(false);
 
@@ -219,6 +222,8 @@ export default function TournamentDetail(){
                 scrimRedScore: Number(scrimForm.scrimRedScore),
                 scrimBlueScore: Number(scrimForm.scrimBlueScore),
                 scrimDate: scrimForm.scrimDate,
+                scrimHour: Number(scrimForm.scrimHour),
+                scrimMatchType: scrimForm.scrimMatchType,
             });
 
             alert("스크림 전적이 등록되었습니다.");
@@ -248,6 +253,7 @@ export default function TournamentDetail(){
         scrimDate: new Date().toISOString().split("T")[0],
         scrimRedScore: 0,
         scrimBlueScore: 0,
+        scrimHour: 0,
     });
     const startEditScrim = (scrim) => {
         setEditScrimId(scrim.scrimId);
@@ -255,6 +261,7 @@ export default function TournamentDetail(){
             scrimDate: scrim.scrimDate,
             scrimRedScore: scrim.scrimRedScore,
             scrimBlueScore: scrim.scrimBlueScore,
+            scrimHour: scrim.scrimHour,
         });
     };
     // 스크림 수정 저장
@@ -265,6 +272,7 @@ export default function TournamentDetail(){
                 scrimDate: editScrimForm.scrimDate,
                 scrimRedScore: Number(editScrimForm.scrimRedScore),
                 scrimBlueScore: Number(editScrimForm.scrimBlueScore),
+                scrimHour: Number(editScrimForm.scrimHour),
             });
 
             setEditScrimId(null);
@@ -428,8 +436,9 @@ export default function TournamentDetail(){
                                 <table className="table table-dark table-striped mb-0 align-middle">
                                     <thead className="text-center table-secondary text-dark">
                                         <tr>
-                                            <th>날짜</th>
-                                            <th>대전 결과</th>
+                                            <th style={{ width: "10%" }}>날짜</th>
+                                            <th style={{ width: "10%" }}>시간</th>
+                                            <th style={{ width: "50%" }}>대전 결과</th>
                                             {isAdmin && <th>관리</th>}
                                         </tr>
                                     </thead>
@@ -438,13 +447,21 @@ export default function TournamentDetail(){
                                             const redWon = scrim.scrimWinner === scrim.scrimRedTeam;
                                             const blueWon = scrim.scrimWinner === scrim.scrimBlueTeam;
                                             return (
-                                                <tr key={scrim.scrimId} className="border-secondary text-center">
+                                                <tr key={scrim.scrimId} className={`border-secondary text-center
+                                                        ${scrim.scrimMatchType == "공식" ? "match-official"
+                                                        : scrim.scrimMatchType == "4강" ? "match-semifinal"
+                                                        : scrim.scrimMatchType == "결승" ? "match-final" : ""} `}>
                                                     {editScrimId === scrim.scrimId ? (
                                                         // 스크림 수정 모드
                                                         <>
                                                             <td>
                                                                 <input type="date" className="form-control form-control-sm" value={editScrimForm.scrimDate}
                                                                     onChange={(e) => setEditScrimForm((prev) => ({ ...prev, scrimDate: e.target.value }))}
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <input type="number" min="0" max="24" className="form-control form-control-sm" value={editScrimForm.scrimHour}
+                                                                    onChange={(e) => setEditScrimForm((prev) => ({ ...prev, scrimHour: e.target.value }))}
                                                                 />
                                                             </td>
 
@@ -480,6 +497,15 @@ export default function TournamentDetail(){
                                                                 {new Date(scrim.scrimDate).toLocaleDateString("ko-KR",{
                                                                     month : "2-digit", day : "2-digit",
                                                                 })}
+                                                            </td>
+                                                            <td>
+                                                                {scrim.scrimMatchType == "스크림" ? (
+                                                                    <span>{scrim.scrimHour}시</span>
+                                                                ) : (
+                                                                    <span className={`badge ${scrim.scrimMatchType === '공식' ? 'bg-white text-dark' : 'bg-primary'}`}>
+                                                                        {scrim.scrimMatchType}
+                                                                    </span>
+                                                                )}
                                                             </td>
                                                             <td>
                                                                 <div className="d-flex align-items-center justify-content-center gap-2 flex-wrap">
@@ -664,6 +690,25 @@ export default function TournamentDetail(){
                                 <label className="col-sm-3 col-form-label text-white">스크림 날짜</label>
                                 <div className="col-sm-9">
                                     <input id="scrimDate" name="scrimDate" type="date" className="form-control" value={scrimForm.scrimDate} onChange={handleScrimFormChange} />
+                                </div>
+                            </div>
+                            <div className="row mt-2">
+                                <label className="col-sm-3 col-form-label text-white">스크림 시간</label>
+                                <div className="col-sm-9">
+                                    <input id="scrimHour" name="scrimHour" type="number" min="0" max="24" className="form-control" value={scrimForm.scrimHour} onChange={handleScrimFormChange} />
+                                </div>
+                            </div>
+                            <div className="row mt-2">
+                                <label className="col-sm-3 col-form-label text-white">매치 타입</label>
+                                <div className="col-sm-9">
+                                    <select id="scrimMatchType" name="scrimMatchType" className="form-select" value={scrimForm.scrimMatchType} onChange={handleScrimFormChange}>
+                                        <option value="스크림">스크림</option>
+                                        <option value="공식">공식</option>
+                                        {isAdmin && (<>
+                                            <option value="4강">4강</option>
+                                            <option value="결승">결승</option>
+                                            </>)}
+                                    </select>
                                 </div>
                             </div>
                         </div>
