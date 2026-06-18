@@ -283,19 +283,12 @@ export default function CkList() {
                         <td>
                           {editingDateId === ck.ckId ? (
                             <div className="d-flex align-items-center justify-content-center gap-2">
-                              <input
-                                type="date"
-                                className="form-control form-control-sm"
-                                value={editDateValue}
+                              <input type="date" className="form-control form-control-sm"
+                                value={editDateValue} style={{ maxWidth: 170 }}
                                 onChange={(e) => setEditDateValue(e.target.value)}
-                                style={{ maxWidth: 170 }}
                               />
-                              <button
-                                type="button"
-                                className="btn btn-sm btn-outline-light"
-                                onClick={() => handleSaveDate(ck.ckId)}
-                                disabled={isUpdating}
-                              >
+                              <button type="button" className="btn btn-sm btn-outline-light"
+                                onClick={() => handleSaveDate(ck.ckId)} disabled={isUpdating} >
                                 저장
                               </button>
                               <button type="button" className="btn btn-sm btn-outline-secondary" onClick={handleCancelDate}>
