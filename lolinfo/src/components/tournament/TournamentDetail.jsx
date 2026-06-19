@@ -2,6 +2,7 @@ import axios from "../../utils/axios";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
+import TeamStaffModal from "./TeamStaffModal";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useAtomValue } from "jotai";
@@ -113,6 +114,22 @@ export default function TournamentDetail(){
         loadScrimList();
         loadScrimRecordList();
     },[tournamentId]);
+
+
+    // 팀별 감독/코치 모달
+    const [staffModalOpen, setStaffModalOpen] = useState(false);
+    const [selectedTeam, setSelectedTeam] = useState(null);
+
+    const openStaffModal = (team) => {
+    setSelectedTeam(team);
+    setStaffModalOpen(true);
+    };
+
+    const closeStaffModal = () => {
+    setStaffModalOpen(false);
+    setSelectedTeam(null);
+    };
+
 
     // 삭제 - 개최자
     const deleteHost = useCallback(async(hostStreamer, hostTournament)=>{
@@ -351,7 +368,7 @@ export default function TournamentDetail(){
             </div>
         </div>
 
-        {/* 스크림 등록 / 팀 추가 / 대회정보 수정 */}
+        {/* 중단 -- 스크림 등록 / 팀 추가 / 대회정보 수정 */}
         <div className="d-flex justify-content-between align-items-center mb-3 gap-2">
             <div>
                 {isLogin ? ( // 스크림 등록 버튼 활성화 여부
@@ -374,7 +391,7 @@ export default function TournamentDetail(){
             )}
         </div>
 
-        {/* 스크림 정보 및 팀 목록 */}
+        {/* 하단 -- 스크림 정보 및 팀 목록 */}
         <div className="row g-3">
             {/* 하단 왼쪽----------------------------------------------------------------------------------------------------------*/}
             {/* 왼쪽: 팀별 스크림 승률 및 전체 스크림 목록 */}
@@ -569,86 +586,90 @@ export default function TournamentDetail(){
             <div className="col-lg-8 col-12">
                 <h4 className="mb-3 detail-section-title">Team</h4>
                 <div className="team-list">
-        {team.map((team) => (
-            <div className={`team-card
-                ${team.teamRanking === "우승" ? "is-champion" : ""}
-                ${team.teamRanking === "준우승" ? "is-second" : ""}
-                ${team.teamRanking === "예선탈락" ? "is-failed" : ""}
-                ${team.teamRanking === "임시" ? "is-empty" : ""}
-                `} key={team.teamId}>
-                {/* 상단 헤더 : 순위 + 팀 이름 */}
-                <div className="team-header">
-                    #{team.teamRanking}
-                    {team.teamName && <span className="team-name ms-2 p-1">{team.teamName} </span> }
-                    {/* 추후, 관리자만 수정가능하도록 지정 */}
-                    <div className="ms-auto d-flex gap-2 align-items-center">
-                        <button type="button" className="ms-1 btn btn-sm btn-outline-dark"
-                            onClick={() => openVsRecordModal(team)}>
-                            상세전적
-                        </button>
-                        {isAdmin === true && (
-                            <>
-                                <Link to={`/team/edit/${team.teamId}`} className="p-1 fs-5 ms-1 btn btn-warning"><FaEdit/></Link>
-                                <button className="p-1 ms-1 fs-5 btn btn-danger" onClick={() => deleteTeam(team.teamId)}><MdDelete/></button>
-                            </>
-                        )}
-                    </div>
-                </div>
-                {/* 감독 표시 */}
-                {team.staffId !== null && (
-                <div className="team-header">
-                    <span className="badge bg-dark"> 감독 </span>
-                    <Link to={`/streamer/${team.staffStreamer}`} className="ms-1 btn btn-link" rel="noopener noreferrer">
-                        <img className="player-profile"src={buildProfileUrl(team.staffId)} alt={team.staffName}/>
-                        <span className="player-name ms-2">{team.staffName}</span>
-                    </Link>
-                    {isAdmin === true && (
-                    <button type="button" className="col-1 btn btn-danger p-0" onClick={()=>{deleteStaff(team.staffStreamer,team.teamId)}}>X</button>
+                {team.map((team) => (
+                    <div className={`team-card
+                        ${team.teamRanking === "우승" ? "is-champion" : ""}
+                        ${team.teamRanking === "준우승" ? "is-second" : ""}
+                        ${team.teamRanking === "예선탈락" ? "is-failed" : ""}
+                        ${team.teamRanking === "임시" ? "is-empty" : ""}
+                        `} key={team.teamId}>
+                        {/* 상단 헤더 : 순위 + 팀 이름 */}
+                        <div className="team-header">
+                            #{team.teamRanking}
+                            {team.teamName && <span className="team-name ms-2 p-1">{team.teamName} </span> }
+                            {/* 추후, 관리자만 수정가능하도록 지정 */}
+                            <div className="ms-auto d-flex gap-2 align-items-center">
+                                <button type="button" className="ms-1 btn btn-sm btn-outline-dark"
+                                    onClick={() => openVsRecordModal(team)}>
+                                    상세전적
+                                </button>
+                                {isAdmin === true && (
+                                    <>
+                                        <Link to={`/team/edit/${team.teamId}`} className="p-1 fs-5 ms-1 btn btn-warning"><FaEdit/></Link>
+                                        <button className="p-1 ms-1 fs-5 btn btn-danger" onClick={() => deleteTeam(team.teamId)}><MdDelete/></button>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                        {/* 감독 표시 */}
+                        {team.staffId !== null && (
+                        <div className="team-header">
+                            <span className="badge bg-dark"> 감독 </span>
+                            <Link to={`/streamer/${team.staffStreamer}`} className="ms-1 btn btn-link" rel="noopener noreferrer">
+                                <img className="player-profile"src={buildProfileUrl(team.staffId)} alt={team.staffName}/>
+                                <span className="player-name ms-2">{team.staffName}</span>
+                            </Link>
+                            <div className="ms-auto">
+                                {/* 코치 상세보기 */}
+                                <button className="btn btn-sm btn-outline-dark" onClick={() => openStaffModal(team)}>코치 목록</button>
+                                {isAdmin === true && (
+                                <button type="button" className="col-1 btn btn-danger p-0" onClick={()=>{deleteStaff(team.staffStreamer,team.teamId)}}>X</button>
+                                )}
+                            </div>
+                        </div>
                     )}
-                </div>
-            )}
 
 
-            {/* 선수 목록 */}
-            <div className="player-list">
-                <div className="player-row">
-                    <span className="badge"> 탑 </span>
-                    <Link to={`/streamer/${team.teamTop}`} className="btn btn-link" rel="noopener noreferrer">
-                        <img className="player-profile"src={buildProfileUrl(team.topId)} alt={team.topName}/>
-                        <span className="player-name ms-2">{team.topName}</span>
-                    </Link>
-                </div>
-                <div className="player-row">
-                    <span className="badge">정글</span>
-                    <Link to={`/streamer/${team.teamJug}`} className="btn btn-link"  rel="noopener noreferrer">
-                        <img className="player-profile"src={buildProfileUrl(team.jugId)} alt={team.jugName}/>
-                        <span className="player-name ms-2">{team.jugName}</span>
-                    </Link>
-                </div>
-                <div className="player-row">
-                    <span className="badge">미드</span>
-                    <Link to={`/streamer/${team.teamMid}`} className="btn btn-link"  rel="noopener noreferrer">
-                        <img className="player-profile"src={buildProfileUrl(team.midId)} alt={team.midName}/>
-                        <span className="player-name ms-2">{team.midName}</span>
-                    </Link>
-                </div>
-                <div className="player-row">
-                    <span className="badge">원딜</span>
-                    <Link to={`/streamer/${team.teamAd}`} className="btn btn-link" rel="noopener noreferrer">
-                        <img className="player-profile"src={buildProfileUrl(team.adId)} alt={team.adName}/>
-                        <span className="player-name ms-2">{team.adName}</span>  
-                    </Link>
-                </div>
-                <div className="player-row">
-                    <span className="badge">서폿</span>
-                    <Link to={`/streamer/${team.teamSup}`} className="btn btn-link"  rel="noopener noreferrer">
-                        <img className="player-profile"src={buildProfileUrl(team.supId)} alt={team.supName}/>
-                        <span className="player-name ms-2">{team.supName}</span>
-                    </Link>
-                </div>
-            </div>
-            </div>
-        ))}</div>
+                    {/* 선수 목록 */}
+                    <div className="player-list">
+                        <div className="player-row">
+                            <span className="badge"> 탑 </span>
+                            <Link to={`/streamer/${team.teamTop}`} className="btn btn-link" rel="noopener noreferrer">
+                                <img className="player-profile"src={buildProfileUrl(team.topId)} alt={team.topName}/>
+                                <span className="player-name ms-2">{team.topName}</span>
+                            </Link>
+                        </div>
+                        <div className="player-row">
+                            <span className="badge">정글</span>
+                            <Link to={`/streamer/${team.teamJug}`} className="btn btn-link"  rel="noopener noreferrer">
+                                <img className="player-profile"src={buildProfileUrl(team.jugId)} alt={team.jugName}/>
+                                <span className="player-name ms-2">{team.jugName}</span>
+                            </Link>
+                        </div>
+                        <div className="player-row">
+                            <span className="badge">미드</span>
+                            <Link to={`/streamer/${team.teamMid}`} className="btn btn-link"  rel="noopener noreferrer">
+                                <img className="player-profile"src={buildProfileUrl(team.midId)} alt={team.midName}/>
+                                <span className="player-name ms-2">{team.midName}</span>
+                            </Link>
+                        </div>
+                        <div className="player-row">
+                            <span className="badge">원딜</span>
+                            <Link to={`/streamer/${team.teamAd}`} className="btn btn-link" rel="noopener noreferrer">
+                                <img className="player-profile"src={buildProfileUrl(team.adId)} alt={team.adName}/>
+                                <span className="player-name ms-2">{team.adName}</span>  
+                            </Link>
+                        </div>
+                        <div className="player-row">
+                            <span className="badge">서폿</span>
+                            <Link to={`/streamer/${team.teamSup}`} className="btn btn-link"  rel="noopener noreferrer">
+                                <img className="player-profile"src={buildProfileUrl(team.supId)} alt={team.supName}/>
+                                <span className="player-name ms-2">{team.supName}</span>
+                            </Link>
+                        </div>
+                    </div>
+                    </div>
+                ))}</div>
             </div>
         </div>
 
@@ -795,6 +816,12 @@ export default function TournamentDetail(){
             </div>
         </div>
         )}
-
+        {/* 팀별 스크림 상대전적 모달 */}
+        <TeamStaffModal
+            show={staffModalOpen}
+            teamId={selectedTeam?.teamId}
+            teamName={selectedTeam?.teamName}
+            onClose={closeStaffModal}
+        />
 
 </>)}
