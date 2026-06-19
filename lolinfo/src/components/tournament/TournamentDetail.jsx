@@ -35,7 +35,7 @@ export default function TournamentDetail(){
         scrimBlueScore: 0,
         scrimDate: new Date().toISOString().split("T")[0],
         scrimHour: 0,
-        scrimMatchType: "",
+        scrimMatchType: "스크림",
     });
     const [showVsRecordModal, setShowVsRecordModal] = useState(false);
 
@@ -159,6 +159,7 @@ export default function TournamentDetail(){
             scrimRedScore: 0,
             scrimBlueScore: 0,
             scrimDate: new Date().toISOString().split("T")[0],
+            scrimHour: 0,
         });
         setShowScrimModal(true);
     }, [isLogin, tournamentId]);
@@ -224,7 +225,7 @@ export default function TournamentDetail(){
                 scrimBlueScore: Number(scrimForm.scrimBlueScore),
                 scrimDate: scrimForm.scrimDate,
                 scrimHour: Number(scrimForm.scrimHour),
-                scrimMatchType: scrimForm.scrimMatchType,
+                scrimMatchType: scrimForm.scrimMatchType || "스크림",
             });
 
             alert("스크림 전적이 등록되었습니다.");
@@ -236,6 +237,7 @@ export default function TournamentDetail(){
                 scrimRedScore: 0,
                 scrimBlueScore: 0,
                 scrimDate: new Date().toISOString().split("T")[0],
+                scrimMatchType: "스크림",
             });
             await loadScrimList();
             await loadScrimRecordList();
@@ -262,7 +264,7 @@ export default function TournamentDetail(){
         setEditScrimForm({
             scrimId: scrim.scrimId,
             scrimDate: String(scrim.scrimDate).slice(0, 10),
-            scrimHour: scrim.scrimHour ?? "",
+            scrimHour: scrim.scrimHour ?? 0,
             scrimRedScore: scrim.scrimRedScore ?? 0,
             scrimBlueScore: scrim.scrimBlueScore ?? 0,
             scrimMatchType: scrim.scrimMatchType ?? "스크림",
@@ -362,6 +364,7 @@ export default function TournamentDetail(){
                     </button>
                 )}
                 {!isLogin && (<span className="text-secondary ms-2 small mt-2"> 로그인 후 스크림 전적을 등록할 수 있습니다. </span>)}
+                {isLogin && (<span className="text-secondary ms-2 small mt-2"> 점수를 0:0 으로 설정하면, 예정경기를 등록할 수 있습니다. </span>)}
             </div>
             {isAdmin === true && (
                 <div className="text-end">
@@ -503,29 +506,42 @@ export default function TournamentDetail(){
                                                                 })}
                                                             </td>
                                                             <td>
-                                                                {scrim.scrimMatchType == "스크림" ? (
-                                                                    <span>{scrim.scrimHour}시</span>
+                                                                {scrim.scrimMatchType == "스크림" ? (<>
+                                                                    <span>{scrim.scrimHour} </span>
+                                                                    <span className="text-small"> 시</span></>
                                                                 ) : (
-                                                                    <span className={`badge ${scrim.scrimMatchType === '공식' ? 'bg-white text-dark' : 'bg-primary'}`}>
+                                                                    <span className={`badge ${ scrim.scrimMatchType === "공식" ? "badge-official"
+                                                                                              : scrim.scrimMatchType === "4강" ? "badge-semifinal"
+                                                                                              : scrim.scrimMatchType === "결승" ? "badge-final" : "" }`}>
                                                                         {scrim.scrimMatchType}
                                                                     </span>
                                                                 )}
                                                             </td>
+                                                            {/* 대전결과 td */}
                                                             <td>
                                                                 <div className="d-flex align-items-center justify-content-center gap-2 flex-wrap">
-                                                                    <div className="d-flex align-items-center gap-1">
-                                                                        <span className={`badge ${redWon ? 'bg-success' : blueWon ? 'bg-danger' : 'bg-secondary'}`}>
-                                                                            {redWon ? '승' : blueWon ? '패' : '무'}
-                                                                        </span>
+                                                                    {/* 점수가 0:0이면 예정으로 표시 */}
+                                                                    {scrim.scrimRedScore === 0 && scrim.scrimBlueScore === 0 ? (<>
                                                                         <span>{scrim.scrimRedName}</span>
-                                                                    </div>
-                                                                    <span className="mx-2 fw-bold" style={{ color: "#ffc107" }}>{scrim.scrimRedScore}:{scrim.scrimBlueScore}</span>
-                                                                    <div className="d-flex align-items-center gap-1">
+                                                                        <span className="badge bg-dark">VS</span>
                                                                         <span>{scrim.scrimBlueName}</span>
-                                                                        <span className={`badge ${blueWon ? 'bg-success' : redWon ? 'bg-danger' : 'bg-secondary'}`}>
-                                                                            {blueWon ? '승' : redWon ? '패' : '무'}
-                                                                        </span>
-                                                                    </div>
+                                                                    </>
+                                                                       
+                                                                    ) :(<>
+                                                                        <div className="d-flex align-items-center gap-1">
+                                                                            <span className={`badge ${redWon ? 'bg-success' : blueWon ? 'bg-danger' : 'bg-secondary'}`}>
+                                                                                {redWon ? '승' : blueWon ? '패' : '무'}
+                                                                            </span>
+                                                                            <span>{scrim.scrimRedName}</span>
+                                                                        </div>
+                                                                        <span className="mx-2 fw-bold" style={{ color: "#ffc107" }}>{scrim.scrimRedScore}:{scrim.scrimBlueScore}</span>
+                                                                        <div className="d-flex align-items-center gap-1">
+                                                                            <span>{scrim.scrimBlueName}</span>
+                                                                            <span className={`badge ${blueWon ? 'bg-success' : redWon ? 'bg-danger' : 'bg-secondary'}`}>
+                                                                                {blueWon ? '승' : redWon ? '패' : '무'}
+                                                                            </span>
+                                                                        </div>
+                                                                    </>)}
                                                                 </div>
                                                             </td>
                                                             {(isAdmin || scrim.scrimCreatedBy === loginId) ? (
