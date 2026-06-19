@@ -1,3 +1,10 @@
+.match-official > td,
+.match-semifinal > td,
+.match-final > td {
+    color : #e6d36a !important;
+    font-weight: 600;
+}
+
 .match-official > td:first-child,
 .match-semifinal > td:first-child,
 .match-final > td:first-child {
@@ -7,7 +14,7 @@
 
 .match-official > td:first-child::before,
 .match-semifinal > td:first-child::before,
-.match-final > td:first-child::before {
+.match-final > td:first-child::before { 
     content: "";
     position: absolute;
     left: 0;
@@ -22,9 +29,28 @@
 }
 
 .match-semifinal > td:first-child::before {
-    background-color: rgba(255, 153, 0, 0.644);
+    background-color: rgba(255, 153, 0, 0.767);
 }
 
 .match-final > td:first-child::before {
     background-color: rgba(255, 230, 0, 1);
+}
+
+
+.match-official .badge-official {
+    background-color: #FFD700;
+    color: #212529 !important;
+    font-weight: 700;
+}
+
+.match-semifinal .badge-semifinal {
+    background-color: #FFB300;
+    color: #212529 !important;
+    font-weight: 700;
+}
+
+.match-final .badge-final {
+    background-color: #FF6B35;
+    color: white !important;
+    font-weight: 700;
 }
