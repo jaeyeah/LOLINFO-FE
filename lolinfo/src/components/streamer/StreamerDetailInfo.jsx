@@ -2,10 +2,13 @@ import { Link, useOutletContext } from "react-router-dom";
 import "./StreamerDetailInfo.css";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import { useAtomValue } from "jotai";
+import { adminState, loginState } from "../../utils/jotai";
 
 export default function StreamerDetailInfo() {
   const { streamer, streamerId } = useOutletContext();
-
+  const isLogin = useAtomValue(loginState);
+  const isAdmin = useAtomValue(adminState);
   const [streamerTeam, setStreamerTeam] = useState([]);
   const [host, setHost] = useState([]);
   const [staff, setStaff] = useState([]);
@@ -164,7 +167,8 @@ export default function StreamerDetailInfo() {
                   >
                     {staffItem.teamRanking}
                   </span>
-                  {deleteStaff && (
+                  
+                  {isAdmin && deleteStaff && (
                     <button type="button" className="col-1 btn btn-danger p-0" onClick={() => deleteStaff(staffItem.staffStreamer, staffItem.staffTeam)}>
                       X
                     </button>
