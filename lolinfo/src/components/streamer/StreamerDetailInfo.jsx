@@ -12,30 +12,44 @@ export default function StreamerDetailInfo() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const loadData = useCallback( async() => {
-        try {
-            setLoading(true);
-            setError(null);
-            const [teamData, hostData, staffData] = await Promise.all([
-              axios.get(`/team/streamer/${streamerId}`),
-              axios.get(`/host/streamer/${streamerId}`),
-              axios.get(`/staff/streamer/${streamerId}`),
-            ]);
-            setStreamerTeam(teamData.data);
-            setHost(hostData.data);
-            setStaff(staffData.data);
-        } catch (error) {
-            console.error("Error fetching streamer detail:", error);
-            setError("스트리머 팀 정보를 불러오지 못했습니다.");
-        }
-        finally {
-          setLoading(false);
-        }
+  const loadData = useCallback(() => {
+      if (!streamerId) return;
+
+      setLoading(true);
+      setError(null);
+
+      let finishedCount = 0;
+
+      const finishOne = () => {
+        finishedCount += 1;
+        if (finishedCount === 3) {setLoading(false); }
+      };
+
+      axios.get(`/team/streamer/${streamerId}`)
+        .then(res => setStreamerTeam(res.data))
+        .catch(error => {
+          console.error("팀 정보 로드 실패:", error);
+          setError("팀 정보를 불러오지 못했습니다.");
+        }).finally(finishOne);
+
+      axios.get(`/host/streamer/${streamerId}`)
+        .then(res => setHost(res.data))
+        .catch(error => {
+          console.error("주최 정보 로드 실패:", error);
+          setError("주최 정보를 불러오지 못했습니다.");
+        }) .finally(finishOne);
+
+      axios.get(`/staff/streamer/${streamerId}`)
+        .then(res => setStaff(res.data))
+        .catch(error => {
+          console.error("감독/코치 정보 로드 실패:", error);
+          setError("감독/코치 정보를 불러오지 못했습니다.");
+        }) .finally(finishOne);
     }, [streamerId]);
 
-    useEffect(() => {
-      loadData();
-    }, [loadData]);
+      useEffect(() => {
+          loadData();
+      }, [loadData]);
 
     const deleteStaff = useCallback(async(staffStreamer, staffTeam)=>{
         try{
