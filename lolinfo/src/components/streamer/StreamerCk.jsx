@@ -6,8 +6,7 @@ import StreamerCkListSection from "./StreamerCkListSection";
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
 
 export default function StreamerCk() {
-  const { streamerId } = useParams();
-  const { streamer } = useOutletContext() ?? {};
+  const { streamer, streamerId } = useOutletContext();
 
   // 맞라인 상대 전적 관련 상태 (CK 목록과 독립적)
   const [vsPositionStats, setVsPositionStats] = useState([]);

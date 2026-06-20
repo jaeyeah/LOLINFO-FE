@@ -11,9 +11,7 @@ export default function StreamerDetail() {
     const isAdmin = useAtomValue(adminState);
     const {streamerId} = useParams();
     const [streamer, setStreamer] = useState({});
-    const [streamerTeam, setStreamerTeam] = useState([]);
-    const [host, setHost] = useState([]);
-    const [staff, setStaff] = useState([]);
+
     //로딩중 설정
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -23,14 +21,9 @@ export default function StreamerDetail() {
             setError(null);
             const {data} = await axios.get(`/streamer/${streamerId}`);
             setStreamer(data);
-            const teamData = await axios.get(`/team/streamer/${streamerId}`);
-            setStreamerTeam(teamData.data);
-            const hostData = await axios.get(`/host/streamer/${streamerId}`);
-            setHost(hostData.data);
-            const staffData = await axios.get(`/staff/streamer/${streamerId}`);
-            setStaff(staffData.data);
         } catch (error) {
             console.error("Error fetching streamer detail:", error);
+            setError("스트리머 정보를 불러오지 못했습니다.");
         }
         finally {
           setLoading(false);
@@ -41,19 +34,6 @@ export default function StreamerDetail() {
     useEffect(()=>{
         loadData();
     },[streamerId, loadData]);
-
-    const deleteStaff = useCallback(async(staffStreamer, staffTeam)=>{
-        try{
-            await axios.delete(`/staff/`,{
-                data : {staffStreamer, staffTeam}
-            });
-            loadData();
-            console.log("감독/코치 삭제 실행");
-        }catch (err) {
-            console.error("감독/코치 삭제 실패", err);
-        }
-    }, [loadData])
-
 
 
     //render
@@ -77,23 +57,13 @@ export default function StreamerDetail() {
           <div className="row mt-2">
             <div className="col-12">
               <div className="d-flex gap-2 mb-3 flex-wrap">
-                <NavLink
-                  to=""
-                  end
-                  className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}
-                >
+                <NavLink to="" end className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
                   기본정보
                 </NavLink>
-                <NavLink
-                  to="tournaments"
-                  className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}
-                >
+                <NavLink to="tournaments" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
                   참여대회
                 </NavLink>
-                <NavLink
-                  to="ck-records"
-                  className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}
-                >
+                <NavLink to="ck-records" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
                   CK 전적
                 </NavLink>
               </div>
@@ -129,7 +99,7 @@ export default function StreamerDetail() {
           </div>
         </div>
         {/* 중첩 라우트 렌더링 */}
-        <Outlet context={{ streamer, streamerTeam, host, staff }} />
+        <Outlet context={{ streamer, streamerId }} />
       </div>
 
     

@@ -1,8 +1,67 @@
 import { Link, useOutletContext } from "react-router-dom";
 import "./StreamerDetailInfo.css";
+import { useCallback, useEffect, useState } from "react";
+import axios from "axios";
 
 export default function StreamerDetailInfo() {
-  const { streamer, streamerTeam, host, staff, deleteStaff } = useOutletContext();
+  const { streamer, streamerId } = useOutletContext();
+
+  const [streamerTeam, setStreamerTeam] = useState([]);
+  const [host, setHost] = useState([]);
+  const [staff, setStaff] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const loadData = useCallback( async() => {
+        try {
+            setLoading(true);
+            setError(null);
+            const [teamData, hostData, staffData] = await Promise.all([
+              axios.get(`/team/streamer/${streamerId}`),
+              axios.get(`/host/streamer/${streamerId}`),
+              axios.get(`/staff/streamer/${streamerId}`),
+            ]);
+            setStreamerTeam(teamData.data);
+            setHost(hostData.data);
+            setStaff(staffData.data);
+        } catch (error) {
+            console.error("Error fetching streamer detail:", error);
+            setError("스트리머 팀 정보를 불러오지 못했습니다.");
+        }
+        finally {
+          setLoading(false);
+        }
+    }, [streamerId]);
+
+    useEffect(() => {
+      loadData();
+    }, [loadData]);
+
+    const deleteStaff = useCallback(async(staffStreamer, staffTeam)=>{
+        try{
+            await axios.delete(`/staff/`,{
+                data : {staffStreamer, staffTeam}
+            });
+            loadData();
+            console.log("감독/코치 삭제 실행");
+        }catch (err) {
+            console.error("감독/코치 삭제 실패", err);
+        }
+    }, [loadData]);
+
+  // 로딩 중일 때 화면출력
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center py-4">
+        <div className="spinner-border" role="status" />
+      </div>
+    );
+  }
+  // 에러 발생 시 화면출력
+  if (error) {
+    return <p className="text-danger text-center">{error}</p>;
+  }
+
 
   const sections = [
     {
