@@ -1,3 +1,5 @@
+import { useEffect, useState, useCallback } from "react";
+import axios from "axios";
 import { useParams, useOutletContext } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FaTrophy } from "react-icons/fa";
@@ -5,11 +7,40 @@ import { MdLooksTwo } from "react-icons/md";
 import { buildProfileUrl } from "../../utils/profileUrl";
 
 export default function StreamerTournaments() {
-  const { streamerTeam, streamer } = useOutletContext();
-
+  const { streamer, streamerId } = useOutletContext();
+  const [streamerTeam, setStreamerTeam] = useState([]);
+  const [loading, setLoading] = useState(true);
   const officialTeams = streamerTeam.filter(team => team.tournamentIsOfficial === "Y");
   const streamerHostTeams = streamerTeam.filter(team => team.tournamentIsOfficial === "N");
 
+  // 스트리머의 참여 대회 정보 불러오기
+  const loadData = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const { data } = await axios.get(`/team/streamer/${streamerId}`);
+      setStreamerTeam(data);
+    }
+    catch(err){
+      console.error(err);
+    }
+    finally{
+      setLoading(false);
+    }
+  }, [streamerId]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // 로딩 중일 때 화면출력
+  if (loading) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border" />
+      </div>
+    );
+  }
   // 데이터가 전혀 없을 때
   if (streamerTeam.length === 0) {
     return (

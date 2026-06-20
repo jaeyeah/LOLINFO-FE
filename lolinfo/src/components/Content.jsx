@@ -7,7 +7,7 @@ import StreamerEdit from "./streamer/StreamerEdit";
 import StreamerDetail from "./streamer/StreamerDetail";
 import StreamerDetailInfo from "./streamer/StreamerDetailInfo";
 import StreamerTournaments from "./streamer/StreamerTournaments";
-import StreamerCkRecords from "./streamer/StreamerCkRecords";
+import StreamerCk from "./streamer/StreamerCk";
 
 import TournamentList from "./tournament/TournamentList";
 import TournamentDetail from "./tournament/TournamentDetail";
@@ -27,6 +27,7 @@ import AdminMain from "./admin/AdminMain";
 import AdminMemberPage from "./admin/AdminMemberPage";
 import AdminVisitPage from "./admin/AdminVisitPage";
 import AdminVisitUsePage from "./admin/AdminVisitUsePage";
+
 
 export default function Content(){
 
@@ -60,7 +61,7 @@ return (<>
                 <Route path="/streamer/:streamerId" element={<StreamerDetail />}>
                     <Route index element={<StreamerDetailInfo />} />
                     <Route path="tournaments" element={<StreamerTournaments />} />
-                    <Route path="ck-records" element={<StreamerCkRecords />} />
+                    <Route path="ck-records" element={<StreamerCk />} />
                     <Route path="ck" element={<Navigate to="ck-records" replace />} />
                 </Route>
 
