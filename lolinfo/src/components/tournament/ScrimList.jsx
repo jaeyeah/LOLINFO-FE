@@ -4,7 +4,7 @@ import Pagination from "../Pagination";
 
 
 
-export default function ScrimList({ tournamentId, isAdmin,loginId,}) {
+export default function ScrimList({ tournamentId, isAdmin,loginId,onChanged,}) {
 
     const [scrimList, setScrimList] = useState([]);
     const [scrimError, setScrimError] = useState(null);
@@ -74,7 +74,7 @@ export default function ScrimList({ tournamentId, isAdmin,loginId,}) {
 
             setEditScrimId(null);
             loadScrimList();
-            loadScrimRecordList();
+            onChanged?.();
         } catch (error) {
             console.error("스크림 수정 실패", error);
             alert("스크림 수정 중 오류가 발생했습니다.");
