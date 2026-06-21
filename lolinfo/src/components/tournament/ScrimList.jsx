@@ -4,7 +4,7 @@ import Pagination from "../Pagination";
 
 
 
-export default function ScrimList({ tournamentId, isAdmin,loginId,onChanged,}) {
+export default function ScrimList({ tournamentId, isAdmin,loginId,onChanged, refreshKey}) {
 
     const [scrimList, setScrimList] = useState([]);
     const [scrimError, setScrimError] = useState(null);
@@ -37,7 +37,7 @@ export default function ScrimList({ tournamentId, isAdmin,loginId,onChanged,}) {
 
     useEffect(() => {
         loadScrimList();
-    }, [loadScrimList]);
+    }, [loadScrimList, refreshKey]);
 
 
     // 스크림 수정
