@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate,useLocation } from "react-router-dom"
 import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import './Menu.css'
@@ -10,8 +10,9 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { FaGear } from "react-icons/fa6";
 
 export default function Menu() {
+    // 로그인 시 이전 장소 기억
     const navigate = useNavigate();
-
+    const location = useLocation();
     //통합 state
     const [loginId, setLoginId] = useAtom(loginIdState);
     const [loginLevel, setLoginLevel] = useAtom(loginLevelState);
@@ -45,6 +46,7 @@ export default function Menu() {
         };
     }, [open]);
 
+
     //로그아웃
     const logout = useCallback(async (e) => {
         e.stopPropagation();
@@ -52,7 +54,7 @@ export default function Menu() {
         clearLogin();
         await axios.delete("/member/logout");
         delete axios.defaults.headers.common['Authorization'];
-        navigate("/");
+        // navigate("/");
 
         closeMenu();
     }, []);
@@ -148,7 +150,7 @@ export default function Menu() {
                             </li>
                         </>) : (<>  {/* 비로그인 시 나와야 하는 화면 */}
                             <li className="nav-item" onClick={closeMenu}>
-                                <Link className="nav-link" to="/member/login">
+                                <Link className="nav-link" to="/member/login" state={{from:location.pathname + location.search}}>
                                     <span>로그인</span>
                                 </Link>
                             </li>

@@ -89,7 +89,7 @@ export default function ScrimList({ tournamentId, isAdmin,loginId,onChanged, ref
         try {
             await axios.delete(`/scrim/${scrimId}`);
             loadScrimList();
-            loadScrimRecordList();
+            onChanged?.();
         } catch (error) {
             console.error("스크림 삭제 실패", error);
             alert("스크림 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
