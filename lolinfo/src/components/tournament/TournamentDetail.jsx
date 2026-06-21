@@ -24,6 +24,7 @@ export default function TournamentDetail(){
     const [scrimRecordList, setScrimRecordList] = useState([]);
     const [showScrimModal, setShowScrimModal] = useState(false);
     
+    const [scrimRefreshKey, setScrimRefreshKey] = useState(0);
     const [scrimRecordError, setScrimRecordError] = useState(null);
     const [selectedScrimTeam, setSelectedScrimTeam] = useState(null);
     const [vsRecordList, setVsRecordList] = useState([]);
@@ -246,7 +247,8 @@ export default function TournamentDetail(){
                 scrimDate: new Date().toISOString().split("T")[0],
                 scrimMatchType: "스크림",
             });
-            await loadScrimList();
+            // 등록 성공 후 자식 목록만 다시 조회하도록 신호
+            setScrimRefreshKey(prev => prev + 1);
             await loadScrimRecordList();
             loadTeamData();
             loadData();
@@ -387,6 +389,7 @@ export default function TournamentDetail(){
                         loadTeamData();
                         loadData();
                     }}
+                    refreshKey={scrimRefreshKey}
                 />
             </div>
 
