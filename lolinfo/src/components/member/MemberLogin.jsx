@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useCallback } from "react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {useAtom} from "jotai";
 import { accessTokenState, loginIdState, loginLevelState, loginNicknameState, refreshTokenState } from "../../utils/jotai";
 import "./Member.css";
@@ -19,6 +19,9 @@ export default function MemberLogin(){
     const [refreshToken , setRefreshToken] = useAtom(refreshTokenState);
     // 도구
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from || "/";
+
     //state
     const [loginResult, setLoginResult] = useState(null);
 
@@ -74,8 +77,8 @@ export default function MemberLogin(){
             // 로컬 스토리지 불필요한 key 제거
             cleanExpiredViews();
             // 화면이동
-            navigate("/");
-            
+            //navigate("/"); 홈화면 이동
+            navigate(from, { replace: true }); // 기존화면 이동
         }
         catch(err){
             // 로딩창 닫기

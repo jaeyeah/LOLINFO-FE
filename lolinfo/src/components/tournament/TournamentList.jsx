@@ -6,12 +6,16 @@ import { buildProfileUrl } from "../../utils/profileUrl";
 import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
 import Pagination from "../Pagination";
+import { FaSearch } from "react-icons/fa";
 
 export default function TournamentList(){
 
     const isLogin = useAtomValue(loginState);
     const isAdmin = useAtomValue(adminState);
     const [tournamentList, setTournamentList] = useState([]); 
+    //검색어 state
+    const [keyword, setKeyword] = useState(""); // 검색창
+    const [searchKeyword, setSearchKeyword] = useState(""); // 검색어 저장용
    // 페이지네이션 설정
     const [page, setPage] = useState(1);
     const [pageData, setPageData] = useState({
@@ -25,7 +29,7 @@ export default function TournamentList(){
         try {
             setLoading(true);
             setError(null);
-            const {data} = await axios.get("/tournament/", {params : {page}}); 
+            const {data} = await axios.get("/tournament/", {params : {page, keyword: searchKeyword || undefined}}); 
             setTournamentList(data.list);
             setPageData(data.pageVO);
         } catch (error) {
@@ -35,11 +39,30 @@ export default function TournamentList(){
         finally {
           setLoading(false);
         }
-    }, [page]); 
+    }, [page, searchKeyword]); 
 
     useEffect(()=>{
         loadData();
     },[loadData]);
+
+    //[입력창 제어 및 검색이동]
+    const handleSearch = useCallback(async() => {
+      if(keyword.trim().length === 0){
+          alert("검색어를 입력해주세요.");
+          return;
+      }
+      setPage(1);
+      try {
+          const {data} = await axios.get(`/tournament/`, {params : {page, keyword}});
+          setTournamentList(data.list);
+          setPageData(data.pageVO);
+          setSearchKeyword(keyword);
+      } catch (error) {
+          console.error("Error fetching streamer list:", error);
+          setError("검색목록을 불러오지 못했습니다.");
+      }
+      setKeyword("");
+    }, [keyword, page]);
 
 
     function formatDate(value) {
@@ -54,14 +77,34 @@ export default function TournamentList(){
 //render
 return(<>
   <h2 className="section-title text-center ">Soop : LoL 대회 목록</h2>
-  {isAdmin === true && (
-    <div className="row text-end">
-      <div className="col-8"></div>
-      <div className="col-4">
-        <Link to="/tournament/insert" className="btn btn-success">등록</Link>
-      </div>
+  <div className="row mt-3 justify-content-center">
+        <div className="col-12 col-xl-8">
+            <div className="streamer-control-panel">
+                <div className="search-wrapper flex-grow-1">
+                    <div className="input-group streamer-search-group">
+                        <input
+                            type="text"
+                            className="search form-control search-bar text-light"
+                            value={keyword}
+                            placeholder="대회 검색"
+                            onChange={e => setKeyword(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
+                        />
+                        <button className="search btn btn-success" onClick={handleSearch}>
+                            <FaSearch className="fs-4" />
+                        </button>
+                    </div>
+                </div>
+                {/* 등록창 */}
+                {isAdmin === true && (
+                  <div className="streamer-admin-action">
+                      <Link to="/tournament/insert" className="btn btn-success">등록</Link>
+                  </div>
+                )}
+            </div>
+        </div>
     </div>
-  )}
+  
   
   <div className="row mt-3 justify-content-center">
     <div className="col-12 col-xl-8 tournament-wrapper">
