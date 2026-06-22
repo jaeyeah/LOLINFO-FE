@@ -66,6 +66,9 @@ export default function StreamerDetail() {
                 <NavLink to="ck-records" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
                   CK 전적
                 </NavLink>
+                <NavLink to="streamerWith" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
+                  동료스트리머
+                </NavLink>
               </div>
             </div>
           </div>
