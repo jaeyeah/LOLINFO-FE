@@ -63,3 +63,33 @@
   white-space: nowrap;
 }
 
+.search-wrapper {
+    position: relative;
+}
+
+.autocomplete-box {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    z-index: 1050;
+
+    background: #212529;
+    border: 1px solid #495057;
+    border-top: none;
+
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.autocomplete-item {
+    padding: 10px 15px;
+    color: white;
+    cursor: pointer;
+}
+
+.autocomplete-item:hover {
+    background-color: #343a40;
+}
+
