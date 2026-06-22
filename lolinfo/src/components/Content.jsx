@@ -27,6 +27,7 @@ import AdminMain from "./admin/AdminMain";
 import AdminMemberPage from "./admin/AdminMemberPage";
 import AdminVisitPage from "./admin/AdminVisitPage";
 import AdminVisitUsePage from "./admin/AdminVisitUsePage";
+import StreamerWith from "./streamer/StreamerWith";
 
 
 export default function Content(){
@@ -62,6 +63,7 @@ return (<>
                     <Route index element={<StreamerDetailInfo />} />
                     <Route path="tournaments" element={<StreamerTournaments />} />
                     <Route path="ck-records" element={<StreamerCk />} />
+                    <Route path="streamerWith" element={<StreamerWith />} />
                     <Route path="ck" element={<Navigate to="ck-records" replace />} />
                 </Route>
 

@@ -121,7 +121,8 @@ export default function MemberLogin(){
                 <span className="input-group-text login-label text-light text-center fs-5">비밀번호</span>
                 <input type="password" className="form-control login login-bar text-light fs-5" 
                     name="memberPw" value={member.memberPw}
-                    onChange={changeStrValue}/>
+                    onChange={changeStrValue}
+                    onKeyDown={(e) => { if (e.key === "Enter") sendLogin();}}/>
             </div>
         </div>
 
