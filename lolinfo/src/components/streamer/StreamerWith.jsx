@@ -13,20 +13,21 @@ export default function StreamerWith(){
     const [withCk, setWithCk] = useState([]);
     const [withTournament, setWithTournament] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [ckError, setCkError] = useState(null);
+    const [tournamentError, setTournamentError] = useState(null);
 
     const loadCkData = useCallback(async()=>{
         try {
             setLoading(true);
-            setError(null);
+            setCkError(null);
             const { data } = await axios.get("/streamer/withCk", {
                 params: { streamerId }
             });
             setWithCk(data);
-            console.log(data)
+            console.log("CK 데이터 : ",data)
             } catch (error) {
             console.error("Error fetching streamer detail:", error);
-            setError("스트리머 정보를 불러오지 못했습니다.");
+            setCkError("스트리머 CK정보를 불러오지 못했습니다.");
             }
             finally {
             setLoading(false);
@@ -36,16 +37,16 @@ export default function StreamerWith(){
     const loadTournamentData = useCallback(async()=>{
         try {
             setLoading(true);
-            setError(null);
+            setTournamentError(null);
             const { data } = await axios.get("/streamer/withTournament", {
                 params: { streamerId }
             });
             setWithTournament(data);
-            console.log(data)
-            } catch (error) {
+            console.log("CK 데이터 : ",data)
+        } catch (error) {
             console.error("Error fetching streamer detail:", error);
-            setError("스트리머 정보를 불러오지 못했습니다.");
-            }
+            setTournamentError("스트리머 대회정보를 불러오지 못했습니다.");
+        }
             finally {
             setLoading(false);
         }
@@ -68,7 +69,7 @@ export default function StreamerWith(){
 
 return (<>
 <div className="mt-3 row">
-    {/* 맞라인 상대별 전적 */}
+    {/* 같이 CK 참여했던 스트리머 목록 */}
     <div className="col-12 col-xl-6">
         <div className="card bg-dark border-secondary h-100">
         <div className="card-header bg-white border-secondary d-flex justify-content-between align-items-center">
@@ -81,13 +82,13 @@ return (<>
             </div>
             )}
 
-            {error && (
+            {ckError && (
             <div className="alert alert-danger" role="alert">
-                {vsError}
+                {ckError}
             </div>
             )}
 
-            {!loading && !error && (
+            {!loading && !ckError && (
             <div className="list-group list-group-flush">
                 {withCk.map((withCk) => (
                 <div key={withCk.partnerNo} className="list-group-item bg-dark border-secondary text-white py-3 vs-item">
@@ -122,7 +123,7 @@ return (<>
         </div>
     </div>
 
-    {/* ㅁㄴㅇㄹ */}
+    {/* 같이 대회 참여했던 스트리머 목록 */}
     <div className="col-12 col-xl-6">
         <div className="card bg-dark border-secondary h-100">
         <div className="card-header bg-white border-secondary d-flex justify-content-between align-items-center">
@@ -135,30 +136,41 @@ return (<>
             </div>
             )}
 
-            {error && (
+            {tournamentError && (
             <div className="alert alert-danger" role="alert">
-                {vsError}
+                {tournamentError}
             </div>
             )}
 
-            {!loading && !error && (
+            {!loading && !tournamentError && (
             <div className="list-group list-group-flush">
                 {withTournament.map((withTournament) => (
                 <div key={withTournament.partnerNo} className="list-group-item bg-dark border-secondary text-white py-3 vs-item">
                     <div className="d-flex justify-content-between align-items-center gap-3">
-                    <div className="min-w-0">
-                        <div className="fw-semibold text-truncate vs-item-name">
-                        <Link to={`/streamer/${withTournament.partnerNo}`} className="fs-6 text-decoration-none text-white">
-                            <img src={buildProfileUrl(withTournament.partnerSoopId)}
-                                className="ck-participant-avatar" alt={withTournament.partnerName || ""}/>
-                            <span className="ms-2">{withTournament.partnerName}</span>
-                        </Link>
-                        <span className="ms-3 fw-semibold mb-2 vs-item-rate me-3 fs-5">{withTournament.playCount}회</span>
+                        <div className="min-w-0">
+                            <div className="fw-semibold text-truncate vs-item-name">
+                            <Link to={`/streamer/${withTournament.partnerNo}`} className="fs-6 text-decoration-none text-white">
+                                <img src={buildProfileUrl(withTournament.partnerSoopId)}
+                                    className="ck-participant-avatar" alt={withTournament.partnerName || ""}/>
+                                <span className="ms-2 me-2">{withTournament.partnerName}</span>
+                            </Link>
+                                <span className="text-secondary">with</span>
+                                <span className="ms-1 fw-semibold mb-2 vs-item-rate me-3 fs-5">{withTournament.playCount}회</span>
+                                {withTournament.withOfficial === 'Y' && (
+                                    <span className="badge official-badge2 ms-2">멸망전</span>
+                                )}
+                                {withTournament.withChampion === 'Y' && (
+                                    <span className="badge official-badge ms-2">우승</span>
+                                )}
+                                {withTournament.withFinal === 'Y' && (
+                                    <span className="badge bg-secondary ms-2">준우승</span>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                    <div className="text-end">
-                    </div>
-                        <button className="btn btn-positive">상세보기</button>
+                        
+                        <div className="text-end">
+                            <button className="btn btn-positive bg-secondary text-white" disabled>상세보기</button>
+                        </div>
                     </div>
                 </div>
                 ))}
