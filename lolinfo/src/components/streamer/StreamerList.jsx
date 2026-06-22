@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { Link} from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 import "../tournament/Tournament.css";
 import "./Streamer.css";
 import "./Search.css";
@@ -14,8 +14,10 @@ export default function StreamerList() {
     const isLogin = useAtomValue(loginState);
     const isAdmin = useAtomValue(adminState);
     const [streamerList, setStreamerList] = useState([]);
+    const navigate = useNavigate();
     //검색어 state
     const [keyword, setKeyword] = useState("");
+    const [autoSearch, setAutoSearch] = useState([]);
     // 페이지네이션 설정
     const [page, setPage] = useState(1);
     const [pageData, setPageData] = useState({
@@ -60,6 +62,28 @@ export default function StreamerList() {
         }
         setKeyword("");
     }, [keyword, page]);
+
+    // 자동완성 입력
+    useEffect(()=>{
+        if(!keyword.trim()) {setAutoSearch([]); return;}
+
+        const timer = setTimeout(async()=>{
+            try{
+                const response = await axios.get("/streamer/autoSearch",{
+                    params : {keyword}
+                });
+                setAutoSearch(response.data);
+            } catch(err){
+                console.error(err);
+            }
+        }, 300);
+    },[keyword])
+    
+
+
+
+
+
 
     const renderTrophies = (count, type) => {
         const bigCount = Math.floor((count || 0) / 5);
@@ -109,6 +133,22 @@ export default function StreamerList() {
                             <FaSearch className="fs-4" />
                         </button>
                     </div>
+                    {autoSearch.length > 0 && (
+                        <div className="autocomplete-box">
+                            {autoSearch.map(streamer => (
+                                <div
+                                    key={streamer.streamerNo}
+                                    className="autocomplete-item"
+                                    onClick={() => {
+                                        navigate(`/streamer/${streamer.streamerNo}`);
+                                        setAutoSearch([]);
+                                    }}
+                                >
+                                    {streamer.streamerName}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 {isAdmin === true && (
                     <div className="streamer-admin-action">
