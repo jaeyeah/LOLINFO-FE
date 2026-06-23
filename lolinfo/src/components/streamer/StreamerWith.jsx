@@ -129,8 +129,8 @@ return (<>
                     <div className="min-w-0">
                         <div className="fw-semibold text-truncate vs-item-name">
                         <Link to={`/streamer/${withCk.partnerNo}`} className="fs-6 text-decoration-none text-white">
-                            <img src={buildProfileUrl(withCk.partnerSoopId)}
-                                className="ck-participant-avatar" alt={withCk.partnerName || ""}/>
+                            {/* <img src={buildProfileUrl(withCk.partnerSoopId)}
+                                className="ck-participant-avatar" alt={withCk.partnerName || ""}/> */}
                             <span className="ms-2 fs-5">{withCk.partnerName}</span>
                         </Link>
                             <span className="ms-3 text-secondary">with</span>
