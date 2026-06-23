@@ -258,6 +258,20 @@ export default function TournamentDetail(){
         }
     };
 
+    //스크림 승률별 색상적용
+    const getWinRateColor = (rate) => {
+        if (rate >= 70) return "#2ecc71";
+        if (rate >= 60) return "#1b95fa";
+        if (rate >= 55) return "#abd9ff";
+        if (rate >= 50) return "#bdbcbc";
+        if (rate >= 45) return "#b3aa91";
+        if (rate >= 40) return "#f8b200";
+        if (rate >= 35) return "#e7893c";
+        if (rate >= 30) return "#e75e3c";
+        return "#e74c3c";
+    };
+
+
 
 
     //render -------------------------------------------------------------------------------------
@@ -365,9 +379,8 @@ export default function TournamentDetail(){
                                                 </td>
                                                 <td>
                                                     <div className="progress position-relative" style={{ height: "24px", width: "100%" }}>
-                                                        <div  className={`progress-bar ${ record.scrimWinRate <= 40 ? "bg-danger"
-                                                            : record.scrimWinRate < 50 ? "bg-warning"
-                                                            : record.scrimWinRate < 60 ? "bg-secondary" : "bg-primary" }`} style={{ width: `${record.scrimWinRate}%` }} />
+                                                        <div className="progress-bar" style={{width: `${record.scrimWinRate}%`,
+                                                                backgroundColor: getWinRateColor(record.scrimWinRate)}}/>
                                                         <span className="position-absolute top-50 end-0 translate-middle-y pe-2 fw-bold text-dark fs-6" style={{ zIndex: 1 }}> {record.scrimWinRate}%</span>
                                                     </div>
                                                 </td>

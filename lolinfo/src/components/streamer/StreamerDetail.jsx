@@ -58,7 +58,7 @@ export default function StreamerDetail() {
             <div className="col-12">
               <div className="d-flex gap-2 mb-3 flex-wrap">
                 <NavLink to="" end className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
-                  기본정보
+                  경력
                 </NavLink>
                 <NavLink to="tournaments" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
                   참여대회
@@ -67,7 +67,7 @@ export default function StreamerDetail() {
                   CK 전적
                 </NavLink>
                 <NavLink to="streamerWith" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
-                  동료스트리머
+                  팀메이트
                 </NavLink>
               </div>
             </div>
