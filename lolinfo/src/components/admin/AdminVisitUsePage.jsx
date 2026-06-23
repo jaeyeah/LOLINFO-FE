@@ -9,6 +9,7 @@ const featureColumns = [
     { key: 'streamerDetail', label: '스트리머 상세' },
     { key: 'ckStreamer', label: '스트리머 CK' },
     { key: 'ckList', label: 'CK 목록' },
+    { key: 'teammate', label: '팀메이트' },
 ];
 
 const formatUseDate = (value, mode) => {
@@ -52,6 +53,7 @@ export default function AdminVisitUsePage() {
                 streamerDetail: Number(item.streamerDetail ?? 0),
                 ckStreamer: Number(item.ckStreamer ?? 0),
                 ckList: Number(item.ckList ?? 0),
+                teammate: Number(item.teammate ?? 0),
             }));
 
             setUseData(normalized);
