@@ -857,3 +857,14 @@
   font-weight : 600;
 }
 
+/* 스트리머 팀메이트 - 상세버튼 */
+.with-detail-btn {
+    white-space: nowrap;
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
+    padding: 0.25rem 0.5rem;
+    
+    font-weight : 600 !important;
+    border-color: #ffffff !important;
+    color : #ffffff!important;
+}
+
