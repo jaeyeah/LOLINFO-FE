@@ -2,11 +2,16 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { buildProfileUrl } from "../../../utils/profileUrl";
+import Pagination from "../../Pagination";
 
 export default function WithTournament({ streamerId }) {
   const [withTournament, setWithTournament] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tournamentError, setTournamentError] = useState(null);
+    const [page, setPage] = useState(1);
+    const [pageData, setPageData] = useState({
+        page : 1,size : 10,  totalCount : 0, totalPage : 0, blockStart : 1, blockFinish : 1
+    });
 
   const [openPartnerNo, setOpenPartnerNo] = useState(null);
   const [detailMap, setDetailMap] = useState({});
@@ -17,21 +22,23 @@ export default function WithTournament({ streamerId }) {
       setTournamentError(null);
 
       const { data } = await axios.get("/streamer/withTournament", {
-        params: { streamerId },
+        params: { streamerId, page },
       });
 
-      setWithTournament(data);
+      setWithTournament(data.list);
+      setPageData(data.pageVO);
+      console.log("대회 정보 : ",data);
     } catch (error) {
       console.error(error);
       setTournamentError("스트리머 대회정보를 불러오지 못했습니다.");
     } finally {
       setLoading(false);
     }
-  }, [streamerId]);
+  }, [streamerId, page]);
 
   useEffect(() => {
     if (streamerId) loadTournamentData();
-  }, [streamerId, loadTournamentData]);
+  }, [streamerId, loadTournamentData, page]);
 
   const toggleDetail = async (partnerNo) => {
     if (openPartnerNo === partnerNo) {
@@ -74,6 +81,17 @@ export default function WithTournament({ streamerId }) {
 
             {!loading && !tournamentError && (
             <div className="list-group list-group-flush">
+                <div className ="row mt-3">
+                    <div className="col-12 d-flex justify-content-center">
+                        <Pagination
+                            page={page}
+                            totalPage={pageData.totalPage}
+                            blockStart={pageData.blockStart}
+                            blockFinish={pageData.blockFinish}
+                            onPageChange={setPage}
+                        />
+                    </div>
+                </div>
                 {withTournament.map((withTournament) => (
                 <div key={withTournament.partnerNo} className="list-group-item bg-dark border-secondary text-white py-3 vs-item">
                     {/* <div className="d-flex justify-content-between align-items-center gap-3"> */}
@@ -138,6 +156,7 @@ export default function WithTournament({ streamerId }) {
                 ))}
             </div>
             )}
+            
         </div>
         </div>
     </div>
