@@ -27,7 +27,7 @@ import AdminMain from "./admin/AdminMain";
 import AdminMemberPage from "./admin/AdminMemberPage";
 import AdminVisitPage from "./admin/AdminVisitPage";
 import AdminVisitUsePage from "./admin/AdminVisitUsePage";
-import StreamerWith from "./streamer/StreamerWith";
+import StreamerWith from "./streamer/streamerWith/StreamerWith";
 
 
 export default function Content(){
