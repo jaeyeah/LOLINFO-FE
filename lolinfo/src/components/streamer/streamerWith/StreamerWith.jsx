@@ -19,7 +19,20 @@ export default function StreamerWith() {
         setKeyword("");
     }, [keyword]);
 
+    // 기능사용 증가
+    const increaseData = useCallback(async () => {
+        try {
+        await axios.post("/streamer/teammateVisit");
+        } catch (error) {
+        console.error(error);
+        } 
+    }, []);
 
+    useEffect(() => {
+        if (streamerId) {
+            increaseData();
+        }
+    }, [streamerId]);
 
 return (<>
 {/* 검색창 */}
