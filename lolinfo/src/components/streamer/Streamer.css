@@ -868,3 +868,7 @@
     color : #ffffff!important;
 }
 
+.with-detail-box {
+  background-color: #ffffff15;
+  border-radius: 10px;
+}

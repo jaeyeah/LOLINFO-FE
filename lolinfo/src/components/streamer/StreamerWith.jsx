@@ -16,6 +16,10 @@ export default function StreamerWith(){
     const [ckError, setCkError] = useState(null);
     const [tournamentError, setTournamentError] = useState(null);
 
+    //상세보기용 설정
+    const [openPartnerNo, setOpenPartnerNo] = useState(null);
+    const [detailMap, setDetailMap] = useState({}); 
+
     const loadCkData = useCallback(async()=>{
         try {
             setLoading(true);
@@ -59,6 +63,29 @@ export default function StreamerWith(){
         loadTournamentData();
     },[]);
 
+    //팀메이트 상세
+    const toggleDetail = async (partnerNo) => {
+        if (openPartnerNo === partnerNo) {
+            setOpenPartnerNo(null);
+            return;
+        }
+
+        setOpenPartnerNo(partnerNo);
+
+        if (detailMap[partnerNo]) return;
+
+        const {data} = await axios.get(`/streamer/withTournament/${partnerNo}`, {
+            params: {  streamerId  }
+        });
+        setDetailMap(prev => ({
+            ...prev,
+            [partnerNo]: data,
+        }));
+        console.log("전송 : ",data);
+    };
+
+
+    // 승률별 그래프 색상
     const getWinRateColor = (rate) => {
         if (rate >= 100) return "#39dd46";
         if (rate >= 70) return "#38cc76";
@@ -104,7 +131,7 @@ return (<>
                         <Link to={`/streamer/${withCk.partnerNo}`} className="fs-6 text-decoration-none text-white">
                             <img src={buildProfileUrl(withCk.partnerSoopId)}
                                 className="ck-participant-avatar" alt={withCk.partnerName || ""}/>
-                            <span className="ms-2">{withCk.partnerName}</span>
+                            <span className="ms-2 fs-5">{withCk.partnerName}</span>
                         </Link>
                             <span className="ms-3 text-secondary">with</span>
                             <span className="ms-2  vs-item-record mt-1">
@@ -160,7 +187,7 @@ return (<>
                             <Link to={`/streamer/${withTournament.partnerNo}`} className="fs-6 text-decoration-none text-white">
                                 <img src={buildProfileUrl(withTournament.partnerSoopId)}
                                     className="ck-participant-avatar" alt={withTournament.partnerName || ""}/>
-                                <span className="ms-2 me-2">{withTournament.partnerName}</span>
+                                <span className="ms-2 me-2 fs-5">{withTournament.partnerName}</span>
                             </Link>
                                 <span className="text-secondary">with</span>
                                 <span className="ms-1 fw-semibold mb-2 vs-item-rate me-3 fs-5">{withTournament.playCount}회</span>
@@ -168,7 +195,7 @@ return (<>
                                     <span className="badge official-badge2 ms-2">멸망전</span>
                                 )}
                                 {withTournament.withChampion === 'Y' && (
-                                    <span className="badge official-badge ms-2">우승</span>
+                                    <span className="badge bg-warning text-dark ms-2">우승</span>
                                 )}
                                 {withTournament.withFinal === 'Y' && (
                                     <span className="badge bg-secondary ms-2">준우승</span>
@@ -178,16 +205,38 @@ return (<>
                         {/* 상세버튼 - PC용 */}
                         <div className="col-sm-auto d-none d-sm-block text-end">
                             <button className="btn btn-sm btn-outline-secondary"
-                                //onClick={...}
+                                onClick={() => toggleDetail(withTournament.partnerNo)}
                             > 상세보기 </button>
                         </div>
                         {/* 상세버튼 - 모바일용 */}
                         <div className="col-12 d-sm-none text-end">
                             <button className="btn btn-outline-secondary w-100"
-                                //onClick={...}
+                                onClick={() => toggleDetail(withTournament.partnerNo)}
                             > 상세보기 </button>
                         </div>
-                        
+
+                        {/* 팀메이트 상세 토글 */}
+                        {openPartnerNo === withTournament.partnerNo && (
+                            <div className="mt-3 pt-3 border-top border-bottom border-secondary with-detail-box">
+                                {(detailMap[withTournament.partnerNo] || []).map(team => (
+                                    <div key={team.teamNo} className="row d-flex justify-content-between mb-2">
+                                        <Link className="col-3" to={`/tournament/${team.tournamentId}`}>
+                                            <span className="badge text-secondary">- {team.tournamentYear} || {team.tournamentName} </span>
+                                        </Link>
+                                        <span className="col-7 fw-semibold">{team.teamName}</span>
+                                        <div className="col-2 text-center">
+                                            <span className={`badge ${team.teamRanking === '우승' ? "bg-warning text-dark"
+                                                : team.teamRanking === "준우승" ? "bg-secondary"
+                                                : team.teamRanking === "4강" ? "text-light"
+                                                : team.teamRanking === "예선탈락" ? "text-danger"
+                                                : "badge text-secondary"
+                                                }`}
+                                            >{team.teamRanking}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
                 ))}
