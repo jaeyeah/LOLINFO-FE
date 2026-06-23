@@ -25,7 +25,7 @@ export default function WithCk({ streamerId, keyword }) {
 
       setWithCk(data.list);
       setPageData(data.pageVO);
-      console.log("ck 정보 : ",data);
+      //console.log("ck 정보 : ",data);
     } catch (error) {
       console.error(error);
       setCkError("스트리머 CK정보를 불러오지 못했습니다.");
@@ -36,7 +36,7 @@ export default function WithCk({ streamerId, keyword }) {
 
   useEffect(() => {
     if (streamerId) loadCkData();
-  }, [streamerId, loadCkData, page]);
+  }, [streamerId, loadCkData]);
 
   useEffect(() => {
     setPage(1);
@@ -75,6 +75,11 @@ export default function WithCk({ streamerId, keyword }) {
             )}
 
             {!loading && !ckError && (
+            withCk.length === 0 ? (
+                <div className="alert alert-danger" role="alert">
+                    검색 결과가 없습니다.
+                </div>
+            ) : (
             <div className="list-group list-group-flush">
                 <div className ="row mt-3">
                     <div className="col-12 d-flex justify-content-center">
@@ -116,6 +121,7 @@ export default function WithCk({ streamerId, keyword }) {
                 </div>
                 ))}
             </div>
+            )
             )}
             
         </div>
