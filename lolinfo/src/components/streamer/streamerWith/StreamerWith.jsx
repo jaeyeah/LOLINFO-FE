@@ -1,7 +1,7 @@
 import { useOutletContext } from "react-router-dom";
 import WithCk from "./WithCk";
 import WithTournament from "./WithTournament";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
 export default function StreamerWith() {
