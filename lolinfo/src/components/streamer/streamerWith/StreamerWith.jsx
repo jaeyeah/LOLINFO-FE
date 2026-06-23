@@ -3,6 +3,7 @@ import WithCk from "./WithCk";
 import WithTournament from "./WithTournament";
 import { useCallback, useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
+import axios from "axios";
 
 export default function StreamerWith() {
     const { streamerId } = useOutletContext();
