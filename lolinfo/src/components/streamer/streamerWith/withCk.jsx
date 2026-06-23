@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { buildProfileUrl } from "../../../utils/profileUrl";
 import Pagination from "../../Pagination";
 
-export default function WithCk({ streamerId }) {
+export default function WithCk({ streamerId, keyword }) {
   const [withCk, setWithCk] = useState([]);
   const [loading, setLoading] = useState(true);
   const [ckError, setCkError] = useState(null);
@@ -19,7 +19,8 @@ export default function WithCk({ streamerId }) {
       setCkError(null);
 
       const { data } = await axios.get("/streamer/withCk", {
-        params: { streamerId, page },
+        params: { streamerId, page,
+            ...(keyword && { keyword }), },
       });
 
       setWithCk(data.list);
@@ -31,11 +32,15 @@ export default function WithCk({ streamerId }) {
     } finally {
       setLoading(false);
     }
-  }, [streamerId, page]);
+  }, [streamerId, page, keyword]);
 
   useEffect(() => {
     if (streamerId) loadCkData();
   }, [streamerId, loadCkData, page]);
+
+  useEffect(() => {
+    setPage(1);
+    }, [keyword]);
 
   const getWinRateColor = (rate) => {
     if (rate >= 100) return "#39dd46";

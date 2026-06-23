@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { buildProfileUrl } from "../../../utils/profileUrl";
 import Pagination from "../../Pagination";
 
-export default function WithTournament({ streamerId }) {
+export default function WithTournament({ streamerId, keyword }) {
   const [withTournament, setWithTournament] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tournamentError, setTournamentError] = useState(null);
@@ -22,7 +22,9 @@ export default function WithTournament({ streamerId }) {
       setTournamentError(null);
 
       const { data } = await axios.get("/streamer/withTournament", {
-        params: { streamerId, page },
+        params: { streamerId, page, 
+            ...(keyword && { keyword }),
+        },
       });
 
       setWithTournament(data.list);
@@ -34,11 +36,16 @@ export default function WithTournament({ streamerId }) {
     } finally {
       setLoading(false);
     }
-  }, [streamerId, page]);
+  }, [streamerId, page, keyword]);
 
   useEffect(() => {
     if (streamerId) loadTournamentData();
   }, [streamerId, loadTournamentData, page]);
+
+    useEffect(() => {
+        setPage(1);
+        }, [keyword]);
+
 
   const toggleDetail = async (partnerNo) => {
     if (openPartnerNo === partnerNo) {
