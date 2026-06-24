@@ -8,6 +8,7 @@ import StreamerDetail from "./streamer/StreamerDetail";
 import StreamerDetailInfo from "./streamer/StreamerDetailInfo";
 import StreamerTournaments from "./streamer/StreamerTournaments";
 import StreamerCk from "./streamer/StreamerCk";
+import StreamerWith from "./streamer/streamerWith/StreamerWith";
 
 import TournamentList from "./tournament/TournamentList";
 import TournamentDetail from "./tournament/TournamentDetail";
@@ -27,8 +28,10 @@ import AdminMain from "./admin/AdminMain";
 import AdminMemberPage from "./admin/AdminMemberPage";
 import AdminVisitPage from "./admin/AdminVisitPage";
 import AdminVisitUsePage from "./admin/AdminVisitUsePage";
-import StreamerWith from "./streamer/streamerWith/StreamerWith";
 
+
+import MyPageMain from "./mypage/MyPageMain";
+import MyPageMember from "./mypage/MyPageMember";
 
 export default function Content(){
 
@@ -45,6 +48,13 @@ return (<>
                 {/* 회원 */}
                 <Route path="/member/join" element={<MemberJoin/>} />
                 <Route path="/member/login" element={<MemberLogin/>} />
+
+                {/* 마이페이지 */}
+                <Route path="/mypage" element={<MyPageMain/>}>
+                    <Route index element={<MyPageMember/>}/>
+                    <Route path="member" element={<MyPageMember/>}/>
+                </Route>
+
 
                 {/* 관리자 */}
                 <Route path="/admin" element={<AdminMain/>}>

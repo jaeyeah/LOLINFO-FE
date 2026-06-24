@@ -138,11 +138,11 @@ export default function Menu() {
 
                                 </>
                             )}
-                            {/* <li className="nav-item">
-                                <Link className="nav-link" to={`/member/mypage/myinfo/${loginId}`} onClick={closeMenu}>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/mypage" onClick={closeMenu}>
                                     <span>MY</span>
                                 </Link>
-                            </li> */}
+                            </li>
                             <li className="nav-item" onClick={closeMenu}>
                                 <Link className="nav-link" onClick={logout}>
                                     <span>로그아웃</span>

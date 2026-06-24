@@ -33,7 +33,6 @@ export default function AdminVisitPage() {
             const endpoint = queryMode === 'year' ? `/visit/year?year=${queryValue}` : `/visit/month?month=${queryValue}`;
             const res = await axios.get(endpoint);
             let data = res.data || [];
-            console.log('방문 통계 데이터:', data);
 
             const normalized = data
                 .map(normalizeVisit)
