@@ -44,7 +44,6 @@ export default function AdminVisitUsePage() {
                                                   : `/visit/use/month?month=${queryValue}`;
             const res = await axios.get(endpoint);
             const data = Array.isArray(res.data) ? res.data : [];
-
             const normalized = data.map((item) => ({
                 useDate: item.useDate ?? '',
                 tournamentList: Number(item.tournamentList ?? 0),

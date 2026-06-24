@@ -19,7 +19,7 @@ export default function AdminMemberPage() {
         try {
             const res = await axios.get(`/mypage/`);
             setMember(res.data);
-            console.log(res.data);
+            
         } catch (error) {
             console.error("회원 로드 실패", error);
         } finally {
@@ -91,8 +91,8 @@ export default function AdminMemberPage() {
                         </div>
                     </div>
                     <div className="col-2">
-                                <span className="btn btn-secondary mt-1 ms-1 ">수정</span>
-                                <span className="btn btn-danger mt-1 ms-1">탈퇴</span>
+                                <span className="btn btn-secondary mt-1 ms-1" disabled>수정</span>
+                                <span className="btn btn-danger mt-1 ms-1" disabled>탈퇴</span>
 
                     </div>
                 </div>
