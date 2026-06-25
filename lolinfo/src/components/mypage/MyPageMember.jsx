@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAtomValue } from 'jotai';
-import { loginIdState } from '../../utils/jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { clearLoginState, loginIdState } from '../../utils/jotai';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default function AdminMemberPage() {
 
@@ -10,6 +12,8 @@ export default function AdminMemberPage() {
     // 상태 관리
     const [member, setMember] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const clearLogin = useSetAtom(clearLoginState);
 
     // 1. 회원 목록 불러오기
     const loadData = async () => {
@@ -32,7 +36,35 @@ export default function AdminMemberPage() {
         loadData();
     }, [loginId]);
 
+     // 회원 탈퇴 핸들러
+    const deleteMember = async (targetId, e) => {
+        e.stopPropagation();
 
+        const result = await Swal.fire({
+            title: '회원 탈퇴',
+            text: "정말 탈퇴 하시겠습니까?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: '네',
+            cancelButtonText: '취소'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await axios.delete("/mypage/");
+                Swal.fire('탈퇴 완료', '회원 탈퇴가 완료되었습니다.', 'success');
+                //로그아웃 처리
+                clearLogin();
+                delete axios.defaults.headers.common['Authorization'];
+                navigate("/");
+            } catch (error) {
+                console.error(error);
+                Swal.fire('오류', '삭제 실패', 'error');
+            }
+        }
+    };
 
 
     return (
@@ -91,9 +123,8 @@ export default function AdminMemberPage() {
                         </div>
                     </div>
                     <div className="col-2">
-                                <span className="btn btn-secondary mt-1 ms-1" disabled>수정</span>
-                                <span className="btn btn-danger mt-1 ms-1" disabled>탈퇴</span>
-
+                            {/* <span className="btn btn-secondary mt-1 ms-1" disabled>수정</span> */}
+                            <button className="btn btn-danger mt-1 ms-1"  onClick={(e) => deleteMember(member.memberId, e)}>탈퇴</button>
                     </div>
                 </div>
             </div>
