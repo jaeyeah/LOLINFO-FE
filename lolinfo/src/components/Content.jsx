@@ -32,6 +32,7 @@ import AdminVisitUsePage from "./admin/AdminVisitUsePage";
 
 import MyPageMain from "./mypage/MyPageMain";
 import MyPageMember from "./mypage/MyPageMember";
+import MyPageScrim from "./mypage/MyPageScrim";
 
 export default function Content(){
 
@@ -53,6 +54,7 @@ return (<>
                 <Route path="/mypage" element={<MyPageMain/>}>
                     <Route index element={<MyPageMember/>}/>
                     <Route path="member" element={<MyPageMember/>}/>
+                    <Route path="scrim" element={<MyPageScrim/>}/>
                 </Route>
 
 
