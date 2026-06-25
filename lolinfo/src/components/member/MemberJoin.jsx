@@ -175,6 +175,8 @@ export default function MemberJoin(){
                     certEmail : member.memberEmail,
                     certNumber : certNumber
                 });
+
+                console.log(data);
                 if(data.result === true){//인증성공
                     setCertNumberClass("is-valid");
                     setSending(null); 
