@@ -44,6 +44,10 @@ export default function MyPageMain() {
                         등록한 스크림
                     </NavLink>
 
+                    <NavLink to="ck" className="list-group-item admin-menu-item" onClick={closeSidebar}>
+                        등록한 CK
+                    </NavLink>
+
                 </div>
             </div>
 

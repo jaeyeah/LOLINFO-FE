@@ -1,31 +1,20 @@
-import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import Pagination from "../Pagination";
-import { buildProfileUrl } from "../../utils/profileUrl";
-import { adminState, loginState } from "../../utils/jotai";
-import { useAtomValue } from "jotai";
 import { FaEdit } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { buildProfileUrl } from "../../utils/profileUrl";
 
+
+export default function MyPageCk(){
+//상태 관리
+const [ckList, setCkList] = useState([]);
+const [page, setPage] = useState(1);
+const [pageData, setPageData] = useState({
+    page : 1, size : 10, totalCount : 0, totalPage : 0 , blockStart : 1, blockFinish : 1
+});
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
 
-export default function CkList() {
-
-  const isAdmin = useAtomValue(adminState);
-  const isLogin = useAtomValue(loginState);
-
-  const [ckList, setCkList] = useState([]);
-  const [page, setPage] = useState(1);
-  const [pageData, setPageData] = useState({
-    page: 1,
-    size: 10,
-    totalCount: 0,
-    totalPage: 0,
-    blockStart: 1,
-    blockFinish: 1,
-    prev: false,
-    next: false,
-  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -45,7 +34,7 @@ export default function CkList() {
     try {
       setLoading(true);
       setError(null);
-      const { data } = await axios.get("/ck/", { params: { page } });
+      const { data } = await axios.get("/mypage/ck", { params: { page } });
       setCkList(data.list ?? []);
       setPageData(data.pageVO ?? {
         page,
@@ -75,7 +64,7 @@ export default function CkList() {
         setParticipantError(null);
         const { data } = await axios.get(`/ck/${ckId}/participant`);
         const winner = data[0]?.ckWinner ?? null;
-        //console.log("참가자 정보 로드 성공", { ckId, data, winner });
+        console.log("참가자 정보 로드 성공", { ckId, data, winner });
         setParticipantCache((prev) => ({
           ...prev,
           [ckId]: {
@@ -185,23 +174,21 @@ export default function CkList() {
 
   const selectedParticipantData = selectedCkId ? participantCache[selectedCkId]?.participants ?? [] : [];
   const selectedWinner = selectedCkId ? participantCache[selectedCkId]?.winner : null;
-
   const redTeam = useMemo(
-    () =>
-      selectedParticipantData
-        .filter((p) => p.ckSide === "red")
-        .sort((a, b) => POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition)),
-    [selectedParticipantData]
-  );
-
-  const blueTeam = useMemo(
-    () =>
-      selectedParticipantData
-        .filter((p) => p.ckSide === "blue")
-        .sort((a, b) => POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition)),
-    [selectedParticipantData]
-  );
-
+      () =>
+        selectedParticipantData
+          .filter((p) => p.ckSide === "red")
+          .sort((a, b) => POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition)),
+      [selectedParticipantData]
+    );
+  
+    const blueTeam = useMemo(
+      () =>
+        selectedParticipantData
+          .filter((p) => p.ckSide === "blue")
+          .sort((a, b) => POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition)),
+      [selectedParticipantData]
+    );
   const formatDate = (value) => {
     if (!value) return "날짜 없음";
     try {
@@ -213,6 +200,9 @@ export default function CkList() {
 
   // CK 삭제
       const deleteCk = useCallback(async(ckId)=>{
+        if (!window.confirm("정말로 이 전적을 삭제하시겠습니까?")) {
+            return;
+        }
         try{
             await axios.delete(`/ck/${ckId}`);
             loadCkList();
@@ -225,25 +215,13 @@ export default function CkList() {
 
 
 
-  return (
-    <>
-      <div className="row mb-3">
-        <div className="col">
-          <div className="card bg-dark border-secondary text-white p-3">
-            <h2 className="mb-1">CK 전체 목록</h2>
-            <p className="mb-0 text-secondary">
-              CK 목록은 최소 데이터만 조회하며 팀원 상세 정보는 별도 API로 분리됩니다.
-            </p>
-            {isLogin && (
-              <Link className="btn btn-dark border-secondary mt-3" to="/ck/insert">
-                CK 등록
-              </Link>
-            )}
-          </div>
-        </div>
-      </div>
 
-      <div className="row justify-content-center">
+
+
+return (
+<div className="container my-4">
+    <h3 className="mb-4">내가 등록한 CK</h3>
+    <div className="row justify-content-center">
         <div className="col-12">
           {loading && (
             <div className="d-flex justify-content-center py-5">
@@ -269,12 +247,10 @@ export default function CkList() {
                 <table className="table table-dark table-striped mb-0 align-middle">
                   <thead className="text-center table-secondary text-dark ">
                     <tr>
-                      <th className="col-2">CK 날짜</th>
-                      <th className="col-7">CK 메모</th>
-                      <th className="col-2">팀원</th>
-                      {isAdmin && 
-                        <th className="col-1">기능</th>
-                      }
+                      <th scope="col-2">CK 날짜</th>
+                      <th scope="col-7">CK 메모</th>
+                      <th scope="col-2">팀원</th>
+                      <th scope="col-1">기능</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -298,11 +274,9 @@ export default function CkList() {
                           ) : (
                             <div className="d-flex align-items-center justify-content-center gap-2">
                               <span>{formatDate(ck.ckDate)}</span>
-                              {isAdmin && 
                                 <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEditDate(ck)}>
                                   <FaEdit />
                                 </button>
-                              }
                             </div>
                           )}
                         </td>
@@ -331,11 +305,9 @@ export default function CkList() {
                           ) : (
                             <div className="d-flex align-items-center justify-content-center gap-2">
                               <span>{ck.ckMemo || "-"}</span>
-                              {isAdmin && 
                                 <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEditMemo(ck)}>
                                   <FaEdit />
                                 </button>
-                              }
                             </div>
                           )}
                         </td>
@@ -344,13 +316,11 @@ export default function CkList() {
                             onClick={() => openParticipantModal(ck.ckId)}
                             > 팀원 보기 </button>
                         </td>
-                        {isAdmin && 
                         <td>
                           <button type="button" className="btn btn-sm btn-outline-danger"
                             onClick={() => deleteCk(ck.ckId)}
                             > 삭제 </button> 
                         </td>
-                        }
                       </tr>
                     ))}
                   </tbody>
@@ -471,6 +441,9 @@ export default function CkList() {
           )}
         </div>
       </div>
-    </>
-  );
+
+</div>
+
+
+); 
 }
