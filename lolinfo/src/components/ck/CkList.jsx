@@ -269,11 +269,11 @@ export default function CkList() {
                 <table className="table table-dark table-striped mb-0 align-middle">
                   <thead className="text-center table-secondary text-dark ">
                     <tr>
-                      <th scope="col-2">CK 날짜</th>
-                      <th scope="col-7">CK 메모</th>
-                      <th scope="col-2">팀원</th>
+                      <th className="col-2">CK 날짜</th>
+                      <th className="col-7">CK 메모</th>
+                      <th className="col-2">팀원</th>
                       {isAdmin && 
-                        <th scope="col-1">기능</th>
+                        <th className="col-1">기능</th>
                       }
                     </tr>
                   </thead>
