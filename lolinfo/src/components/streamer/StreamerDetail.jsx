@@ -1,17 +1,20 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { NavLink, useParams, Outlet } from "react-router-dom";
+import { NavLink, useParams, Outlet, useNavigate } from "react-router-dom";
 import "./Streamer.css";
 import { FaEdit, FaHome } from "react-icons/fa";
 import { useAtomValue } from "jotai";
-import { adminState } from "../../utils/jotai";
+import { adminState, loginState } from "../../utils/jotai";
+import Swal from "sweetalert2";
 
 export default function StreamerDetail() {
 
     const isAdmin = useAtomValue(adminState);
+    const isLogin = useAtomValue(loginState);
     const {streamerId} = useParams();
     const [streamer, setStreamer] = useState({});
-
+    const [bookmarked, setBookmarked] = useState(false);
+    const navigate = useNavigate();
     //로딩중 설정
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -29,6 +32,37 @@ export default function StreamerDetail() {
           setLoading(false);
         }
     }, [streamerId]);
+
+    //북마크 설정
+    const toggleBookmark=async() =>{
+      if (!isLogin) {
+          const result = await Swal.fire({
+            icon: "warning",
+            title: "로그인이 필요합니다",
+            text: "로그인 페이지로 이동하시겠습니까?",
+            showCancelButton: true,
+            confirmButtonText: "이동",
+            cancelButtonText: "취소",
+          });
+
+          if (result.isConfirmed) {
+            navigate("/member/login");
+          }
+          return;
+        }
+      try{
+        const {data} = await axios.post('/bookmark/streamer',null,{
+          params : {streamerId : streamerId}
+        })
+        setBookmarked(data);
+        if(data) {console.log("등록 성공");}
+        else{console.log("삭제");}
+      } catch(error){
+        console.error(error);
+      }
+    };
+
+
 
 
     useEffect(()=>{
@@ -91,6 +125,10 @@ export default function StreamerDetail() {
               <p className="card-text mb-0">@{streamer.streamerSoopId}</p>
             </div>
             <div className="col-auto text-end">
+                <button type="button" className={`btn mb-2 ${bookmarked ? "btn-warning" : "btn-outline-warning"}`}
+                        onClick = {toggleBookmark}>
+                      {bookmarked ? "★" : "☆"}
+                    </button>
                 <a href={streamer.streamerStation} target="_blank" rel="noreferrer"
                     className="btn btn-station mb-2"><FaHome className="fs-2"/> </a>
                 {isAdmin === true && (
