@@ -1,6 +1,6 @@
 import axios from "../../utils/axios";
 import { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import TeamStaffModal from "./TeamStaffModal";
 import { FaEdit } from "react-icons/fa";
@@ -10,6 +10,7 @@ import { adminState, loginIdState, loginState } from "../../utils/jotai";
 import "./Tournament.css";
 import "./Scrim.css";
 import ScrimList from "./ScrimList";
+import Swal from "sweetalert2";
 
 export default function TournamentDetail(){
 
@@ -17,6 +18,7 @@ export default function TournamentDetail(){
     const isAdmin = useAtomValue(adminState);
     const loginId = useAtomValue(loginIdState);
 
+    const navigate = useNavigate();
     const {tournamentId} = useParams();
     const [tournament, setTournament] = useState({});
     const [team, setTeam] = useState([]);
@@ -271,6 +273,35 @@ export default function TournamentDetail(){
         return "#e74c3c";
     };
 
+    //북마크 설정 (대회 즐겨찾기)
+    const [bookmarked, setBookmarked] = useState(false);
+    const toggleBookmark = async() =>{
+      if (!isLogin) {
+          const result = await Swal.fire({
+            icon: "warning",
+            title: "로그인이 필요합니다",
+            text: "로그인 페이지로 이동하시겠습니까?",
+            showCancelButton: true,
+            confirmButtonText: "이동",
+            cancelButtonText: "취소",
+          });
+
+          if (result.isConfirmed) {
+            navigate("/member/login");
+          }
+          return;
+        }
+      try{
+        const {data} = await axios.post('/bookmark/tournament',null,{
+          params : {tournamentId : tournamentId}
+        })
+        setBookmarked(data);
+        if(data) {console.log("등록 성공");}
+        else{console.log("삭제");}
+      } catch(error){
+        console.error(error);
+      }
+    };
 
 
 
@@ -288,7 +319,7 @@ export default function TournamentDetail(){
         {/* 대회 개최자 및 상세 */}
         <div className="streamer-card mb-2">
             <div className="row g-0">
-                <div className="col-lg-4 col-12">
+                <div className="col-lg-4 col-12 position-relative">
                     <h3 className="host-box text-center">주최</h3>
                     <div className="d-flex tournment-host justify-content-center align-items-center gap-2">
                     {hostList.map((host)=>(
@@ -302,6 +333,10 @@ export default function TournamentDetail(){
                             )}
                         </div>
                     ))}
+                        <button type="button" className={`btn position-absolute top-0 end-0 mt-5
+                                ${bookmarked ? "btn-warning" : "btn-outline-warning"}`} onClick = {toggleBookmark}>
+                            {bookmarked ? "★" : "☆"}
+                        </button>
                     </div>
                 </div>
                 <div className="col-lg-8 col-12 ">

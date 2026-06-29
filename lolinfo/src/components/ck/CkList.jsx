@@ -37,8 +37,10 @@ export default function CkList() {
   // CK 항목 부분 수정 상태
   const [editingDateId, setEditingDateId] = useState(null);
   const [editingMemoId, setEditingMemoId] = useState(null);
+  const [editingWinnerId, setEditingWinnerId] = useState(null);
   const [editDateValue, setEditDateValue] = useState("");
   const [editMemoValue, setEditMemoValue] = useState("");
+  const [editWinnerValue, setEditWinnerValue] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
 
   const loadCkList = useCallback(async () => {
@@ -103,6 +105,7 @@ export default function CkList() {
     }
   }, [selectedCkId, fetchParticipants]);
 
+  // 날짜 수정
   const handleEditDate = useCallback((ck) => {
     setEditingDateId(ck.ckId);
     setEditDateValue(ck.ckDate ? new Date(ck.ckDate).toISOString().slice(0, 10) : "");
@@ -135,6 +138,7 @@ export default function CkList() {
     }
   }, [editDateValue]);
 
+  //메모(어떤 ck인지) 수정
   const handleEditMemo = useCallback((ck) => {
     setEditingMemoId(ck.ckId);
     setEditMemoValue(ck.ckMemo ?? "");
@@ -167,6 +171,61 @@ export default function CkList() {
     }
   }, [editMemoValue]);
 
+  //승리팀 수정
+  const handleEditWinner = useCallback((ck) => {
+    setEditingWinnerId(ck.ckId);
+    setEditWinnerValue(ck.ckWinner ?? "");
+  }, []);
+
+  const handleCancelWinner = useCallback(() => {
+    setEditingWinnerId(null);
+    setEditWinnerValue("");
+  }, []);
+
+  const handleSaveWinner = useCallback(async (ckId) => {
+    if (!editWinnerValue) {
+      alert("승리팀을 선택해주세요.");
+      return;
+    }
+
+    try {
+      setIsUpdating(true);
+
+      const { data } = await axios.patch(`/ck/${ckId}`, {
+        ckWinner: editWinnerValue,
+      });
+
+      setCkList((prev) =>
+        prev.map((ck) =>
+          ck.ckId === ckId
+            ? { ...ck, ckWinner: data.ckWinner ?? editWinnerValue }
+            : ck
+        )
+      );
+
+      setParticipantCache((prev) => {
+        if (!prev[ckId]) return prev;
+        return {
+          ...prev,
+          [ckId]: {
+            ...prev[ckId],
+            winner: editWinnerValue,
+          },
+        };
+      });
+
+      setEditingWinnerId(null);
+      setEditWinnerValue("");
+    } catch (err) {
+      console.error("CK 결과 수정 실패", err);
+      alert("CK 결과를 수정하지 못했습니다.");
+    } finally {
+      setIsUpdating(false);
+    }
+  }, [editWinnerValue]);
+
+
+  //모달
   const openParticipantModal = useCallback(
     (ckId) => {
       setParticipantError(null);
@@ -270,11 +329,12 @@ export default function CkList() {
                   <thead className="text-center table-secondary text-dark ">
                     <tr>
                       <th className="col-2">CK 날짜</th>
-                      <th className="col-7">CK 메모</th>
+                      <th className="col-5">CK 메모</th>
                       <th className="col-2">팀원</th>
-                      {isAdmin && 
+                      {isAdmin && <>
+                        <th className="col-2">승리팀</th>
                         <th className="col-1">기능</th>
-                      }
+                      </>}
                     </tr>
                   </thead>
                   <tbody>
@@ -344,13 +404,77 @@ export default function CkList() {
                             onClick={() => openParticipantModal(ck.ckId)}
                             > 팀원 보기 </button>
                         </td>
-                        {isAdmin && 
+                        {isAdmin && <>
+                          <td>
+                            {editingWinnerId !== ck.ckId && (
+                            <div className="d-flex align-items-center justify-content-center gap-2">
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-outline-secondary"
+                                  onClick={() => handleEditWinner(ck)}
+                                >
+                                  <FaEdit />
+                                </button>
+                            </div>
+                            )}
+                            {editingWinnerId === ck.ckId && (
+                              <div className="mt-2">
+                                <div className="btn-group w-100 mb-2" role="group">
+                                  <input
+                                    type="radio"
+                                    className="btn-check"
+                                    name={`winner-${ck.ckId}`}
+                                    id={`redWin-${ck.ckId}`}
+                                    value="red"
+                                    checked={editWinnerValue === "red"}
+                                    onChange={(e) => setEditWinnerValue(e.target.value)}
+                                  />
+                                  <label className="btn btn-sm btn-outline-danger" htmlFor={`redWin-${ck.ckId}`}>
+                                    레드 승
+                                  </label>
+
+                                  <input
+                                    type="radio"
+                                    className="btn-check"
+                                    name={`winner-${ck.ckId}`}
+                                    id={`blueWin-${ck.ckId}`}
+                                    value="blue"
+                                    checked={editWinnerValue === "blue"}
+                                    onChange={(e) => setEditWinnerValue(e.target.value)}
+                                  />
+                                  <label className="btn btn-sm btn-outline-primary" htmlFor={`blueWin-${ck.ckId}`}>
+                                    블루 승
+                                  </label>
+                                </div>
+
+                                <div className="d-flex gap-2">
+                                  <button
+                                    type="button"
+                                    className="btn btn-sm btn-outline-light flex-fill"
+                                    onClick={() => handleSaveWinner(ck.ckId)}
+                                    disabled={isUpdating || !editWinnerValue}
+                                  >
+                                    저장
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    className="btn btn-sm btn-outline-secondary flex-fill"
+                                    onClick={handleCancelWinner}
+                                  >
+                                    취소
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </td>
+
                         <td>
                           <button type="button" className="btn btn-sm btn-outline-danger"
                             onClick={() => deleteCk(ck.ckId)}
                             > 삭제 </button> 
                         </td>
-                        }
+                        </>}
                       </tr>
                     ))}
                   </tbody>

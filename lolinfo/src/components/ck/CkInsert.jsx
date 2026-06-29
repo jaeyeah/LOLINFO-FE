@@ -39,7 +39,6 @@ export default function CkInsert() {
   // 유효성 검사
   const [ckClass, setCkClass] = useState({
     ckDate: "",
-    ckWinnerSide: "",
   });
 
   // callback
@@ -107,10 +106,6 @@ export default function CkInsert() {
     setCkClass((prev) => ({ ...prev, ckDate: valid ? "is-valid" : "is-invalid" }));
   }, [ck]);
 
-  const checkCkWinnerSide = useCallback(() => {
-    const valid = ck.ckWinnerSide.length > 0;
-    setCkClass((prev) => ({ ...prev, ckWinnerSide: valid ? "is-valid" : "is-invalid" }));
-  }, [ck]);
 
   // 중복 스트리머 검사
   const getDuplicateStreamers = useMemo(() => {
@@ -128,7 +123,6 @@ export default function CkInsert() {
   // 필수항목 검증
   const ckValid = useMemo(() => {
     if (ckClass.ckDate !== "is-valid") return false;
-    if (ckClass.ckWinnerSide !== "is-valid") return false;
     if (participants.some((p) => !p.ckStreamer)) return false;
     if (hasDuplicates) return false;
     return true;
@@ -141,7 +135,7 @@ export default function CkInsert() {
     try {
       const payload = {
         ckDate: ck.ckDate,
-        ckWinner: ck.ckWinnerSide,
+        ckWinner: ck.ckWinnerSide || null,
         ckMemo: ck.ckMemo,
         participants: participants.map((p) => ({
           ckSide: p.ckSide,
@@ -150,7 +144,6 @@ export default function CkInsert() {
         })),
       };
       const response = await axios.post("/ck/", payload);
-      console.log("CK 등록 성공", response);
       navigate("/ck");
     } catch (err) {
       console.log("CK 등록 실패");
@@ -199,7 +192,6 @@ export default function CkInsert() {
                 id="redWin"
                 value="red"
                 onChange={changeCkValue}
-                onBlur={checkCkWinnerSide}
               />
               <label className="btn btn-outline-danger" htmlFor="redWin">
                 레드팀 승리
@@ -212,7 +204,6 @@ export default function CkInsert() {
                 id="blueWin"
                 value="blue"
                 onChange={changeCkValue}
-                onBlur={checkCkWinnerSide}
               />
               <label className="btn btn-outline-primary" htmlFor="blueWin">
                 블루팀 승리
