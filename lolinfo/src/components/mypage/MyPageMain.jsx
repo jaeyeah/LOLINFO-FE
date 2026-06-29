@@ -48,6 +48,9 @@ export default function MyPageMain() {
                         등록한 CK
                     </NavLink>
 
+                    <NavLink to="bookmark" className="list-group-item admin-menu-item" onClick={closeSidebar}>
+                        즐겨찾기
+                    </NavLink>
                 </div>
             </div>
 
