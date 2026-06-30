@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import "./Bookmark.css";
 
-export default function MyPageScrim() {
+export default function MyPageBookmark() {
     // 상태 관리
     
     const loginId = useAtomValue(loginIdState);

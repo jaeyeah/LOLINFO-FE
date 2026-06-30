@@ -11,6 +11,7 @@ import "./Tournament.css";
 import "./Scrim.css";
 import ScrimList from "./ScrimList";
 import Swal from "sweetalert2";
+import { FaRegStar, FaStar } from "react-icons/fa6";
 
 export default function TournamentDetail(){
 
@@ -333,7 +334,7 @@ export default function TournamentDetail(){
                     ))}
                         <button type="button" className={`btn position-absolute top-0 end-0 mt-5
                                 ${bookmarked ? "btn-warning" : "btn-outline-warning"}`} onClick = {toggleBookmark}>
-                            {bookmarked ? "★" : "☆"}
+                            {bookmarked ? <FaStar/> : <FaRegStar/>}
                         </button>
                     </div>
                 </div>
