@@ -44,11 +44,14 @@ export default function StreamerCk() {
   }, [loadVsStats]);
 
   const getWinRateColor = (rate) => {
-    if (rate >= 70) return "#2ecc71";
-    if (rate >= 55) return "#4dabf7";
-    if (rate >= 45) return "#f6c23e";
-    return "#e74c3c";
-  };
+        if (rate >= 70) return "#3bc9db";
+        if (rate >= 60) return "#4dabf7";
+        if (rate >= 55) return "#69db7c";
+        if (rate >= 50) return "#adb5bd";
+        if (rate >= 45) return "#fcc419";
+        if (rate >= 40) return "#ff922b";
+        return "#ff6b6b";
+    };
 
   // 포지션별 총 전적 계산
   const positionSummaryStats = useMemo(() => {

@@ -1,0 +1,43 @@
+.bookmark-card{
+    background:#181c24;
+    border:1px solid #2b3038;
+    border-radius:18px;
+    padding:20px;
+    transition:.25s;
+}
+
+.bookmark-card:hover{
+    transform:translateY(-4px);
+    border-color:#4dabf7;
+    box-shadow:0 8px 24px rgba(77,171,247,.2);
+}
+
+.bookmark-avatar{
+    width:72px;
+    height:72px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #2b3038;
+}
+
+.bookmark-progress{
+    height:8px;
+    background:#2b3038;
+}
+
+.bookmark-progress .progress-bar{
+    background:linear-gradient(90deg,#4dabf7,#51cf66);
+}
+
+.badge-gold{
+    background:#f5c542;
+    color:#222;
+}
+
+.badge-silver{
+    background:#9ea7b8;
+}
+
+.badge-bronze{
+    background:#b87333;
+}

@@ -262,15 +262,13 @@ export default function TournamentDetail(){
 
     //스크림 승률별 색상적용
     const getWinRateColor = (rate) => {
-        if (rate >= 70) return "#2ecc71";
-        if (rate >= 60) return "#1b95fa";
-        if (rate >= 55) return "#abd9ff";
-        if (rate >= 50) return "#bdbcbc";
-        if (rate >= 45) return "#b3aa91";
-        if (rate >= 40) return "#f8b200";
-        if (rate >= 35) return "#e7893c";
-        if (rate >= 30) return "#e75e3c";
-        return "#e74c3c";
+        if (rate >= 70) return "#3bc9db";
+        if (rate >= 60) return "#4dabf7";
+        if (rate >= 55) return "#69db7c";
+        if (rate >= 50) return "#adb5bd";
+        if (rate >= 45) return "#fcc419";
+        if (rate >= 40) return "#ff922b";
+        return "#ff6b6b";
     };
 
     //북마크 설정 (대회 즐겨찾기)
