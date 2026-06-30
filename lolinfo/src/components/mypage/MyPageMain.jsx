@@ -49,7 +49,7 @@ export default function MyPageMain() {
                     </NavLink>
 
                     <NavLink to="bookmark" className="list-group-item admin-menu-item" onClick={closeSidebar}>
-                        즐겨찾기
+                        즐겨찾기 스트리머
                     </NavLink>
                 </div>
             </div>
