@@ -6,7 +6,7 @@ import { FaEdit, FaHome } from "react-icons/fa";
 import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
 import Swal from "sweetalert2";
-
+import { FaStar, FaRegStar } from "react-icons/fa6";
 export default function StreamerDetail() {
 
     const isAdmin = useAtomValue(adminState);
@@ -127,7 +127,7 @@ export default function StreamerDetail() {
             <div className="col-auto text-end">
                 <button type="button" className={`btn mb-2 ${bookmarked ? "btn-warning" : "btn-outline-warning"}`}
                         onClick = {toggleBookmark}>
-                      {bookmarked ? "★" : "☆"}
+                      {bookmarked ? <FaStar/> : <FaRegStar/>}
                     </button>
                 <a href={streamer.streamerStation} target="_blank" rel="noreferrer"
                     className="btn btn-station mb-2"><FaHome className="fs-2"/> </a>

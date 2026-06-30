@@ -51,6 +51,9 @@ export default function MyPageMain() {
                     <NavLink to="bookmark" className="list-group-item admin-menu-item" onClick={closeSidebar}>
                         즐겨찾기 스트리머
                     </NavLink>
+                    <NavLink to="bookmarkTournament" className="list-group-item admin-menu-item" onClick={closeSidebar}>
+                        즐겨찾기 대회
+                    </NavLink>
                 </div>
             </div>
 

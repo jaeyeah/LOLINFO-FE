@@ -35,6 +35,7 @@ import MyPageMember from "./mypage/MyPageMember";
 import MyPageScrim from "./mypage/MyPageScrim";
 import MyPageCk from "./mypage/MyPageCk";
 import MyPageBookmark from "./mypage/MyPageBookmark";
+import MyPageBookmarkTournament from "./mypage/MyPageBookmarkTournament";
 
 export default function Content(){
 
@@ -59,6 +60,7 @@ return (<>
                     <Route path="scrim" element={<MyPageScrim/>}/>
                     <Route path="ck" element={<MyPageCk/>}/>
                     <Route path="bookmark" element={<MyPageBookmark/>}/>
+                    <Route path="bookmarkTournament" element={<MyPageBookmarkTournament/>}/>
                 </Route>
 
 
