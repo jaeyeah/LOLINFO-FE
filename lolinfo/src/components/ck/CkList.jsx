@@ -520,6 +520,7 @@ export default function CkList() {
 
                   {!participantLoading && !participantError && selectedParticipantData.length > 0 && (
                     <div className="d-grid gap-2">
+                      
                       {POSITION_ORDER.map((position) => {
                         const redParticipant = redTeam.find((p) => p.ckPosition === position);
                         const blueParticipant = blueTeam.find((p) => p.ckPosition === position);
@@ -533,6 +534,7 @@ export default function CkList() {
                                 <Link to={`/streamer/${redParticipant.ckStreamer}`}
                                   className={`ck-participant-card red ${redWin ? "win" : ""} text-white text-decoration-none justify-content-end`}
                                 >
+                                  {redWin && <span className="badge bg-danger">승</span>}
                                   <div className="ck-participant-info text-end">
                                     <div className="ck-participant-name">{redParticipant.streamerName || "-"}</div>
                                     <div className="ck-participant-meta">{redParticipant.ckPosition || position}</div>
@@ -555,6 +557,7 @@ export default function CkList() {
                                 <Link to={`/streamer/${blueParticipant.ckStreamer}`}
                                   className={`ck-participant-card blue ${blueWin ? "win" : ""} text-white text-decoration-none justify-content-start`}
                                 >
+                                  
                                   <img  src={buildProfileUrl(blueParticipant.streamerSoopId)}
                                     className="ck-participant-avatar" alt={blueParticipant.streamerName || "Blue 팀원"}
                                   />
@@ -562,6 +565,7 @@ export default function CkList() {
                                     <div className="ck-participant-name">{blueParticipant.streamerName || "-"}</div>
                                     <div className="ck-participant-meta">{blueParticipant.ckPosition || position}</div>
                                   </div>
+                                  {blueWin && <span className="badge bg-primary">승</span>}
                                 </Link>
                               ) : (
                                 <div className="ck-participant-card none justify-content-center">참가 없음</div>
