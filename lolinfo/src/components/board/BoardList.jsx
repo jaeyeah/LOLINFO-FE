@@ -96,10 +96,10 @@ export default function BoardList() {
                         {filteredBoards.map((board) => (
                             <div
                                 key={board.boardId}
-                                className="board-item"
+                                className="row board-item"
                                 onClick={() => handleBoardClick(board.boardId)}
                             >
-                                <div className="board-item-header">
+                                <div className="col-9 board-item-header">
                                     <span className="board-category-badge">
                                         {board.boardCategory}
                                     </span>
@@ -107,7 +107,7 @@ export default function BoardList() {
                                         {board.boardTitle}
                                     </h3>
                                 </div>
-                                <div className="board-item-footer">
+                                <div className="col-3 board-item-footer">
                                     <span className="board-writer">
                                         {board.boardWriter}
                                     </span>
