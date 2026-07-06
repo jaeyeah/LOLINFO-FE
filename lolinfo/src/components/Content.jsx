@@ -23,6 +23,7 @@ import MemberJoin from "./member/MemberJoin";
 import MemberLogin from "./member/MemberLogin";
 import BoardWrite from "./board/BoardWrite";
 import BoardList from "./board/BoardList";
+import BoardDetail from "./board/BoardDetail";
 
 import AdminMain from "./admin/AdminMain";
 import AdminMemberPage from "./admin/AdminMemberPage";
@@ -102,7 +103,7 @@ return (<>
                 {/* 게시판 */}
                 <Route path="/board" element={<BoardList/>}/>
                 <Route path="/board/write" element={<BoardWrite/>}/>
-
+                <Route path="/board/:boardId" element={<BoardDetail/>}/>
             </Routes>
         </div>
     </div>
