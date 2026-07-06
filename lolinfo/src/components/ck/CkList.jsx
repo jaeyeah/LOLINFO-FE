@@ -3,14 +3,14 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Pagination from "../Pagination";
 import { buildProfileUrl } from "../../utils/profileUrl";
-import { adminState, loginState } from "../../utils/jotai";
+import { adminState, loginIdState, loginState } from "../../utils/jotai";
 import { useAtomValue } from "jotai";
 import { FaEdit } from "react-icons/fa";
 
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
 
 export default function CkList() {
-
+  const loginId = useAtomValue(loginIdState);
   const isAdmin = useAtomValue(adminState);
   const isLogin = useAtomValue(loginState);
 
@@ -59,6 +59,7 @@ export default function CkList() {
         prev: false,
         next: false,
       });
+      console.log("CK 목록 로드 성공", data.list);
     } catch (err) {
       console.error("CK 목록 로드 실패", err);
       setError("CK 목록을 불러오지 못했습니다.");
@@ -331,8 +332,8 @@ export default function CkList() {
                       <th className="col-2">CK 날짜</th>
                       <th className="col-5">CK 메모</th>
                       <th className="col-2">팀원</th>
-                      {isAdmin && <>
-                        <th className="col-2">승리팀</th>
+                      {isLogin && <>
+                        <th className="col-2">승리변경</th>
                         <th className="col-1">기능</th>
                       </>}
                     </tr>
@@ -404,7 +405,7 @@ export default function CkList() {
                             onClick={() => openParticipantModal(ck.ckId)}
                             > 팀원 보기 </button>
                         </td>
-                        {isAdmin && <>
+                        {(isAdmin || ck.ckCreatedBy === loginId) ? (<>
                           <td>
                             {editingWinnerId !== ck.ckId && (
                             <div className="d-flex align-items-center justify-content-center gap-2">
@@ -474,7 +475,13 @@ export default function CkList() {
                             onClick={() => deleteCk(ck.ckId)}
                             > 삭제 </button> 
                         </td>
-                        </>}
+                        </>):
+                          isLogin ? (
+                          <>
+                            <td><span>-</span></td>
+                            <td><span>-</span></td>
+                          </>) : (
+                          <></>)}
                       </tr>
                     ))}
                   </tbody>
