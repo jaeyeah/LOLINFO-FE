@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import Pagination from "../Pagination";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import { adminState, loginIdState, loginState } from "../../utils/jotai";
@@ -59,7 +59,7 @@ export default function CkList() {
         prev: false,
         next: false,
       });
-      console.log("CK 목록 로드 성공", data.list);
+      // console.log("CK 목록 로드 성공", data.list);
     } catch (err) {
       console.error("CK 목록 로드 실패", err);
       setError("CK 목록을 불러오지 못했습니다.");
@@ -287,9 +287,17 @@ export default function CkList() {
 
   return (
     <>
-      <div className="row mb-3">
-        <div className="col">
-          <div className="card bg-dark border-secondary text-white p-3">
+      <div className="row g-4 justify-content-center">
+        {/* 월별 ck 랭킹 */}
+        <div className="col-12 col-lg-4">
+          <div className="sticky-top" style={{ top: "90px" }}>
+            <Outlet />
+          </div>
+        </div>
+
+        {/* ck목록 */}
+        <div className="col-12 col-lg-8">
+          <div className="card bg-dark border-secondary text-white p-3 mb-3">
             <h2 className="mb-1">CK 전체 목록</h2>
             <p className="mb-0 text-secondary">
               CK 목록은 최소 데이터만 조회하며 팀원 상세 정보는 별도 API로 분리됩니다.
@@ -300,11 +308,6 @@ export default function CkList() {
               </Link>
             )}
           </div>
-        </div>
-      </div>
-
-      <div className="row justify-content-center">
-        <div className="col-12">
           {loading && (
             <div className="d-flex justify-content-center py-5">
               <div className="spinner-border text-light" role="status" />
@@ -588,6 +591,7 @@ export default function CkList() {
             </div>
           )}
 
+          {/* 페이지네이션 */}
           {!loading && !error && (
             <div className="row mt-2">
               <div className="col-12 d-flex flex-column align-items-center gap-2">

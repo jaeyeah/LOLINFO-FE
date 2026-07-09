@@ -19,6 +19,7 @@ import TeamInsert from "./tournament/TeamInsert";
 import TeamEdit from "./tournament/TeamEdit";
 import CkList from "./ck/CkList";
 import CkInsert from "./ck/CkInsert";
+import CkMonthRanking from "./ck/CkMonthRanking";
 import MemberJoin from "./member/MemberJoin";
 import MemberLogin from "./member/MemberLogin";
 import BoardWrite from "./board/BoardWrite";
@@ -97,7 +98,10 @@ return (<>
                 <Route path="/team/edit/:teamId" element={<TeamEdit/>}/>
 
                 {/* CK */}
-                <Route path="/ck" element={<CkList/>}/>
+                <Route path="/ck" element={<CkList />}>
+                    <Route index element={<Navigate to="ranking" replace />} />
+                    <Route path="ranking" element={<CkMonthRanking />} />
+                </Route>
                 <Route path="/ck/insert" element={<CkInsert/>}/>
 
                 {/* 게시판 */}

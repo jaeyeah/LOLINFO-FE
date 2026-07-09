@@ -64,7 +64,7 @@ const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
         setParticipantError(null);
         const { data } = await axios.get(`/ck/${ckId}/participant`);
         const winner = data[0]?.ckWinner ?? null;
-        console.log("참가자 정보 로드 성공", { ckId, data, winner });
+        // console.log("참가자 정보 로드 성공", { ckId, data, winner });
         setParticipantCache((prev) => ({
           ...prev,
           [ckId]: {
