@@ -298,7 +298,7 @@ export default function CkList() {
         {/* ck목록 */}
         <div className="col-12 col-lg-8">
           <div className="card bg-dark border-secondary text-white p-3 mb-3">
-            <h2 className="mb-1">CK 전체 목록</h2>
+            <h3 className="mb-1 section-title">CK 전체 목록</h3>
             <p className="mb-0 text-secondary">
               CK 목록은 최소 데이터만 조회하며 팀원 상세 정보는 별도 API로 분리됩니다.
             </p>

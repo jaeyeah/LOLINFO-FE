@@ -46,6 +46,7 @@ export default function CkMonthRanking() {
 
   const getWinRateColor = (rate) => {
     if (rate >= 100) return "#47acff";
+    if (rate >= 80) return "#82c7ff";
     if (rate >= 60) return "#9efd91e8";
     if (rate >= 50) return "#bdbcbc";
     if (rate >= 45) return "#b3aa91";
@@ -58,7 +59,7 @@ export default function CkMonthRanking() {
     <div className="card bg-dark border-secondary text-white shadow-sm h-100">
       <div className="card-body">
         <div className="d-flex justify-content-between align-items-center mb-3">
-            <h2 className="mb-1">월별 승리 TOP 10</h2>
+            <h3 className="mb-1 section-title">월간 다승 Top 10</h3>
             <input type="month" className="form-control bg-dark text-secondary border-secondary"
                 style={{ width: "160px" }} value={month} onChange={(e) => setMonth(e.target.value)}/>
         </div>
@@ -93,12 +94,8 @@ export default function CkMonthRanking() {
                       {index + 1}
                     </div>
 
-                    <img
-                      src={buildProfileUrl(streamerSoopId)}
-                      alt={streamerName}
-                      className="rounded-circle border border-secondary"
-                      style={{ width: 44, height: 44, objectFit: "cover" }}
-                    />
+                    <img src={buildProfileUrl(streamerSoopId)} alt={streamerName}
+                      className="rounded-circle border border-secondary" style={{ width: 44, height: 44, objectFit: "cover" }}  />
 
                     <div className="flex-grow-1 min-width-0">
                       <Link to={`/streamer/${streamerId}`} className="fw-semibold text-white text-decoration-none">
@@ -109,28 +106,13 @@ export default function CkMonthRanking() {
                         <span className="fw-semibold">{item.winCount ?? 0}승 · {item.loseCount ?? 0}패</span>
                       </div>
                     </div>
-
                     <div className="text-end" style={{ width: 80 }}>
-                        <div
-                            className="fw-semibold small"
-                            style={{ color: getWinRateColor(item.winRate) }}
-                        >
+                        <div className="fw-semibold small" style={{ color: getWinRateColor(item.winRate) }} >
                             {formatWinRate(item.winRate)}
                         </div>
-
-                        <div
-                            className="progress bg-secondary bg-opacity-25 mt-1"
-                            style={{ height: "5px" }}
-                        >
-                            <div
-                                className="progress-bar"
-                                role="progressbar"
-                                style={{
-                                    width: `${item.winRate ?? 0}%`,
-                                    backgroundColor: getWinRateColor(item.winRate),
-                                    transition: "width 0.3s ease"
-                                }}
-                            />
+                        <div className="progress bg-secondary bg-opacity-25 mt-1" style={{ height: "5px" }}>
+                            <div className="progress-bar" role="progressbar"
+                                style={{ width: `${item.winRate ?? 0}%`, backgroundColor: getWinRateColor(item.winRate), transition: "width 0.3s ease"}}/>
                         </div>
                     </div>
                   </div>
