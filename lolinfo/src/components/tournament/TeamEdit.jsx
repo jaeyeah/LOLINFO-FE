@@ -37,11 +37,11 @@ export default function TeamInsert(){
             const {data} = await axios.get(`/team/${teamId}`); 
             setTeam(data);
             setTeamData({
-                teamTop: data.topName, topId: data.topId, 
-                teamJug: data.jugName,jugId: data.jugId,
-                teamMid: data.midName, midId: data.midId,
-                teamAd: data.adName,  adId: data.adId,
-                teamSup: data.supName, supId: data.supId
+                teamTop: data.topName ?? "", topId: data.topId ?? "", 
+                teamJug: data.jugName ?? "", jugId: data.jugId ?? "",
+                teamMid: data.midName ?? "", midId: data.midId ?? "",
+                teamAd: data.adName ?? "",  adId: data.adId ?? "",
+                teamSup: data.supName ?? "", supId: data.supId ?? ""
             });
         } catch (error) {
             console.error("Error fetching tournament list:", error);
@@ -96,7 +96,6 @@ export default function TeamInsert(){
             try{
                 setChecking(true); // 검증 시작
                 const {data} = await axios.get(`/team/check/${teamData.teamTop}`);
-                console.log("전송된 데이터", data);
                 
                 const valid = data.check == true;
                 setTeamClass(prev=>({...prev, teamTop : valid ? "is-valid" : "is-invalid"}));
@@ -116,7 +115,6 @@ export default function TeamInsert(){
             try{
                 setChecking(true); // 검증 시작
                 const {data} = await axios.get(`/team/check/${teamData.teamJug}`);
-                console.log("전송된 데이터", data);
                 
                 const valid = data.check == true;
                 setTeamClass(prev=>({...prev, teamJug : valid ? "is-valid" : "is-invalid"}));
@@ -136,7 +134,6 @@ export default function TeamInsert(){
             try{
                 setChecking(true); // 검증 시작
                 const {data} = await axios.get(`/team/check/${teamData.teamMid}`);
-                console.log("전송된 데이터", data);
                 
                 const valid = data.check == true;
                 setTeamClass(prev=>({...prev, teamMid : valid ? "is-valid" : "is-invalid"}));
@@ -156,7 +153,6 @@ export default function TeamInsert(){
             try{
                 setChecking(true); // 검증 시작
                 const {data} = await axios.get(`/team/check/${teamData.teamAd}`);
-                console.log("전송된 데이터", data);
                 
                 const valid = data.check == true;
                 setTeamClass(prev=>({...prev, teamAd : valid ? "is-valid" : "is-invalid"}));
@@ -176,7 +172,6 @@ export default function TeamInsert(){
             try{
                 setChecking(true); // 검증 시작
                 const {data} = await axios.get(`/team/check/${teamData.teamSup}`);
-                console.log("전송된 데이터", data);
                 
                 const valid = data.check == true;
                 setTeamClass(prev=>({...prev, teamSup : valid ? "is-valid" : "is-invalid"}));
@@ -204,8 +199,6 @@ export default function TeamInsert(){
         if(!name) return;
         try{
         const {data} = await axios.get(`/team/check/${name}`);
-        console.log("전송된 데이터", data);
-
         setStaffList(prev => prev.map((h, i) =>
             i === idx ? { ...h, staffStreamer: data.streamerNo, staffSoopId: data.streamerSoopId } : h
         )
@@ -238,7 +231,6 @@ export default function TeamInsert(){
               staffDto : staffList.map(s=>({staffStreamer : s.staffStreamer, staffRole : s.staffRole}))
             }
             const response = await axios.put("/team/",payload);
-            console.log("성공", response);
             navigate(`/tournament/${team.tournamentId}`); // 메인페이지
         }
         catch(err){
