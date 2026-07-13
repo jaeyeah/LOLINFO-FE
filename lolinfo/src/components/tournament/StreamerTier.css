@@ -654,12 +654,12 @@
 }
 
 .tier-special{
-    background:#8b5cf6 !important;
+   background: linear-gradient(135deg,#7c3aed,#ec4899) !important;
     color:white !important;
 }
 
 .tier-rare{
-    background:#ff9800 !important;
+    background: linear-gradient(135deg,#ffb300,#ff6f00) !important;
     color:white !important;
 }
 
@@ -669,27 +669,27 @@
 }
 
 .tier-a{
-    background:#fb8c00 !important;
+   background:rgba(33,150,243,0.95) !important;
     color:white !important;
 }
 
 .tier-b{
-    background:#fdd835 !important;
+   background:rgba(33,150,243,0.75) !important;
     color:#222 !important;
 }
 
 .tier-c{
-    background:#43a047 !important;
+    background:rgba(33,150,243,0.55) !important;
     color:white !important;
 }
 
 .tier-d{
-    background:#1e88e5 !important;
+   background:rgba(33,150,243,0.38) !important;
     color:white !important;
 }
 
 .tier-e{
-    background:#5e35b1 !important;
+   background:rgba(255,255,255,0.08) !important;
     color:white !important;
 }
 
@@ -699,7 +699,7 @@
 }
 
 .tier-none{
-    background:#343a40 !important;
+    background:#2b2b2b !important;
     color:#adb5bd !important;
 }
 
