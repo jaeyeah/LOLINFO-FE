@@ -12,6 +12,8 @@ import StreamerWith from "./streamer/streamerWith/StreamerWith";
 
 import TournamentList from "./tournament/TournamentList";
 import TournamentDetail from "./tournament/TournamentDetail";
+import TournamentMain from "./tournament/TournamentMain";
+import TournamentTier from "./tournament/TournamentTier";
 import TournamentInsert from "./tournament/TournamentInsert";
 import TournamentEdit from "./tournament/TournamentEdit";
 
@@ -91,7 +93,10 @@ return (<>
                 <Route path="/tournament" element={<TournamentList />} />
                 <Route path="/tournament/insert" element={<TournamentInsert/>}/>
                 <Route path="/tournament/edit/:tournamentId" element={<TournamentEdit/>}/>
-                <Route path="/tournament/:tournamentId" element={<TournamentDetail />} />
+                <Route path="/tournament/:tournamentId" element={<TournamentDetail />}>
+                    <Route index element={<TournamentMain />} />
+                    <Route path="tier" element={<TournamentTier />} />
+                </Route>
 
                 {/* 팀 */}
                 <Route path="/team/insert/:tournamentId" element={<TeamInsert/>}/>

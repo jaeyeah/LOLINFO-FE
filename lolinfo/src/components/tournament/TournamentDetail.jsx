@@ -1,24 +1,23 @@
 import axios from "../../utils/axios";
 import { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate, useParams } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
-import TeamStaffModal from "./TeamStaffModal";
 import { FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
 import { useAtomValue } from "jotai";
 import { adminState, loginIdState, loginState } from "../../utils/jotai";
 import "./Tournament.css";
 import "./Scrim.css";
-import ScrimList from "./ScrimList";
 import Swal from "sweetalert2";
 import { FaRegStar, FaStar } from "react-icons/fa6";
-
+import ScrimList from "./ScrimList";
+import TeamStaffModal from "./TeamStaffModal";
+import { MdDelete } from "react-icons/md";
 export default function TournamentDetail(){
 
     const isLogin = useAtomValue(loginState);
     const isAdmin = useAtomValue(adminState);
     const loginId = useAtomValue(loginIdState);
-
+    
     const navigate = useNavigate();
     const {tournamentId} = useParams();
     const [tournament, setTournament] = useState({});
@@ -314,6 +313,26 @@ export default function TournamentDetail(){
                 <div className="spinner-border" role="status" />
             </div>
         )}
+        {/* 네비게이션 */}
+        <div className="row mt-3">
+            <div className="col-12">
+                <div className="d-flex gap-2 flex-wrap mb-3">
+                    <NavLink
+                        to=""
+                        end
+                        className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}
+                    >
+                        정보
+                    </NavLink>
+                    <NavLink
+                        to="tier"
+                        className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}
+                    >
+                        티어표
+                    </NavLink>
+                </div>
+            </div>
+        </div>
         {error && <p className="text-danger">{error}</p>}
         {/* 대회 개최자 및 상세 */}
         <div className="streamer-card mb-2">
@@ -353,6 +372,10 @@ export default function TournamentDetail(){
                 </div>
             </div>
         </div>
+
+
+
+        <Outlet context={{ tournament, isAdmin }} />
 
         {/* 중단 -- 스크림 등록 / 팀 추가 / 대회정보 수정 */}
         <div className="d-flex justify-content-between align-items-center mb-3 gap-2">
