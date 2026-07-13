@@ -37,31 +37,14 @@ const POSITION_LABELS = {
 };
 
 const TIER_GRADES = [
-  "Transcended",
-  "God",
-  "Legendary",
-  "Unique",
-  "SSR",
-  "SR",
-  "R",
-  "S+",
-  "S",
-  "S-",
-  "A+",
-  "A",
-  "A-",
-  "B+",
-  "B",
-  "B-",
-  "C+",
-  "C",
-  "C-",
-  "D+",
-  "D",
-  "D-",
-  "E+",
-  "E",
-  "E-",
+  "Transcended", "God","Legendary","Unique",
+  "SSR","SR","R",
+  "S+","S","S-",
+  "A+","A","A-",
+  "B+","B","B-",
+  "C+","C","C-",
+  "D+","D","D-",
+  "E+","E","E-",
   "F",
   "미정",
 ];
@@ -113,6 +96,53 @@ export default function TournamentTier() {
       return { tierName, row };
     });
   }, [tierList]);
+
+  // 수정 모달
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingTier, setEditingTier] = useState(null);
+  const [selectedTier, setSelectedTier] = useState("");
+  const [updating, setUpdating] = useState(false);
+  const startTierEdit = (item) => {
+    setEditingTier(item);
+    setSelectedTier(item.tierName);
+    setShowEditModal(true);
+  };
+
+  const closeTierEditModal = () => {
+    if (updating) return;
+
+    setShowEditModal(false);
+    setEditingTier(null);
+    setSelectedTier("");
+  };
+  // 수정요청 함수
+  const updateTier = async () => {
+    if (!editingTier || !selectedTier || updating) {
+      return;
+    }
+
+    try {
+      setUpdating(true);
+
+      await axios.patch("/streamer/tier", {
+        tournamentNo: editingTier.tournamentNo,
+        streamerNo: editingTier.streamerNo,
+        tierPosition: editingTier.tierPosition,
+        tierName: selectedTier,
+      });
+
+      setShowEditModal(false);
+      setEditingTier(null);
+      setSelectedTier("");
+
+      await loadTierList();
+    } catch (error) {
+      console.error("티어 수정 실패", error);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
 
   return (
   <section className="tournament-tier-page">
@@ -241,16 +271,32 @@ export default function TournamentTier() {
                         {items.length > 0 ? (
                           <div className="tier-streamer-list">
                             {items.map((item) => (
-                              <Link
+                              <div
                                 key={`${item.streamerNo}-${position}`}
-                                to={`/streamer/${item.streamerNo}`}
-                                className="tier-streamer-chip"
+                                className="tier-streamer-item"
                               >
-                                <span className="streamer-chip-dot" />
-                                <span className="streamer-chip-name">
-                                  {item.streamerName}
-                                </span>
-                              </Link>
+                                <Link
+                                  to={`/streamer/${item.streamerNo}`}
+                                  className="tier-streamer-chip"
+                                >
+                                  <span className="streamer-chip-dot" />
+
+                                  <span className="streamer-chip-name">
+                                    {item.streamerName}
+                                  </span>
+                                </Link>
+
+                                {isAdmin === true && (
+                                  <button
+                                    type="button"
+                                    className="tier-edit-button"
+                                    onClick={() => startTierEdit(item)}
+                                    aria-label={`${item.streamerName} 티어 수정`}
+                                  >
+                                    수정
+                                  </button>
+                                )}
+                              </div>
                             ))}
                           </div>
                         ) : (
@@ -274,6 +320,98 @@ export default function TournamentTier() {
         onClose={closeTierModal}
         onSuccess={loadTierList}
       />
+      {showEditModal && editingTier && (
+        <div
+          className="tier-modal-backdrop"
+          onMouseDown={closeTierEditModal}
+        >
+          <div
+            className="tier-edit-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tier-edit-modal-title"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <div className="tier-edit-modal-header">
+              <div>
+                <span className="tier-edit-modal-eyebrow">
+                  EDIT STREAMER TIER
+                </span>
+
+                <h3 id="tier-edit-modal-title">
+                  티어 수정
+                </h3>
+              </div>
+
+              <button
+                type="button"
+                className="tier-modal-close-button"
+                onClick={closeTierEditModal}
+                disabled={updating}
+                aria-label="닫기"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="tier-edit-modal-body">
+              <div className="tier-edit-streamer-info">
+                <span className="tier-edit-label">스트리머</span>
+                <strong>{editingTier.streamerName}</strong>
+              </div>
+
+              <div className="tier-edit-streamer-info">
+                <span className="tier-edit-label">포지션</span>
+                <strong>
+                  {POSITION_LABELS[editingTier.tierPosition] ??
+                    editingTier.tierPosition}
+                </strong>
+              </div>
+
+              <label
+                htmlFor="tier-edit-select"
+                className="tier-edit-label"
+              >
+                변경할 티어
+              </label>
+
+              <select
+                id="tier-edit-select"
+                className="form-select"
+                value={selectedTier}
+                onChange={(e) => setSelectedTier(e.target.value)}
+                disabled={updating}
+              >
+                {TIER_GRADES.map((tier) => (
+                  <option key={tier} value={tier}>
+                    {tier}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="tier-edit-modal-footer">
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={closeTierEditModal}
+                disabled={updating}
+              >
+                취소
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={updateTier}
+                disabled={updating || !selectedTier}
+              >
+                {updating ? "수정 중..." : "수정 완료"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   </section>
 );

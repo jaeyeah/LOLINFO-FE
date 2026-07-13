@@ -638,6 +638,7 @@
 
 
 .tier-badge{
+    border-color: transparent !important;
     display:inline-flex;
     align-items:center;
     justify-content:center;
@@ -700,4 +701,126 @@
 .tier-none{
     background:#343a40 !important;
     color:#adb5bd !important;
+}
+
+/* ///// 스트리머 티어 수정 */
+.tier-streamer-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.tier-edit-button {
+  flex-shrink: 0;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.35rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: #adb5bd;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.tier-edit-button:hover {
+  border-color: #ffc107;
+  background: rgba(255, 193, 7, 0.12);
+  color: #ffc107;
+}
+
+.tier-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.tier-edit-modal {
+  width: min(100%, 440px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 1rem;
+  background: #161a20;
+  color: #f8f9fa;
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.45);
+}
+
+.tier-edit-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tier-edit-modal-header h3 {
+  margin: 0.25rem 0 0;
+  font-size: 1.3rem;
+}
+
+.tier-edit-modal-eyebrow {
+  color: #6edff6;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.tier-modal-close-button {
+  border: 0;
+  background: transparent;
+  color: #adb5bd;
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tier-modal-close-button:hover {
+  color: #fff;
+}
+
+.tier-edit-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1.5rem;
+}
+
+.tier-edit-streamer-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2.5rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tier-edit-label {
+  color: #adb5bd;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.tier-edit-modal .form-select {
+  border-color: rgba(255, 255, 255, 0.15);
+  background-color: #21262d;
+  color: #f8f9fa;
+}
+
+.tier-edit-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
