@@ -179,7 +179,7 @@
 
 .tier-table-container {
   width: 100%;
-  max-height: 75vh;
+  max-height: 100vh;
   overflow: auto;
 }
 
@@ -206,6 +206,7 @@
   background-color: rgba(15, 23, 42, 0.96);
   backdrop-filter: blur(14px);
   text-align: center;
+
 }
 
 .tier-name-heading {
@@ -229,9 +230,9 @@
   display: block;
   margin-bottom: 2px;
   color: #f8fafc;
-  font-size: 0.8rem;
-  font-weight: 800;
   letter-spacing: 0.05em;
+  font-size: 1rem;      /* 글자 크기 */
+  font-weight: 800;
 }
 
 .position-label {
@@ -304,7 +305,7 @@
 
 .tier-rank-name {
   overflow: hidden;
-  font-size: 0.84rem;
+  font-size: 1rem;
   font-weight: 800;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -426,8 +427,8 @@
   border-radius: 9px;
   background-color: rgba(30, 41, 59, 0.72);
   color: #e2e8f0;
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 600;
   text-decoration: none;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   transition:
@@ -479,8 +480,8 @@
 /* 스크롤바 */
 
 .tier-table-container::-webkit-scrollbar {
-  width: 9px;
-  height: 9px;
+  width: 15px;
+  height: 15px;
 }
 
 .tier-table-container::-webkit-scrollbar-track {
@@ -631,4 +632,72 @@
 
 .autocomplete-item:hover {
   background-color: rgba(255, 255, 255, 0.08);
+}
+
+
+
+
+.tier-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    min-width:60px;
+    padding:6px 12px;
+
+    font-size:0.9rem;
+    font-weight:700;
+
+    border-radius:999px;
+    white-space:nowrap;
+}
+
+.tier-special{
+    background:#8b5cf6 !important;
+    color:white !important;
+}
+
+.tier-rare{
+    background:#ff9800 !important;
+    color:white !important;
+}
+
+.tier-s{
+    background:#e53935 !important;
+    color:white !important;
+}
+
+.tier-a{
+    background:#fb8c00 !important;
+    color:white !important;
+}
+
+.tier-b{
+    background:#fdd835 !important;
+    color:#222 !important;
+}
+
+.tier-c{
+    background:#43a047 !important;
+    color:white !important;
+}
+
+.tier-d{
+    background:#1e88e5 !important;
+    color:white !important;
+}
+
+.tier-e{
+    background:#5e35b1 !important;
+    color:white !important;
+}
+
+.tier-f{
+    background:#616161 !important;
+    color:white !important;
+}
+
+.tier-none{
+    background:#343a40 !important;
+    color:#adb5bd !important;
 }

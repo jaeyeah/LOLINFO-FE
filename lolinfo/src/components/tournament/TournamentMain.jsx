@@ -8,6 +8,7 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import "./Tournament.css";
 import "./Scrim.css";
+import "./StreamerTier.css";
 
 const createInitialScrimForm = (tournamentId) => ({
   scrimTournament: Number(tournamentId),
@@ -42,6 +43,7 @@ export default function TournamentMain() {
     try {
       const { data } = await axios.get(`/team/tournament/${tournamentId}`);
       setTeam(data);
+      console.log(data);
     } catch (err) {
       console.error("팀 로딩 오류", err);
     }
@@ -187,6 +189,27 @@ export default function TournamentMain() {
     if (rate >= 40) return "#ff922b";
     return "#ff6b6b";
   };
+
+  const getTierClass = (tier) => {
+  if (!tier) return "tier-none";
+
+  if (["Transcended", "God", "Legendary", "Unique"].includes(tier))
+    return "tier-special";
+
+  if (["SSR", "SR", "R"].includes(tier))
+    return "tier-rare";
+
+  if (tier.startsWith("S")) return "tier-s";
+  if (tier.startsWith("A")) return "tier-a";
+  if (tier.startsWith("B")) return "tier-b";
+  if (tier.startsWith("C")) return "tier-c";
+  if (tier.startsWith("D")) return "tier-d";
+  if (tier.startsWith("E")) return "tier-e";
+  if (tier.startsWith("F")) return "tier-f";
+
+  return "tier-none";
+};
+
 
   return (
     <>
@@ -336,6 +359,7 @@ export default function TournamentMain() {
                       <img className="player-profile" src={buildProfileUrl(teamItem.topId)} alt={teamItem.topName} />
                       <span className="player-name ms-2">{teamItem.topName}</span>
                     </Link>
+                    <span className={`badge tier-badge ms-auto ${getTierClass(teamItem.topTier)}`}>{teamItem.topTier}</span>
                   </div>
                   <div className="player-row">
                     <span className="badge">정글</span>
@@ -343,6 +367,7 @@ export default function TournamentMain() {
                       <img className="player-profile" src={buildProfileUrl(teamItem.jugId)} alt={teamItem.jugName} />
                       <span className="player-name ms-2">{teamItem.jugName}</span>
                     </Link>
+                    <span className={`badge tier-badge ms-auto ${getTierClass(teamItem.jugTier)}`}>{teamItem.jugTier}</span>
                   </div>
                   <div className="player-row">
                     <span className="badge">미드</span>
@@ -350,6 +375,7 @@ export default function TournamentMain() {
                       <img className="player-profile" src={buildProfileUrl(teamItem.midId)} alt={teamItem.midName} />
                       <span className="player-name ms-2">{teamItem.midName}</span>
                     </Link>
+                    <span className={`badge tier-badge ms-auto ${getTierClass(teamItem.midTier)}`}>{teamItem.midTier}</span>
                   </div>
                   <div className="player-row">
                     <span className="badge">원딜</span>
@@ -357,6 +383,7 @@ export default function TournamentMain() {
                       <img className="player-profile" src={buildProfileUrl(teamItem.adId)} alt={teamItem.adName} />
                       <span className="player-name ms-2">{teamItem.adName}</span>
                     </Link>
+                    <span className={`badge tier-badge ms-auto ${getTierClass(teamItem.adTier)}`}>{teamItem.adTier}</span>
                   </div>
                   <div className="player-row">
                     <span className="badge">서폿</span>
@@ -364,6 +391,7 @@ export default function TournamentMain() {
                       <img className="player-profile" src={buildProfileUrl(teamItem.supId)} alt={teamItem.supName} />
                       <span className="player-name ms-2">{teamItem.supName}</span>
                     </Link>
+                    <span className={`badge tier-badge ms-auto ${getTierClass(teamItem.supTier)}`}>{teamItem.supTier}</span>
                   </div>
                 </div>
               </div>
