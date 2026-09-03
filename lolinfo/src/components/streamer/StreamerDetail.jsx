@@ -8,6 +8,9 @@ import { adminState, loginState } from "../../utils/jotai";
 import AdArea from '../../components/etc/AdArea.jsx'
 import Swal from "sweetalert2";
 import { FaStar, FaRegStar } from "react-icons/fa6";
+import { Helmet } from 'react-helmet-async'
+
+
 export default function StreamerDetail() {
 
     const isAdmin = useAtomValue(adminState);
