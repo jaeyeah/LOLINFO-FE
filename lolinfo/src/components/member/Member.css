@@ -54,7 +54,7 @@
 /* 로그인 */
 
 .login-form {
-  background: rgb(56, 56, 56);
+  background: rgba(26, 28, 31, 0.8);
   border-radius: 12px;
   padding-top: 100px;
   padding-bottom: 100px;
