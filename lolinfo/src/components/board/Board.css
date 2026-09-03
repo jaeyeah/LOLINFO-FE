@@ -9,7 +9,7 @@
 }
 
 .board-write-card {
-    background-color: #353535;
+    background-color: rgba(26, 28, 31, 0.8);
     border-radius: 0.8em;
     border: 1px solid #454545;
     padding: 2rem;
@@ -229,7 +229,7 @@
 }
 
 .board-list-card {
-    background-color: #353535;
+    background-color: rgba(26, 28, 31, 0.8);
     border-radius: 0.8em;
     border: 1px solid #454545;
     padding: 2rem;
@@ -249,7 +249,7 @@
 .board-list-title {
     font-size: 2rem;
     font-weight: 600;
-    color: #ffd700;
+    color: #ffffff;
     letter-spacing: 0.5px;
     margin: 0;
 }
@@ -308,7 +308,7 @@
 }
 
 .board-item {
-    background-color: #3d4257;
+    background-color: #c9ccd8;
     border: 1px solid #454545;
     border-radius: 0.5em;
     padding: 1.5rem;
@@ -345,7 +345,7 @@
 .board-item-title {
     margin: 0;
     font-size: 1.1rem;
-    color: #ffd700;
+    color: #020202;
     font-weight: 600;
     word-break: break-word;
     flex: 1;
@@ -362,7 +362,7 @@
 }
 
 .board-writer {
-    color: #c0c0c0;
+    color: #888888;
     font-weight: 500;
 }
 
@@ -480,9 +480,9 @@
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    background-color: rgba(234, 134, 133, 0.18);
-    color: #ffd700;
-    border: 1px solid rgba(234, 134, 133, 0.5);
+    background-color: rgba(43, 43, 43, 0.4);
+    color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.5);
     padding: 0.35rem 0.9rem;
     border-radius: 999px;
     font-size: 0.85rem;
@@ -522,12 +522,12 @@
 
 .board-detail-content {
     min-height: 320px;
-    background-color: rgba(255, 255, 255, 0.03);
+    background-color: rgba(252, 251, 251, 0.842);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 1rem;
     padding: 1.75rem;
     margin-top: 1.75rem;
-    color: #e9eef7;
+    color: #070707;
     line-height: 1.8;
     white-space: pre-wrap;
     word-break: break-word;
