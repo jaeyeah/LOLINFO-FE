@@ -288,6 +288,19 @@ export default function CkList() {
 
   return (
     <>
+      {/* 헬멧 영역 */}
+       <Helmet>
+        <title> CK | SOOPLOL </title>
+
+        <meta name="description"
+          content={  streamer?.streamerName
+              ? `${streamer.streamerName}의 CK, 대회, 스크림 및 롤 통계를 확인하세요.`
+              : 'SOOP 롤 스트리머 정보를 확인하세요.'
+          }
+        />
+      </Helmet>
+
+
       <div className="row g-4 justify-content-center">
         {/* 월별 ck 랭킹 */}
         <div className="col-12 col-lg-4">

@@ -74,6 +74,23 @@ export default function StreamerDetail() {
     //render
     return (<>
     
+    {/* 헬멧 영역 */}
+       <Helmet>
+        <title>
+          {streamer?.streamerName ? `${streamer.streamerName} | SOOPLOL`
+            : '스트리머 | SOOPLOL'}
+        </title>
+
+        <meta name="description"
+          content={  streamer?.streamerName
+              ? `${streamer.streamerName}의 CK, 대회, 스크림 및 롤 통계를 확인하세요.`
+              : 'SOOP 롤 스트리머 정보를 확인하세요.'
+          }
+        />
+      </Helmet>
+
+
+
     <div className="row">
         <div className="col text-center">
             <h2 className="page-title p-3">{streamer.streamerName} : 상세</h2>
