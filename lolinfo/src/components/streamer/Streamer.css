@@ -630,15 +630,30 @@
     background-color: #ffee00cc;
     border: none;
 }
+
+.streamer-wrapper .btn-warning,
+.streamer-wrapper .btn-outline-warning,
 .streamer-wrapper .btn-station {
-    color : rgb(255, 255, 255); 
-    font-weight: 600; 
-    font-size: 0.875rem;
-    background-color: #0000009f;
-    border: none;
+    width: 42px !important;
+    height: 42px !important;
+    padding: 0 !important;
+
+    background-color: #818181cc;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+.streamer-wrapper .btn-warning svg,
+.streamer-wrapper .btn-outline-warning svg,
+.streamer-wrapper .btn-station svg {
+    width: 24px;
+    height: 24px;
 }
 .streamer-wrapper .btn-station:hover {
-    background-color: #9e9eb8;
+    background-color: #272727;
 }
 
 .streamer-wrapper hr {
