@@ -37,3 +37,93 @@
   text-overflow:ellipsis;
   white-space:nowrap;
 }
+
+
+
+/* CK 이미지 저장 전용 영역 */
+.ck-share-capture {
+    width: 800px;
+    padding: 32px;
+    box-sizing: border-box;
+
+    background-color: #212529;
+    color: #ffffff;
+
+    font-family: Arial, sans-serif;
+}
+
+/* SOOPLOL 상단 브랜드 */
+.ck-share-brand {
+    margin-bottom: 4px;
+
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* 최근 CK 기록 */
+.ck-share-title {
+    margin: 0 0 24px;
+
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* CK 테이블 */
+.ck-share-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    color: #ffffff;
+}
+
+.ck-share-table th,
+.ck-share-table td {
+    padding: 12px;
+
+    border: 1px solid #495057;
+
+    text-align: center;
+    vertical-align: middle;
+}
+
+.ck-share-table th {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+.ck-share-table td {
+    background-color: #212529;
+}
+
+/* 승/패 */
+.ck-share-result {
+    display: inline-block;
+
+    min-width: 48px;
+    padding: 4px 8px;
+
+    border-radius: 4px;
+
+    font-weight: 700;
+}
+
+/* 워터마크 */
+.ck-capture-watermark {
+    margin-top: 20px;
+
+    color: rgba(255, 255, 255, 0.55);
+
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+
+    text-align: right;
+}
+.ck-share-hidden {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  pointer-events: none;
+}

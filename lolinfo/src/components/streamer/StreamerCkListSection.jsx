@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useCallback, useEffect, useMemo, useState, memo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, memo } from "react";
 import { Link } from "react-router-dom";
+import { toPng } from "html-to-image";
 import Pagination from "../Pagination";
 import { buildProfileUrl } from "../../utils/profileUrl";
 
@@ -39,6 +40,102 @@ const CkTableRow = memo(({ ck, onOpenModal, formatDate, getStatusClass }) => (
 ));
 
 CkTableRow.displayName = "CkTableRow";
+
+// 화면 크기와 관계없이 같은 형태로 생성되는 CK 공유 이미지 영역
+const CkShareCapture = memo(({ ckList, captureRef, formatDate }) => (
+  <div
+    ref={captureRef}
+    style={{
+      width: "800px",
+      padding: "32px",
+      boxSizing: "border-box",
+      backgroundColor: "#212529",
+      color: "#ffffff",
+      fontFamily: "Arial, sans-serif",
+    }}
+  >
+    <div
+      style={{
+        fontSize: "18px",
+        fontWeight: 700,
+        marginBottom: "6px",
+      }}
+    >
+      SOOPLOL
+    </div>
+
+    <div
+      style={{
+        fontSize: "28px",
+        fontWeight: 700,
+        marginBottom: "24px",
+      }}
+    >
+       최근 CK 기록
+    </div>
+
+    {ckList.map((ck) => (
+      <div
+        key={ck.ckId}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "140px 100px 1fr 1fr",
+          gap: "12px",
+          alignItems: "center",
+          padding: "12px 0",
+          borderBottom: "1px solid #495057",
+        }}
+      >
+        <div>{formatDate(ck.ckDate)}</div>
+
+        <div style={{ textAlign: "center" }}>
+            <span
+              style={{
+                display: "inline-block",
+                minWidth: "52px",
+                padding: "5px 10px",
+                borderRadius: "6px",
+
+                fontSize: "14px",
+                fontWeight: 700,
+                lineHeight: 1.2,
+
+                color: "#ffffff",
+
+                backgroundColor:
+                  ck.ckResult === "승리"
+                    ? "#0d6efd"
+                    : ck.ckResult === "패배"
+                    ? "#dc3545"
+                    : "#6c757d",
+              }}
+            >
+              {ck.ckResult || "-"}
+            </span>
+          </div>
+
+        <div>{ck.vsStreamerName || "-"}</div>
+
+        <div>{ck.ckMemo || "-"}</div>
+      </div>
+    ))}
+
+    <div
+      style={{
+        marginTop: "24px",
+        textAlign: "right",
+        fontSize: "14px",
+        fontWeight: 700,
+        letterSpacing: "1px",
+        color: "rgba(255,255,255,0.6)",
+      }}
+    >
+      SOOPLOL.COM
+    </div>
+  </div>
+));
+
+CkShareCapture.displayName = "CkShareCapture";
 
 // CK 목록 카드 컴포넌트 (모바일 용)
 const CkCard = memo(({ ck, onOpenModal, formatDate, getStatusClass }) => (
@@ -189,7 +286,7 @@ const ParticipantTeam = memo(({ ckId, selectedCk, selectedParticipants, selected
 ParticipantTeam.displayName = "ParticipantTeam";
 
 // 메인 CK 목록 섹션 컴포넌트
-const StreamerCkListSection = memo(({ streamerId }) => {
+const StreamerCkListSection = memo(({ streamerId, streamerName }) => {
   const [ckList, setCkList] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
@@ -201,6 +298,9 @@ const StreamerCkListSection = memo(({ streamerId }) => {
   const [participantCache, setParticipantCache] = useState({});
   const [participantLoading, setParticipantLoading] = useState(false);
   const [participantError, setParticipantError] = useState(null);
+  const [isCapturing, setIsCapturing] = useState(false);
+  const [captureError, setCaptureError] = useState(null);
+  const captureRef = useRef(null);
 
   const loadCkList = useCallback(async () => {
     try {
@@ -302,6 +402,64 @@ const StreamerCkListSection = memo(({ streamerId }) => {
     setParticipantError(null);
   };
 
+  const handleSaveImage = async () => {
+    if (!captureRef.current || isCapturing) return;
+
+    try {
+      setIsCapturing(true);
+      setCaptureError(null);
+
+      const node = captureRef.current;
+
+      const width = node.scrollWidth;
+      const height = node.scrollHeight;
+
+      console.log("capture node:", node);
+      console.log("capture size:", width, height);
+
+      const dataUrl = await toPng(node, {
+        cacheBust: true,
+
+        width,
+        height,
+
+        canvasWidth: width * 2,
+        canvasHeight: height * 2,
+
+        backgroundColor: "#212529",
+
+        style: {
+          transform: "none",
+        },
+      });
+
+      const safeName =
+        streamerName?.trim().replace(/[\\/:*?"<>|]/g, "-");
+
+      const fileName = safeName
+        ? `sooplol-${safeName}-ck.png`
+        : `sooplol-ck-${streamerId}.png`;
+
+      const link = document.createElement("a");
+
+      link.download = fileName;
+      link.href = dataUrl;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+    } catch (captureErr) {
+      console.error("CK 이미지 생성 실패", captureErr);
+
+      setCaptureError(
+        "이미지를 저장하지 못했습니다. 다시 시도해 주세요."
+      );
+    } finally {
+      setIsCapturing(false);
+    }
+  };
+
   const handlePageChange = (nextPage) => {
     if (nextPage < 1 || nextPage > totalPage) return;
     setPage(nextPage);
@@ -345,6 +503,18 @@ const StreamerCkListSection = memo(({ streamerId }) => {
         <>
           {hasCkRecords ? (
             <>
+              <div className="d-flex justify-content-end mb-3">
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-light"
+                  onClick={handleSaveImage}
+                  disabled={isCapturing}
+                >
+                  {isCapturing ? "이미지 생성 중..." : "이미지 저장"}
+                </button>
+              </div>
+              {captureError && <div className="alert alert-danger py-2" role="alert">{captureError}</div>}
+
               <div className="card bg-dark border-secondary mb-3 d-none d-md-block">
                 <div className="table-responsive">
                   <table className="table table-dark table-hover mb-0 align-middle">
@@ -409,6 +579,16 @@ const StreamerCkListSection = memo(({ streamerId }) => {
         </>
       )}
 
+      {/* CK 이미지 저장 전용 영역 */}
+      <div className="ck-share-hidden">
+        <CkShareCapture
+          ckList={ckList}
+          captureRef={captureRef}
+          formatDate={formatDate}
+        />
+      </div>
+
+      {/* CK 팀원 모달 */}
       {selectedCk && (
         <div
           className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-end align-items-md-center justify-content-center"
