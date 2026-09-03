@@ -7,6 +7,8 @@ import { adminState, loginIdState, loginState } from "../../utils/jotai";
 import { useAtomValue } from "jotai";
 import { FaEdit } from "react-icons/fa";
 import AdArea from '../../components/etc/AdArea.jsx'
+import { Helmet } from 'react-helmet-async'
+
 
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
 
