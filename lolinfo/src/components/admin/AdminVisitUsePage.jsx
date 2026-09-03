@@ -83,7 +83,7 @@ export default function AdminVisitUsePage() {
     }, [useData]);
 
     return (
-         <div className="admin-member-container text-white">
+         <div className="admin-member-container admin-visit-use-page text-white">
             <h3 className="fw-bold mb-4">📊 기능별 이용 통계</h3>
 
             {/* 월간 / 연간 조회 */}
@@ -133,7 +133,7 @@ export default function AdminVisitUsePage() {
                 <div className="text-danger">{error}</div>
             ) : (
                 <div className="admin-table-container">
-                    <table className="admin-use-table w-100 text-center">
+                    <table className="admin-use-table text-center">
                         <thead>
                             <tr className="bg-secondary text-white bg-opacity-25">
                                 <th className="p-3">날짜</th>
