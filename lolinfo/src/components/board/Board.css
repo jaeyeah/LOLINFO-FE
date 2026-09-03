@@ -522,12 +522,12 @@
 
 .board-detail-content {
     min-height: 320px;
-    background-color: rgba(255, 255, 255, 0.03);
+    background-color: rgba(252, 251, 251, 0.842);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 1rem;
     padding: 1.75rem;
     margin-top: 1.75rem;
-    color: #e9eef7;
+    color: #070707;
     line-height: 1.8;
     white-space: pre-wrap;
     word-break: break-word;
