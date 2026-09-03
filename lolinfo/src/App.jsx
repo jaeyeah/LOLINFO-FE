@@ -4,6 +4,7 @@ import Content from "./components/Content.jsx"
 // import Menu from './components/Menu'
 import './App.css'
 import Menu from './components/Menu.jsx'
+import Footer from './components/Footer.jsx'
 import { trackDailyVisit } from './utils/visitTracker'
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <div className="container-fluid my-5 pt-5">
             <Content/>
           </div>
+        <Footer />
       </BrowserRouter>
     </>
   )
