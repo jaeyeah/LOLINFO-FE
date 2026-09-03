@@ -887,3 +887,8 @@
   background-color: #ffffff15;
   border-radius: 10px;
 }
+input::placeholder,
+textarea::placeholder {
+  color: #d3d3d398 !important;
+  opacity: 1 !important;
+}
