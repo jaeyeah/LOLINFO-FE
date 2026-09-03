@@ -87,12 +87,12 @@ export default function Menu() {
                         {/* contents */}
                         <li className="nav-item" onClick={closeMenu}>
                             <Link className="nav-link" to="/streamer">
-                                <IoMdPerson className="fs-4"/>
+                                <IoMdPerson className="fs-4"/> 스트리머
                             </Link>
                         </li>
                         <li className="nav-item" onClick={closeMenu}>
                             <Link className="nav-link" to="/tournament">
-                                <SiLeagueoflegends className="fs-4"/>
+                                <SiLeagueoflegends className="fs-4"/> 대회
                             </Link>
                         </li>
                         <li className="nav-item" onClick={closeMenu}>

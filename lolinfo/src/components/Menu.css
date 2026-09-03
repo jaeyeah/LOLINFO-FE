@@ -2,7 +2,7 @@
 .cinema-navbar,
 .dropdown-menu
  {
-  background: #3d3d3d !important;
+  background: rgba(26, 28, 31, 0.8) !important;
   /* border-bottom: 1px solid rgba(255, 200, 100, 0.15); */
   padding: 0.7rem 1rem;
   transition: all 0.3s ease;
