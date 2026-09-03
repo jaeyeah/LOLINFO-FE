@@ -101,6 +101,85 @@
   padding: 1rem 1rem 1.25rem;
 }
 
+.ck-share-capture {
+  position: fixed;
+  top: 0;
+  left: -10000px;
+  width: 820px;
+  padding: 34px 38px 24px;
+  background: #212529;
+  color: #f8f9fa;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.ck-share-brand {
+  color: #6ea8fe;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.ck-share-title {
+  margin: 6px 0 24px;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.ck-share-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 15px;
+}
+
+.ck-share-table th,
+.ck-share-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid #495057;
+  text-align: left;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+.ck-share-table th {
+  color: #ced4da;
+  background: #343a40;
+  font-weight: 600;
+}
+
+.ck-share-table th:nth-child(1),
+.ck-share-table td:nth-child(1) {
+  width: 18%;
+}
+
+.ck-share-table th:nth-child(2),
+.ck-share-table td:nth-child(2) {
+  width: 15%;
+}
+
+.ck-share-table th:nth-child(3),
+.ck-share-table td:nth-child(3) {
+  width: 24%;
+}
+
+.ck-share-result {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ck-capture-watermark {
+  margin-top: 22px;
+  color: #dee2e6;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  opacity: 0.45;
+  text-align: right;
+}
+
 @media (max-width: 767.98px) {
   .ck-participant-card {
     padding: 0.45rem 0.65rem;
