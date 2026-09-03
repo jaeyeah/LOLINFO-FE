@@ -127,12 +127,12 @@ export default function StreamerDetail() {
               <p className="card-text mb-0">@{streamer.streamerSoopId}</p>
             </div>
             <div className="col-auto text-end">
-                <button type="button" className={`btn mb-2 ${bookmarked ? "btn-warning" : "btn-outline-warning"}`}
+                <button type="button" className={`btn mb-2  ${bookmarked ? "btn-warning" : "btn-outline-warning"}`}
                         onClick = {toggleBookmark}>
                       {bookmarked ? <FaStar/> : <FaRegStar/>}
                     </button>
                 <a href={streamer.streamerStation} target="_blank" rel="noreferrer"
-                    className="btn btn-station mb-2"><FaHome className="fs-2"/> </a>
+                    className="btn btn-station mb-2 ms-1"><FaHome/> </a>
                 {isAdmin === true && (
                      <NavLink to={`/streamer/edit/${streamerId}`}
                     className="btn btn-station mb-2 ms-1 bg-warning"><FaEdit className="fs-2"/> </NavLink>

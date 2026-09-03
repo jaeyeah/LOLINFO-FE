@@ -136,3 +136,17 @@
     0 0 6px rgba(255, 255, 255, 0.8),
     0 0 14px rgba(0, 204, 255, 0.9);
 }
+
+
+/* 토글버튼 css */
+.cinema-navbar .navbar-toggler {
+    border: none;
+}
+
+.cinema-navbar .navbar-toggler-icon {
+    filter: brightness(0) invert(1);
+}
+
+.cinema-navbar .navbar-toggler:focus {
+    box-shadow: none;
+}
