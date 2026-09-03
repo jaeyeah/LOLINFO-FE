@@ -14,6 +14,7 @@ export default function Footer() {
 				<nav className="site-footer-links" aria-label="사이트 정보">
 					<Link to="/privacy">개인정보처리방침</Link>
 				</nav>
+                <span>문의 : limjh819@naver.com</span>
 				<small className="site-footer-copyright">
 					© 2026 SoopLOL. All rights reserved.
 				</small>
