@@ -5,6 +5,7 @@ import "./Streamer.css";
 import { FaEdit, FaHome } from "react-icons/fa";
 import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
+import AdArea from '../../components/etc/AdArea.jsx'
 import Swal from "sweetalert2";
 import { FaStar, FaRegStar } from "react-icons/fa6";
 export default function StreamerDetail() {
@@ -104,6 +105,7 @@ export default function StreamerDetail() {
                   팀메이트
                 </NavLink>
               </div>
+              
             </div>
           </div>
         </>
@@ -139,6 +141,9 @@ export default function StreamerDetail() {
           </div>
           </div>
         </div>
+
+        {/* 콘텐츠 중간광고 */}
+        <AdArea className="mt-3" variant="content" />
         {/* 중첩 라우트 렌더링 */}
         <Outlet context={{ streamer, streamerId }} />
       </div>

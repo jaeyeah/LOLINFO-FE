@@ -5,6 +5,7 @@ import Content from "./components/Content.jsx"
 import './App.css'
 import Menu from './components/Menu.jsx'
 import Footer from './components/Footer.jsx'
+import AdArea from './components/etc/AdArea.jsx'
 import { trackDailyVisit } from './utils/visitTracker'
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             </div>
           </main>
           
+          <AdArea variant="bottom" />
           <Footer />
         </div>
       </BrowserRouter>

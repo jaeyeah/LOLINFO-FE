@@ -6,6 +6,7 @@ import { buildProfileUrl } from "../../utils/profileUrl";
 import { adminState, loginIdState, loginState } from "../../utils/jotai";
 import { useAtomValue } from "jotai";
 import { FaEdit } from "react-icons/fa";
+import AdArea from '../../components/etc/AdArea.jsx'
 
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
 
@@ -325,6 +326,9 @@ export default function CkList() {
               등록된 CK가 없습니다.
             </div>
           )}
+          
+          {/* 콘텐츠 중간광고 */}
+          <AdArea className="mt-1" variant="default" />
 
           {!loading && !error && ckList.length > 0 && (
             <div className="card bg-dark border-secondary text-white mb-3">

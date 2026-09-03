@@ -1,0 +1,39 @@
+.ad-area {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* border: 1px dashed #ddd;
+  color: #aaa;
+  font-size: 13px; */
+}
+
+
+.ad-area--default {
+  max-width: 970px;
+  min-height: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+
+/* 공통 하단 광고 */
+.ad-area--bottom {
+  max-width: 970px;
+  min-height: 10px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+/* 콘텐츠 중간 광고 */
+.ad-area--content {
+  max-width: 728px;
+  min-height: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
