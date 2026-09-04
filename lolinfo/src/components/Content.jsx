@@ -41,6 +41,7 @@ import MyPageCk from "./mypage/MyPageCk";
 import MyPageBookmark from "./mypage/MyPageBookmark";
 import MyPageBookmarkTournament from "./mypage/MyPageBookmarkTournament";
 import Privacy from "./Privacy";
+import Terms from "./Terms";
 
 export default function Content(){
 
@@ -54,6 +55,7 @@ return (<>
 
                 <Route path="/" element={<TournamentList />} />
                 <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
 
                 {/* 회원 */}
                 <Route path="/member/join" element={<MemberJoin/>} />

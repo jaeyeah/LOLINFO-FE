@@ -1,0 +1,81 @@
+.terms-page {
+  width: min(100%, 900px);
+  margin: 0 auto;
+  color: #e9ecef;
+}
+
+.terms-header {
+  padding: 1.5rem 0 2.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.terms-eyebrow {
+  margin-bottom: 0.5rem;
+  color: #00ccff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.terms-header h1 {
+  margin-bottom: 0.8rem;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 700;
+}
+
+.terms-date {
+  margin: 0;
+  color: #adb5bd;
+  font-size: 0.9rem;
+}
+
+.terms-body {
+  padding: 2rem 0 1rem;
+}
+
+.terms-body section {
+  margin: 0 0 2rem;
+}
+
+.terms-body h2 {
+  margin-bottom: 0.75rem;
+  color: #f5d67b;
+  font-size: 1.25rem;
+}
+
+.terms-body p,
+.terms-body li {
+  color: #ced4da;
+  line-height: 1.85;
+}
+
+.terms-body p {
+  margin: 0 0 0.75rem;
+}
+
+.terms-body > p:first-child {
+  margin-bottom: 2.25rem;
+}
+
+.terms-body section p:last-child {
+  margin-bottom: 0;
+}
+
+.terms-body ul {
+  margin: 0.35rem 0 0.75rem;
+  padding-left: 1.35rem;
+}
+
+@media (max-width: 767.98px) {
+  .terms-header {
+    padding-top: 0.5rem;
+  }
+
+  .terms-body {
+    padding-top: 1.5rem;
+  }
+
+  .terms-body section {
+    margin-bottom: 1.75rem;
+  }
+}
