@@ -42,6 +42,7 @@ import MyPageBookmark from "./mypage/MyPageBookmark";
 import MyPageBookmarkTournament from "./mypage/MyPageBookmarkTournament";
 import Privacy from "./Privacy";
 import Terms from "./Terms";
+import Home from "./home/Home";
 
 export default function Content(){
 
@@ -53,7 +54,7 @@ return (<>
             {/* 분할된 화면의 주소를 지정하는 영역 (path=주소 , element=화면) */}
             <Routes>
 
-                <Route path="/" element={<TournamentList />} />
+                <Route path="/" element={<Home />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
 
