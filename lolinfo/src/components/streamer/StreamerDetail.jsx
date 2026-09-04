@@ -149,6 +149,10 @@ export default function StreamerDetail() {
               <p className="card-text mb-0">@{streamer.streamerSoopId}</p>
             </div>
             <div className="col-auto text-end">
+                <button type="button" className="btn btn-sm me-2 btn-outline-light mb-2 ms-1"
+                    onClick={() => setShowFeedback(true)}>
+                    오류·누락 제보
+                  </button>
                 <button type="button" className={`btn mb-2  ${bookmarked ? "btn-warning" : "btn-outline-warning"}`}
                         onClick = {toggleBookmark}>
                       {bookmarked ? <FaStar/> : <FaRegStar/>}
@@ -159,13 +163,7 @@ export default function StreamerDetail() {
                      <NavLink to={`/streamer/edit/${streamerId}`}
                     className="btn btn-station mb-2 ms-1 bg-warning"><FaEdit className="fs-2"/> </NavLink>
                 )}
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-secondary mb-2 ms-1"
-                  onClick={() => setShowFeedback(true)}
-                >
-                  오류·누락 제보
-                </button>
+                
             </div>
           </div>
           </div>

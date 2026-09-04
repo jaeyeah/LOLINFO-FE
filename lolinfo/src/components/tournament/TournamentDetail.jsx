@@ -150,7 +150,7 @@ export default function TournamentDetail() {
               </button>
               <button
                 type="button"
-                className="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 mt-5 me-5"
+                className="btn btn-sm btn-outline-light position-absolute top-0 end-0 mt-5 me-5"
                 onClick={() => setShowFeedback(true)}
               >
                 오류·누락 제보

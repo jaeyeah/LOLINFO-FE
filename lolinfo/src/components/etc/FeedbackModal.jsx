@@ -82,7 +82,7 @@ export default function FeedbackModal({ show, onClose, targetType, targetId, tar
 
 		try {
 			setIsSubmitting(true);
-			await axios.post("/api/feedback/", requestData);
+			await axios.post("/feedback/", requestData);
 			setSuccessMessage("제보가 등록되었습니다. 확인 후 반영하겠습니다.");
 			setFeedbackType("");
 			setFeedbackContent("");
