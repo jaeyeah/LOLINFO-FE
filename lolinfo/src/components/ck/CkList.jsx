@@ -316,7 +316,8 @@ export default function CkList() {
           <div className="card bg-dark border-secondary text-white p-3 mb-3">
             <h3 className="mb-1 section-title">CK 전체 목록</h3>
             <p className="mb-0 text-secondary">
-              CK 목록은 최소 데이터만 조회하며 팀원 상세 정보는 별도 API로 분리됩니다.
+              - CK 목록은 최소 데이터(세트X)만 조회하며 팀원 상세 정보는 별도 API로 분리됩니다.<br/>
+              - 세트별 교체인원이 있는 CK의 경우(EX 넛저밧CK), 전적이 등록되지 않습니다
             </p>
             {/* 피드백 모달 트리거 */}
             <button type="button" className="btn btn-sm btn-outline-light mt-3"
