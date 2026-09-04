@@ -1,0 +1,82 @@
+.admin-feedback-page {
+    width: 100%;
+    min-width: 0;
+}
+
+.admin-feedback-table-wrap {
+    border: 1px solid #333;
+    border-radius: 8px;
+    background-color: #1e1e1e;
+}
+
+.admin-feedback-table {
+    min-width: 980px;
+}
+
+.admin-feedback-table th,
+.admin-feedback-table td {
+    padding: 0.85rem 0.75rem;
+    border-color: #333;
+    white-space: nowrap;
+}
+
+.admin-feedback-table th {
+    color: #f8f9fa;
+    background-color: rgba(108, 117, 125, 0.25);
+    font-weight: 600;
+}
+
+.admin-feedback-table td:nth-child(4) {
+    max-width: 270px;
+}
+
+.feedback-content-preview {
+    max-width: 270px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #ced4da;
+}
+
+.admin-feedback-table .badge {
+    font-weight: 500;
+}
+
+.admin-feedback-modal {
+    z-index: 1060;
+}
+
+.admin-feedback-modal .modal-dialog {
+    width: calc(100% - 2rem);
+}
+
+.admin-feedback-modal .modal-content {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.35);
+}
+
+.admin-feedback-detail dt,
+.admin-feedback-detail dd {
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid #333;
+}
+
+.admin-feedback-detail dt {
+    color: #adb5bd;
+    font-weight: 600;
+}
+
+.feedback-detail-content {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.feedback-visitor-id {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 767.98px) {
+    .admin-feedback-modal .modal-dialog {
+        margin: 0.75rem auto;
+    }
+}
