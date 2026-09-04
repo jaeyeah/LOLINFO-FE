@@ -10,6 +10,8 @@ const CATEGORIES = [
     { value: "자유", label: "자유" },
     { value: "제보", label: "제보" },
     { value: "신고", label: "신고" },
+    { value: "문의", label: "문의" },
+    { value: "개발", label: "개발" },
 ];
 
 // Byte 기준 상수
@@ -220,7 +222,9 @@ export default function BoardWrite() {
                             value={form.boardContent}
                             onChange={handleChangeForm}
                             className="form-control"
-                            placeholder="내용을 입력해주세요"
+                            placeholder={`내용을 입력해주세요.
+
+                            ※ 개인정보나 민감한 내용이 포함된 문의는 운영자 이메일을 이용해 주세요.`}
                             rows="10"
                             style={{
                                 resize: "vertical",

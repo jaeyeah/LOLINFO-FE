@@ -1,7 +1,24 @@
 import { Link } from "react-router-dom";
 import "./Footer.css";
+import Swal from "sweetalert2";
+
+
 
 export default function Footer() {
+
+
+	const handleCopyEmail = async () => {
+		await navigator.clipboard.writeText("limjh819@naver.com");
+
+		Swal.fire({
+			icon: "success",
+			title: "이메일 주소 복사 완료",
+			text: "limjh819@naver.com",
+			timer: 1500,
+			showConfirmButton: false,
+		});
+	};
+
 	return (
 		<footer className="site-footer">
 			<div className="site-footer-inner">
@@ -13,8 +30,15 @@ export default function Footer() {
 				</div>
 				<nav className="site-footer-links" aria-label="사이트 정보">
 					<Link to="/privacy">개인정보처리방침</Link>
+					<span> | </span>
+					<Link to="/board/write?category=문의">문의하기</Link>
 				</nav>
-                <span>문의 : limjh819@naver.com</span>
+				<nav className="site-footer-links" aria-label="사이트 정보">
+					
+				</nav>
+                <span className="site-footer-email" role="button" onClick={handleCopyEmail} tabIndex={0}>
+					개별문의 : limjh819@naver.com
+				</span>
 				<small className="site-footer-copyright">
 					© 2026 SoopLOL. All rights reserved.
 				</small>

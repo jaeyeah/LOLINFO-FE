@@ -14,7 +14,7 @@ export default function BoardList() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState("전체");
 
-    const CATEGORIES = ["전체", "자유", "제보", "신고"];
+    const CATEGORIES = ["전체", "자유", "제보", "신고", "문의", "개발"];
 
     // 게시판 목록 조회
     useEffect(() => {
@@ -50,11 +50,21 @@ export default function BoardList() {
     }, [navigate]);
 
     const handleBoardClick = useCallback(
-        (boardId) => {
-            navigate(`/board/${boardId}`);
-        },
-        [navigate]
-    );
+    (boardId) => {
+        if (!loginId) {
+            Swal.fire({
+                icon: "info",
+                title: "로그인이 필요합니다.",
+                text: "게시글을 확인하려면 로그인해주세요.",
+                confirmButtonText: "확인",
+            });
+            return;
+        }
+
+        navigate(`/board/${boardId}`);
+    },
+    [navigate, loginId]
+);
 
     return (
         <div className="board-list-container">
