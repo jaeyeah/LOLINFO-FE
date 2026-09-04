@@ -503,12 +503,10 @@ const StreamerCkListSection = memo(({ streamerId, streamerName }) => {
         <>
           {hasCkRecords ? (
             <>
-              <div className="d-flex justify-content-end mb-3">
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-light"
-                  onClick={handleSaveImage}
-                  disabled={isCapturing}
+              <div className="d-flex justify-content-between mb-3">
+                <span className="ms-3 fw-bold"> ※ 세트별 교체인원이 있는 CK의 경우, 전적이 등록되지 않습니다</span>
+                <button type="button" className="btn btn-sm btn-outline-light"
+                  onClick={handleSaveImage} disabled={isCapturing}
                 >
                   {isCapturing ? "이미지 생성 중..." : "이미지 저장"}
                 </button>
