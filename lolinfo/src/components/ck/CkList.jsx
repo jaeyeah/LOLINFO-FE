@@ -8,6 +8,7 @@ import { useAtomValue } from "jotai";
 import { FaEdit } from "react-icons/fa";
 import AdArea from '../../components/etc/AdArea.jsx'
 import { Helmet } from 'react-helmet-async'
+import FeedbackModal from "../etc/FeedbackModal";
 
 
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
@@ -16,6 +17,7 @@ export default function CkList() {
   const loginId = useAtomValue(loginIdState);
   const isAdmin = useAtomValue(adminState);
   const isLogin = useAtomValue(loginState);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   const [ckList, setCkList] = useState([]);
   const [page, setPage] = useState(1);
@@ -316,8 +318,13 @@ export default function CkList() {
             <p className="mb-0 text-secondary">
               CK 목록은 최소 데이터만 조회하며 팀원 상세 정보는 별도 API로 분리됩니다.
             </p>
+            {/* 피드백 모달 트리거 */}
+            <button type="button" className="btn btn-sm btn-outline-light mt-3"
+                onClick={() => setShowFeedback(true)} >
+                오류·누락 제보
+            </button>
             {isLogin && (
-              <Link className="btn btn-dark border-secondary mt-3" to="/ck/insert">
+              <Link className="btn btn-dark border-secondary mt-1" to="/ck/insert">
                 CK 등록
               </Link>
             )}
@@ -627,6 +634,15 @@ export default function CkList() {
           )}
         </div>
       </div>
+      
+      {/* 피드백 모달 */}
+      <FeedbackModal
+        show={showFeedback}
+        onClose={() => setShowFeedback(false)}
+        targetType="CK"
+        targetId=""
+        targetName=""
+    />
     </>
   );
 }

@@ -1,0 +1,49 @@
+.feedback-modal {
+  z-index: 1060;
+}
+
+.feedback-modal .modal-dialog {
+  width: calc(100% - 2rem);
+  max-width: 560px;
+}
+
+.feedback-modal .modal-content {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.35);
+}
+
+.feedback-target {
+  min-height: 38px;
+  height: auto;
+  color: #ced4da !important;
+}
+
+.feedback-modal .form-control,
+.feedback-modal .form-select {
+  color: #f8f9fa;
+}
+
+.feedback-modal .form-control:focus,
+.feedback-modal .form-select:focus {
+  border-color: #00ccff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 204, 255, 0.15);
+}
+
+.feedback-modal textarea {
+  resize: vertical;
+}
+
+.feedback-modal .form-control::placeholder {
+  color: #868e96;
+}
+
+.feedback-length {
+  margin-top: 0.35rem;
+  color: #adb5bd;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 575.98px) {
+  .feedback-modal .modal-dialog {
+    margin: 0.75rem auto;
+  }
+}
