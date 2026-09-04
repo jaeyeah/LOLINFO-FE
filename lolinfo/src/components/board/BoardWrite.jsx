@@ -224,7 +224,7 @@ export default function BoardWrite() {
                             className="form-control"
                             placeholder={`내용을 입력해주세요.
 
-                            ※ 개인정보나 민감한 내용이 포함된 문의는 운영자 이메일을 이용해 주세요.`}
+※ 개인정보 등이 포함된 문의는 운영자 이메일을 이용해 주세요.`}
                             rows="10"
                             style={{
                                 resize: "vertical",
