@@ -30,7 +30,13 @@ export default function HomeStreamerSearch() {
     }, [keyword]);
 
     const goToStreamerList = () => {
-        navigate("/streamer");
+        const searchKeyword = keyword.trim();
+
+        if (searchKeyword) {
+            navigate(`/streamer?keyword=${encodeURIComponent(searchKeyword)}`);
+        } else {
+            navigate("/streamer");
+        }
     };
 
     const handleSubmit = (event) => {

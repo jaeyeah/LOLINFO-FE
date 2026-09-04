@@ -8,6 +8,7 @@ import { FaHome, FaSearch } from "react-icons/fa";
 import Pagination from "../Pagination";
 import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
+import { useSearchParams } from "react-router-dom";
 
 export default function StreamerList() {
 
@@ -16,7 +17,12 @@ export default function StreamerList() {
     const [streamerList, setStreamerList] = useState([]);
     const navigate = useNavigate();
     //검색어 state
-    const [keyword, setKeyword] = useState("");
+    const [searchParams] = useSearchParams();
+
+    const initialKeyword = searchParams.get("keyword") || "";
+
+    const [keyword, setKeyword] = useState(initialKeyword);
+    const [searchKeyword, setSearchKeyword] = useState(initialKeyword);
     const [autoSearch, setAutoSearch] = useState([]);
     // 페이지네이션 설정
     const [page, setPage] = useState(1);
@@ -26,43 +32,56 @@ export default function StreamerList() {
     //로딩중 설정
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const loadData = useCallback( async() => {
+    const loadData = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
-            const {data} = await axios.get("/streamer/", {params : {page}});
-            setStreamerList(data.list);
-            setPageData(data.pageVO);
-        } catch (error) {
+
+            let response;
+
+            if (searchKeyword.trim()) {
+                response = await axios.get(
+                    `/streamer/keyword/${encodeURIComponent(searchKeyword)}`,
+                    {
+                        params: { page }
+                    }
+                );
+            }
+            else {
+                response = await axios.get("/streamer/", {
+                    params: { page }
+                });
+            }
+
+            setStreamerList(response.data.list);
+            setPageData(response.data.pageVO);
+        }
+        catch (error) {
             console.error("Error fetching streamer list:", error);
+            setError("스트리머 목록을 불러오지 못했습니다.");
         }
         finally {
-          setLoading(false);
+            setLoading(false);
         }
-    }, [page]);
+    }, [page, searchKeyword]);
 
     useEffect(()=>{
         loadData();
     },[loadData]);
     
     //[입력창 제어 및 검색이동]
-    const handleSearch = useCallback(async() => {
-        if(keyword.trim().length === 0){
+    const handleSearch = () => {
+        const trimmedKeyword = keyword.trim();
+
+        if (!trimmedKeyword) {
             alert("검색어를 입력해주세요.");
             return;
         }
-        setPage(1);
-        if (keyword.trim().length === 0) return;
-        try {
-            const {data} = await axios.get(`/streamer/keyword/${keyword}`, {params : {page}});
-            setStreamerList(data.list);
-            setPageData(data.pageVO);
-        } catch (error) {
-            console.error("Error fetching streamer list:", error);
-        }
-        setKeyword("");
-    }, [keyword, page]);
 
+        setPage(1);
+        setSearchKeyword(trimmedKeyword);
+        setAutoSearch([]);
+    };
     // 자동완성 입력
     useEffect(()=>{
         if(!keyword.trim()) {setAutoSearch([]); return;}
