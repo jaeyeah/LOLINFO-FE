@@ -32,6 +32,7 @@ import AdminMain from "./admin/AdminMain";
 import AdminMemberPage from "./admin/AdminMemberPage";
 import AdminVisitPage from "./admin/AdminVisitPage";
 import AdminVisitUsePage from "./admin/AdminVisitUsePage";
+import AdminFeedback from "./admin/AdminFeedback";
 
 
 import MyPageMain from "./mypage/MyPageMain";
@@ -79,6 +80,7 @@ return (<>
                     <Route path="member" element={<AdminMemberPage/>}/>
                     <Route path="visit" element={<AdminVisitPage/>}/>
                     <Route path="visit-use" element={<AdminVisitUsePage/>}/>
+                    <Route path="feedback" element={<AdminFeedback/>}/>
                 </Route>
 
                 {/* 스트리머 */}

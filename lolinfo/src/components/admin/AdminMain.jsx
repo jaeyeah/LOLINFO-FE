@@ -47,6 +47,10 @@ export default function AdminMain() {
                     <NavLink to="/admin/visit-use" className="list-group-item admin-menu-item" onClick={closeSidebar}>
                         🧭 기능별 통계
                     </NavLink>
+
+                    <NavLink to="/admin/feedback" className="list-group-item admin-menu-item" onClick={closeSidebar}>
+                        📝 피드백 관리
+                    </NavLink>
                 </div>
             </div>
 
