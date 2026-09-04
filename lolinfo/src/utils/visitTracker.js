@@ -22,6 +22,16 @@ export const trackDailyVisit = async () => {
     const dateString = today.toISOString().split("T")[0]; // YYYY-MM-DD 형식
     const visitDateKey = `sooplol_visit_${dateString}`;
 
+    //3-2 추가) 과거 방문 체크 키 삭제
+    Object.keys(localStorage)
+      .filter(
+        (key) =>
+          key.startsWith("sooplol_visit_") &&
+          key !== visitDateKey
+      )
+      .forEach((key) => localStorage.removeItem(key));
+
+
     // 4) localStorage에서 sooplol_visit_YYYY-MM-DD 조회
     const hasVisitedToday = localStorage.getItem(visitDateKey);
 
@@ -35,8 +45,8 @@ export const trackDailyVisit = async () => {
 
     // 7) 요청 성공 시 sooplol_visit_YYYY-MM-DD 값을 "Y"로 저장
     localStorage.setItem(visitDateKey, "Y");
+  
   } catch (error) {
-    // 8) 요청 실패 시 콘솔에만 에러 출력하고 화면 동작은 막지 않음
     console.error("방문 등록 실패:", error);
   }
 };
