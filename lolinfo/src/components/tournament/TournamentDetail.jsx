@@ -8,6 +8,7 @@ import "./Tournament.css";
 import "./Scrim.css";
 import Swal from "sweetalert2";
 import { FaRegStar, FaStar } from "react-icons/fa6";
+import FeedbackModal from "../etc/FeedbackModal";
 
 export default function TournamentDetail() {
   const isLogin = useAtomValue(loginState);
@@ -21,6 +22,7 @@ export default function TournamentDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [bookmarked, setBookmarked] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   const loadData = useCallback(async () => {
     if (!tournamentId) return;
@@ -146,6 +148,13 @@ export default function TournamentDetail() {
               <button type="button" className={`btn position-absolute top-0 end-0 mt-5 ${bookmarked ? "btn-warning" : "btn-outline-warning"}`} onClick={toggleBookmark}>
                 {bookmarked ? <FaStar /> : <FaRegStar />}
               </button>
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 mt-5 me-5"
+                onClick={() => setShowFeedback(true)}
+              >
+                오류·누락 제보
+              </button>
             </div>
           </div>
 
@@ -164,6 +173,14 @@ export default function TournamentDetail() {
           </div>
         </div>
       </div>
+
+      <FeedbackModal
+        show={showFeedback}
+        onClose={() => setShowFeedback(false)}
+        targetType="TOURNAMENT"
+        targetId={tournamentId}
+        targetName={tournament.tournamentName}
+      />
 
       <Outlet context={{ tournament, tournamentId, isLogin, isAdmin, loginId }} />
     </>

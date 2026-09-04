@@ -9,6 +9,7 @@ import AdArea from '../../components/etc/AdArea.jsx'
 import Swal from "sweetalert2";
 import { FaStar, FaRegStar } from "react-icons/fa6";
 import { Helmet } from 'react-helmet-async'
+import FeedbackModal from "../etc/FeedbackModal";
 
 
 export default function StreamerDetail() {
@@ -18,6 +19,7 @@ export default function StreamerDetail() {
     const {streamerId} = useParams();
     const [streamer, setStreamer] = useState({});
     const [bookmarked, setBookmarked] = useState(false);
+    const [showFeedback, setShowFeedback] = useState(false);
     const navigate = useNavigate();
     //로딩중 설정
     const [loading, setLoading] = useState(true);
@@ -157,6 +159,13 @@ export default function StreamerDetail() {
                      <NavLink to={`/streamer/edit/${streamerId}`}
                     className="btn btn-station mb-2 ms-1 bg-warning"><FaEdit className="fs-2"/> </NavLink>
                 )}
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-secondary mb-2 ms-1"
+                  onClick={() => setShowFeedback(true)}
+                >
+                  오류·누락 제보
+                </button>
             </div>
           </div>
           </div>
@@ -167,6 +176,14 @@ export default function StreamerDetail() {
         {/* 중첩 라우트 렌더링 */}
         <Outlet context={{ streamer, streamerId }} />
       </div>
+
+      <FeedbackModal
+        show={showFeedback}
+        onClose={() => setShowFeedback(false)}
+        targetType="STREAMER"
+        targetId={streamerId}
+        targetName={streamer.streamerName}
+      />
 
     
 
