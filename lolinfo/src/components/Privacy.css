@@ -101,3 +101,15 @@
     margin-bottom: 1.75rem;
   }
 }
+
+.danger-note {
+  padding: 0.85rem 1rem;
+  border-left: 3px solid #ff0055;
+  background: rgba(255, 0, 0, 0.06);
+}
+
+.danger-note {
+  margin-bottom: 2.25rem !important;
+  color: #adb5bd !important;
+  font-size: 0.9rem;
+}

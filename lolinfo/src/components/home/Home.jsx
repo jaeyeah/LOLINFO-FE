@@ -48,7 +48,6 @@ function HomeNavigation() {
         <section className="home-navigation" aria-labelledby="home-navigation-title">
             <div className="home-section-heading">
                 <p className="home-eyebrow">EXPLORE SOOPLOL</p>
-                <h2 id="home-navigation-title">기록을 찾아보세요</h2>
             </div>
             <div className="home-navigation-grid">
                 <Link to="/streamer" className="home-navigation-card">
@@ -73,12 +72,12 @@ function HomeFeatures() {
         <section className="home-features" aria-labelledby="home-features-title">
             <div className="home-section-heading">
                 <p className="home-eyebrow">WHAT YOU CAN FIND</p>
-                <h2 id="home-features-title">SoopLOL에서 확인할 수 있는 기록</h2>
             </div>
             <div className="home-feature-list">
                 {features.map((feature) => (
                     <article className="home-feature-item" key={feature.title}>
-                        <h3>{feature.title}</h3>
+                        <h3 className="text-center">{feature.title}</h3>
+                        <hr/>
                         <p className="text-secondary">{feature.description}</p>
                         {feature.link && (
                             <Link to={feature.link} className="badge home-feature-link text-info text-decoration-none">
