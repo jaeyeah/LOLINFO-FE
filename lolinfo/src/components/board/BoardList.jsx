@@ -109,7 +109,7 @@ export default function BoardList() {
                                 </div>
                                 <div className="col-3 board-item-footer">
                                     <span className="board-writer">
-                                        {board.boardWriter}
+                                        {board.memberNickname}
                                     </span>
                                     <span className="board-date">
                                         {new Date(
