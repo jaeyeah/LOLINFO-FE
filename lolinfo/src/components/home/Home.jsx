@@ -34,7 +34,7 @@ function HomeHero() {
     return (
         <section className="home-hero">
             <p className="home-eyebrow">SOOP LOL DATA SERVICE</p>
-            <h1>SOOP LoL 기록을 한눈에.</h1>
+            <h1>SOOP LoL 기록을 한눈에</h1>
             <p className="home-context">
                 SoopLOL은 SOOP LoL 관련 데이터를 정리해 통계로 제공하는 비공식 데이터 서비스입니다.
             </p>
@@ -81,7 +81,7 @@ function HomeFeatures() {
                         <h3>{feature.title}</h3>
                         <p className="text-secondary">{feature.description}</p>
                         {feature.link && (
-                            <Link to={feature.link} className="home-feature-link">
+                            <Link to={feature.link} className="badge home-feature-link text-info text-decoration-none">
                                 자세히 보기 →
                             </Link>
                         )}
