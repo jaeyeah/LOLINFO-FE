@@ -23,6 +23,11 @@ const features = [
         title: "대회 및 참가팀 기록",
         description: "역대 대회와 참가팀, 경기 정보를 찾아볼 수 있습니다.",
     },
+    {
+        title: "Lol 멸망전 티어표",
+        description: "2026년 멸망전 티어표를 확인할 수 있습니다.",
+        link: "/tournament/115/tier",
+    },
 ];
 
 function HomeHero() {
@@ -75,6 +80,11 @@ function HomeFeatures() {
                     <article className="home-feature-item" key={feature.title}>
                         <h3>{feature.title}</h3>
                         <p className="text-secondary">{feature.description}</p>
+                        {feature.link && (
+                            <Link to={feature.link} className="home-feature-link">
+                                자세히 보기 →
+                            </Link>
+                        )}
                     </article>
                 ))}
             </div>
