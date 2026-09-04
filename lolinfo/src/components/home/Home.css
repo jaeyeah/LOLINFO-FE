@@ -49,9 +49,16 @@
   border-radius: 0.35rem;
   background: #2c3034;
 }
+.home-search input::placeholder {
+  color: #d3d3d398 !important;
+  opacity: 1 !important;
+  
+}
+
 
 .home-search:focus-within {
   border-color: #00ccff;
+  
 }
 
 .home-search input {

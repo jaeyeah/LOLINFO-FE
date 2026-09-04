@@ -44,6 +44,7 @@ import MyPageBookmarkTournament from "./mypage/MyPageBookmarkTournament";
 import Privacy from "./Privacy";
 import Terms from "./Terms";
 import Home from "./home/Home";
+import DevHistory from "./etc/DevHistory";
 
 export default function Content(){
 
@@ -58,6 +59,7 @@ return (<>
                 <Route path="/" element={<Home />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
+                <Route path="/devhistory" element={<DevHistory />} />
 
                 {/* 회원 */}
                 <Route path="/member/join" element={<MemberJoin/>} />

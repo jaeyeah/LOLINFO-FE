@@ -53,7 +53,7 @@ export default function HomeStreamerSearch() {
     };
 
     return (
-        <div className="home-search-area">
+        <div className="home-search-area mt-3">
             <form className="home-search" onSubmit={handleSubmit}>
                 <label className="visually-hidden" htmlFor="home-streamer-search">
                     스트리머 검색
