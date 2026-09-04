@@ -110,6 +110,32 @@ export default function AdminFeedback() {
         setPage(pageNumber);
     };
 
+    // 상태 수정
+    const [editFeedbackId, setEditFeedbackId] = useState(null);
+    const [editStatus, setEditStatus] = useState("");
+    const startEditStatus = (feedback) => {
+        setEditFeedbackId(feedback.feedbackId);
+        setEditStatus(feedback.feedbackStatus);
+    };
+    const updateStatus = async () => {
+        try {
+            await axios.patch("/feedback/", {
+                feedbackId: editFeedbackId,
+                feedbackStatus: editStatus,
+            });
+
+            setEditFeedbackId(null);
+            setEditStatus("");
+
+            fetchFeedback();
+        }
+        catch (error) {
+            console.error(error);
+            alert("상태 변경 중 오류가 발생했습니다.");
+        }
+    };
+
+
     return (
         <div className="admin-feedback-page text-white">
             <div className="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-4">
@@ -128,9 +154,10 @@ export default function AdminFeedback() {
                             <th scope="col">번호</th>
                             <th scope="col">분류</th>
                             <th scope="col">대상</th>
-                            <th scope="col">상태</th>
+
                             <th scope="col">등록일</th>
                             <th scope="col">링크</th>
+                            <th scope="col">상태</th>
                             <th scope="col">관리</th>
                         </tr>
                     </thead>
@@ -156,11 +183,6 @@ export default function AdminFeedback() {
                                         </span>
                                     </td>
                                     <td>{getTargetLabel(feedback)}</td>
-                                    <td>
-                                        <span className={`badge ${STATUS_CLASSES[feedback.feedbackStatus] || "bg-secondary"}`}>
-                                            {getStatusLabel(feedback.feedbackStatus)}
-                                        </span>
-                                    </td>
                                     <td>{formatDateTime(feedback.feedbackCreated)}</td>
                                     <td>
                                         {feedback.feedbackUrl ? (
@@ -173,14 +195,72 @@ export default function AdminFeedback() {
                                             </button>
                                         ) : "-"}
                                     </td>
+                    
                                     <td>
-                                        <button
-                                            type="button"
-                                            className="btn btn-sm btn-outline-light"
-                                            onClick={() => setSelectedFeedback(feedback)}
-                                        >
-                                            보기
-                                        </button>
+                                        {editFeedbackId === feedback.feedbackId ? (
+                                            <select
+                                                className="form-select form-select-sm bg-dark text-white"
+                                                value={editStatus}
+                                                onChange={(e) => setEditStatus(e.target.value)}
+                                            >
+                                                <option value="WAITING">대기</option>
+                                                <option value="CHECKING">확인 중</option>
+                                                <option value="DONE">처리 완료</option>
+                                            </select>
+                                        ) : (
+                                            <span
+                                                className={`badge ${
+                                                    feedback.feedbackStatus === "WAITING"
+                                                        ? "bg-warning text-dark"
+                                                        : feedback.feedbackStatus === "CHECKING"
+                                                        ? "bg-info text-dark"
+                                                        : feedback.feedbackStatus === "DONE"
+                                                        ? "bg-success"
+                                                        : "bg-secondary"
+                                                }`}
+                                            >
+                                                {STATUS_LABELS[feedback.feedbackStatus] || feedback.feedbackStatus}
+                                            </span>
+                                        )}
+                                    </td>
+
+                                    <td>
+                                        {editFeedbackId === feedback.feedbackId ? (
+                                            <div className="d-flex gap-1">
+                                                <button
+                                                    className="btn btn-sm btn-success"
+                                                    onClick={updateStatus}
+                                                >
+                                                    저장
+                                                </button>
+
+                                                <button
+                                                    className="btn btn-sm btn-secondary"
+                                                    onClick={() => {
+                                                        setEditFeedbackId(null);
+                                                        setEditStatus("");
+                                                    }}
+                                                >
+                                                    취소
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="d-flex gap-1">
+                                                <button
+                                                    className="btn btn-sm btn-outline-warning"
+                                                    onClick={() => startEditStatus(feedback)}
+                                                >
+                                                    상태 변경
+                                                </button>
+
+                                                <button
+                                                    className="btn btn-sm btn-outline-light"
+                                                    onClick={() => setSelectedFeedback(feedback)}
+                                                >
+                                                    보기
+                                                </button>
+                                            </div>
+                                        )}
                                     </td>
                                 </tr>
                             ))
