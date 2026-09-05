@@ -8,6 +8,7 @@ import { FaHome, FaSearch } from "react-icons/fa";
 import Pagination from "../Pagination";
 import { adminState, loginState } from "../../utils/jotai";
 import { useAtomValue } from "jotai";
+import FeedbackModal from "../etc/FeedbackModal";
 
 export default function StreamerTotalList() {
     //검색어 state
@@ -17,6 +18,7 @@ export default function StreamerTotalList() {
     const isAdmin = useAtomValue(adminState);
     const [streamerList, setStreamerList] = useState([]);
     const navigate = useNavigate();
+    const [showFeedback, setShowFeedback] = useState(false); 
     // 페이지네이션 설정
     const [page, setPage] = useState(1);
     const [pageData, setPageData] = useState({
@@ -143,6 +145,13 @@ export default function StreamerTotalList() {
                         </div>
                     )}
                 </div>
+                {/* 피드백 모달 트리거 */}
+                <div className="streamer-admin-action">
+                  <button type="button" className="btn btn-outline-light"
+                      onClick={() => setShowFeedback(true)} >
+                        등록요청
+                  </button>
+                </div>
                 {isAdmin === true && (
                     <div className="streamer-admin-action">
                         <Link to="/streamer/insert" className="btn btn-success">등록</Link>
@@ -210,7 +219,11 @@ export default function StreamerTotalList() {
                 />
             </div>
         </div>
-    
+    {/* 피드백 모달 */}
+        <FeedbackModal  show={showFeedback}
+            onClose={() => setShowFeedback(false)}
+            targetType="Streamer" targetId="" targetName="스트리머"
+        />
     
     </>)
 

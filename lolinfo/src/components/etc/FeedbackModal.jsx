@@ -134,6 +134,7 @@ export default function FeedbackModal({ show, onClose, targetType, targetId, tar
 										disabled={isSubmitting}
 									>
 										<option value="">선택해주세요</option>
+										<option value="REQUEST">등록 요청</option>
 										<option value="ERROR">정보 오류</option>
 										<option value="MISSING">정보 누락</option>
 										<option value="ETC">기타</option>
