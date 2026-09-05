@@ -39,6 +39,14 @@ function BookmarkCard({ streamer }) {
 	} = streamer;
 	const detailPath = `/streamer/${streamerNo}/ck-records`;
 	const totalWinRate = getWinRate(totalPlayCount, totalWinCount);
+      const getWinRateColor = (rate) => {
+        if (rate >= 60) return "#76c1ff";
+        if (rate >= 55) return "#69db7c";
+        if (rate >= 50) return "#adb5bd";
+        if (rate >= 45) return "#bdb088";
+        if (rate >= 40) return "#ffba79";
+        return "#ff6b6b";
+    };
 
 	return (
 		<Link to={detailPath} className="home-bookmark-card">
@@ -60,10 +68,8 @@ function BookmarkCard({ streamer }) {
                     <p className="home-bookmark-empty-stat">아직 등록된 CK 기록이 없습니다.</p>
 				) : (
                     <>
-                    <span className="home-bookmark-stat-label">전체 CK 전적 : <span className="home-bookmark-rate ms-1 fw-bold"> {totalWinRate}% </span></span>
-                        <strong>{totalPlayCount}전 {totalWinCount}승 {totalLoseCount}패
-                            
-                        </strong>
+                    <span className="home-bookmark-stat-label">전체 CK 전적 : <span className="home-bookmark-rate ms-1 fw-bold" style={{ color: getWinRateColor(totalWinRate) }}> {totalWinRate}% </span></span>
+                        <strong>{totalPlayCount}전 {totalWinCount}승 {totalLoseCount}패</strong>
 						<div className="home-bookmark-progress" aria-label={`전체 CK 승률 ${totalWinRate}%`}>
 							<span className="home-bookmark-progress-bar" style={{ width: `${totalWinRate}%` }} />
 						</div>
@@ -71,7 +77,7 @@ function BookmarkCard({ streamer }) {
 				)}
 			</div>
 
-			<div className="home-bookmark-stat home-bookmark-recent-stat">
+			<div className="home-bookmark-stat home-bookmark-recent-stat ">
 				<span className="home-bookmark-stat-label">
 					{recentPlayCount === 10 ? "최근 10경기 CK" : `최근 ${recentPlayCount}경기 CK`}
 				</span>
