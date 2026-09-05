@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { FaTrophy } from "react-icons/fa";
 import { MdLooksTwo } from "react-icons/md";
 import { buildProfileUrl } from "../../utils/profileUrl";
+import { Helmet } from 'react-helmet-async'
 
 export default function StreamerTournaments() {
   const { streamer, streamerId } = useOutletContext();
@@ -51,7 +52,22 @@ export default function StreamerTournaments() {
   }
 
   return (
+
     <div className="row mt-0">
+      {/* 헬멧 영역 */}
+        <Helmet>
+          <title>
+            {streamer ? `${streamer.streamerName} 참여대회 | SOOPLOL`
+              : '스트리머 참여대회 | SOOPLOL'}
+          </title>
+          <meta name="description"
+            content={  streamer?.streamerName
+                ? `${streamer.streamerName}의 참여 대회목록 및 팀원을 확인하세요.`
+                : 'SOOP 롤 스트리머 정보를 확인하세요.'
+            }
+          />
+        </Helmet>
+
       {/* 공식 대회 */}
       <div className="col-lg-6 col-12 mb-2">
         <span className="section-title-isofficial text-center mt-2"> 공식 </span>
