@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
+import { useAtomValue } from "jotai";
+import { loginState } from "../../utils/jotai";
 import HomeStreamerSearch from "./HomeStreamerSearch";
+import HomeBookmark from "./HomeBookmark";
 import "./Home.css";
 
 const features = [
@@ -92,10 +95,13 @@ function HomeFeatures() {
 }
 
 export default function Home() {
+    const isLogin = useAtomValue(loginState);
+
     return (
         <main className="home-page">
             <HomeHero />
             <HomeNavigation />
+            <HomeBookmark isLogin={isLogin} />
             <HomeFeatures />
         </main>
     );
