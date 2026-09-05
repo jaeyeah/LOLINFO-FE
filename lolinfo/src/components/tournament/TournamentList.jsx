@@ -7,12 +7,14 @@ import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
 import Pagination from "../Pagination";
 import { FaSearch } from "react-icons/fa";
+import FeedbackModal from "../etc/FeedbackModal";
 
 export default function TournamentList(){
 
     const isLogin = useAtomValue(loginState);
     const isAdmin = useAtomValue(adminState);
-    const [tournamentList, setTournamentList] = useState([]); 
+    const [tournamentList, setTournamentList] = useState([]);
+    const [showFeedback, setShowFeedback] = useState(false); 
     //검색어 state
     const [keyword, setKeyword] = useState(""); // 검색창
     const [searchKeyword, setSearchKeyword] = useState(""); // 검색어 저장용
@@ -94,6 +96,13 @@ return(<>
                             <FaSearch className="fs-4" />
                         </button>
                     </div>
+                </div>
+                {/* 피드백 모달 트리거 */}
+                <div className="streamer-admin-action">
+                  <button type="button" className="btn btn-outline-light"
+                      onClick={() => setShowFeedback(true)} >
+                      대회 제보
+                  </button>
                 </div>
                 {/* 등록창 */}
                 {isAdmin === true && (
@@ -197,5 +206,10 @@ return(<>
               />
           </div>
       </div>
+    {/* 피드백 모달 */}
+        <FeedbackModal  show={showFeedback}
+          onClose={() => setShowFeedback(false)}
+          targetType="Tournament" targetId="" targetName="대회"
+        />
       </>)
   }

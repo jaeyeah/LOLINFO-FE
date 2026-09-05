@@ -637,13 +637,10 @@ export default function CkList() {
       </div>
       
       {/* 피드백 모달 */}
-      <FeedbackModal
-        show={showFeedback}
+      <FeedbackModal  show={showFeedback}
         onClose={() => setShowFeedback(false)}
-        targetType="CK"
-        targetId=""
-        targetName=""
-    />
+        targetType="CK" targetId="" targetName="CK"
+      />
     </>
   );
 }

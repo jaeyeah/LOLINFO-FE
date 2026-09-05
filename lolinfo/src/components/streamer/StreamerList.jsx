@@ -9,6 +9,7 @@ import Pagination from "../Pagination";
 import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
 import { useSearchParams } from "react-router-dom";
+import FeedbackModal from "../etc/FeedbackModal";
 
 export default function StreamerList() {
 
@@ -16,6 +17,7 @@ export default function StreamerList() {
     const isAdmin = useAtomValue(adminState);
     const [streamerList, setStreamerList] = useState([]);
     const navigate = useNavigate();
+    const [showFeedback, setShowFeedback] = useState(false); 
     //검색어 state
     const [searchParams] = useSearchParams();
 
@@ -169,6 +171,13 @@ export default function StreamerList() {
                         </div>
                     )}
                 </div>
+                {/* 피드백 모달 트리거 */}
+                <div className="streamer-admin-action">
+                  <button type="button" className="btn btn-outline-light"
+                      onClick={() => setShowFeedback(true)} >
+                        등록요청
+                  </button>
+                </div>
                 {isAdmin === true && (
                     <div className="streamer-admin-action">
                         <Link to="/streamer/insert" className="btn btn-success">등록</Link>
@@ -234,7 +243,11 @@ export default function StreamerList() {
             />
         </div>
     </div>
-    
+    {/* 피드백 모달 */}
+            <FeedbackModal  show={showFeedback}
+              onClose={() => setShowFeedback(false)}
+              targetType="Streamer" targetId="" targetName="스트리머"
+            />
     </>)
 
 }
