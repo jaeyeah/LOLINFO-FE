@@ -1,6 +1,6 @@
 import "./../Privacy.css";
 
-const LAST_UPDATED = "2026.09.03";
+const LAST_UPDATED = "2026.09.05";
 
 export default function DevHistory() {
     return (
@@ -12,7 +12,14 @@ export default function DevHistory() {
             </header>
 
             <div className="privacy-body">
-                
+
+                <section><h2 className="fw-bold">26.09.05</h2>
+                    <p className="danger-note">
+                        - 서버 성능 개선<br/>
+                        <span className="text-secondary ms-4">└ 백엔드 서버 리전 이전을 통한 API 응답 속도 개선</span><br/>
+                    </p>
+                </section>
+
                 <section><h2 className="fw-bold">26.09.03</h2>
                     <p className="privacy-note">
                         - <span className="text-info fw-bold">메인페이지</span> 추가<br/>
