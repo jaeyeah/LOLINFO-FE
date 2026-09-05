@@ -82,7 +82,7 @@ export default function StreamerDetail() {
     {/* 헬멧 영역 */}
        <Helmet>
         <title>
-          {streamer?.streamerName ? `${streamer.streamerName} | SOOPLOL`
+          {streamer?.streamerName ? `${streamer.streamerName} CK 전적·승률·대회 기록 | SOOPLOL`
             : '스트리머 | SOOPLOL'}
         </title>
 
