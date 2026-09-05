@@ -10,6 +10,7 @@ import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
 import { useSearchParams } from "react-router-dom";
 import FeedbackModal from "../etc/FeedbackModal";
+import { Helmet } from 'react-helmet-async'
 
 export default function StreamerList() {
 
@@ -132,6 +133,13 @@ export default function StreamerList() {
 
     //render
     return (<>
+        {/* 헬멧 영역 */}
+        <Helmet>
+            <title>
+                스트리머 | SOOPLOL
+            </title>
+        </Helmet>
+
     <h2 className="section-title text-center">Soop : 공식 스트리머 목록</h2>
     <div className="row mt-3 justify-content-center">
         <div className="col-12 col-xl-8">
