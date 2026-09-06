@@ -7,14 +7,19 @@ import Menu from './components/Menu.jsx'
 import Footer from './components/Footer.jsx'
 import AdArea from './components/etc/AdArea.jsx'
 import { trackDailyVisit } from './utils/visitTracker'
+import ReactGA from "react-ga4";
 
 function App() {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
+    // 1. 일일 방문자 추적 함수 실행
     trackDailyVisit()
-  }, [])
 
+    // 2. GA4 초기화 및 첫 페이지뷰 전송 (앱 로드 시 1회만 실행)
+    ReactGA.initialize("G-6KDKXFNG7K")
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname })
+  }, [])
   return (
     <>
       {/* Router는 주소에 의한 화면 분할을 처리하는 도구이며 설정된 영역 내에서만 작동함 */}
