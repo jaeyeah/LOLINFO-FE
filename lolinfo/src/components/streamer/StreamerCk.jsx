@@ -137,52 +137,48 @@ function StreamerCkContent({ streamer, streamerId, period }) {
       <div className="row mt-3 mb-3">
         <div className="col">
           <div className="card bg-dark border-secondary text-white p-3">
-            <div className="d-flex flex-wrap gap-3 justify-content-between align-items-center">
+            <div className="d-flex flex-column flex-sm-row gap-3 justify-content-between align-items-start align-items-sm-center">
               <div>
                 <h2 className="mb-1">CK 전적</h2>
-                <p className="mb-0 text-secondary">
-                  {streamer?.streamerName ? `${streamer.streamerName}님의 CK 기록입니다.` : "스트리머의 CK 기록입니다."}
-                </p>
+                <p className="mb-0 text-secondary"> {streamer?.streamerName ? `${streamer.streamerName}님의 CK 기록입니다.` : "스트리머의 CK 기록입니다."}</p>
                 <p className="small text-secondary mb-0">{periodLabel}</p>
               </div>
-              {vsLoading ? <p role="status" className="mb-0">통계를 불러오는 중입니다.</p>
-                : vsError ? <p className="text-secondary mb-0">통계 조회 실패</p> : (
-              <div className="text-end" style={{ minWidth: "150px" }}>
-                <div className="fs-5 fw-bold text-white mb-2">
-                  {(() => {
-                    const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount, 0);
-                    const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount, 0);
-                    return `${totalWins + totalLoses}전 ${totalWins}승 ${totalLoses}패`;
-                  })()}
+
+              {vsLoading ? (
+                <p role="status" className="mb-0"> 통계를 불러오는 중입니다. </p>
+              ) : vsError ? ( <p className="text-secondary mb-0">통계 조회 실패</p>
+              ) : (
+                <div className="ck-summary">
+                  <div className="fs-5 fw-bold text-white mb-2">
+                    {(() => {
+                      const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount, 0);
+                      const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount, 0);
+                      return `${totalWins + totalLoses}전 ${totalWins}승 ${totalLoses}패`;
+                    })()}
+                  </div>
+
+                  <div className="bg-white bg-opacity-10 rounded-pill" style={{ height: "8px", marginBottom: "6px" }}>
+                    {(() => {
+                      const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount,0);
+                      const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount,0);
+                      const totalGames = totalWins + totalLoses;
+                      const totalWinRate = totalGames ? Number(((totalWins / totalGames) * 100).toFixed(1)): 0;
+                      return (
+                        <div className="rounded-pill" style={{ width: `${totalWinRate}%`, height: "100%", backgroundColor: getWinRateColor(totalWinRate),}}/>
+                      );
+                    })()}
+                  </div>
+
+                  <div className="text-secondary small">
+                    {(() => {
+                      const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount,0);
+                      const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount,0);
+                      const totalGames = totalWins + totalLoses;
+                      const totalWinRate = totalGames ? Number(((totalWins / totalGames) * 100).toFixed(1)) : 0;
+                      return totalGames ? `승률 ${totalWinRate}%` : "선택한 기간의 전적 없음";
+                    })()}
+                  </div>
                 </div>
-                <div className="bg-white bg-opacity-10 rounded-pill" style={{ height: "8px", marginBottom: "6px" }}>
-                  {(() => {
-                    const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount, 0);
-                    const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount, 0);
-                    const totalGames = totalWins + totalLoses;
-                    const totalWinRate = totalGames ? Number(((totalWins / totalGames) * 100).toFixed(1)) : 0;
-                    return (
-                      <div
-                        className="rounded-pill"
-                        style={{
-                          width: `${totalWinRate}%`,
-                          height: "100%",
-                          backgroundColor: getWinRateColor(totalWinRate),
-                        }}
-                      />
-                    );
-                  })()}
-                </div>
-                <div className="text-secondary small">
-                  {(() => {
-                    const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount, 0);
-                    const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount, 0);
-                    const totalGames = totalWins + totalLoses;
-                    const totalWinRate = totalGames ? Number(((totalWins / totalGames) * 100).toFixed(1)) : 0;
-                    return totalGames ? `승률 ${totalWinRate}%` : "선택한 기간의 전적 없음";
-                  })()}
-                </div>
-              </div>
               )}
             </div>
           </div>

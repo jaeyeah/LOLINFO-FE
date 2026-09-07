@@ -896,3 +896,15 @@ textarea::placeholder {
   color: #00000098 !important;
   opacity: 1 !important;
 }
+.ck-summary {
+  min-width: 150px;
+  text-align: right;
+}
+
+@media (max-width: 575.98px) {
+  .ck-summary {
+    width: 100%;
+    min-width: 0;
+    text-align: left;
+  }
+}
