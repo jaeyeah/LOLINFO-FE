@@ -108,15 +108,15 @@ export default function MemberLogin(){
             </div>
         </div>
 
-        <div className="row mt-5 d-flex justify-content-center text-nowrap">
+        <div className="row mt-5 d-flex justify-content-center">
             <div className="col-12 input-group login-wrapper">
                 <span className="input-group-text login-label text-light text-center fs-5">아이디</span>
-                <input type="text" className="form-control login login-bar text-light ms-3 fs-5" 
+                <input type="text" className="form-control login login-bar text-light fs-5" 
                     name="memberId" value={member.memberId}
                     onChange={changeStrValue}/>
             </div>
         </div>
-        <div className="row mt-3 d-flex justify-content-center text-nowrap">
+        <div className="row mt-3 d-flex justify-content-center">
             <div className="col-12 input-group login-wrapper">
                 <span className="input-group-text login-label text-light text-center fs-5">비밀번호</span>
                 <input type="password" className="form-control login login-bar text-light fs-5" 
