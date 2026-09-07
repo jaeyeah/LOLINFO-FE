@@ -45,6 +45,7 @@ import Privacy from "./Privacy";
 import Terms from "./Terms";
 import Home from "./home/Home";
 import DevHistory from "./etc/DevHistory";
+import About from "./About";
 
 export default function Content(){
 
@@ -60,6 +61,7 @@ return (<>
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/devhistory" element={<DevHistory />} />
+                <Route path="/about" element={<About />} />
 
                 {/* 회원 */}
                 <Route path="/member/join" element={<MemberJoin/>} />

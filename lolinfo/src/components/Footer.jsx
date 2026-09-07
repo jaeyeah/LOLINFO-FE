@@ -35,6 +35,8 @@ export default function Footer() {
 					<span> | </span>
 					<Link to="/devhistory">패치노트</Link>
 					<span> | </span>
+					<Link to="/about">서비스 소개</Link>
+					<span> | </span>
 					<Link to="/board/write?category=문의">문의하기</Link>
 				</nav>
 				<nav className="site-footer-links" aria-label="사이트 정보">
