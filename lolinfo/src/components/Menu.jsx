@@ -86,94 +86,66 @@ export default function Menu() {
                         {/* contents */}
                         <li className={`nav-item dropdown ${homeOpen ? 'show' : ''}`}>
                             <div className="dropdown-nav">
-                                <Link
-                                    className="nav-link dropdown-parent-link"
-                                    to="/"
-                                    onClick={closeMenu}
-                                >
+                                <Link className="nav-link dropdown-parent-link"  to="/" onClick={closeMenu}>
                                     홈
                                 </Link>
-                                <button
-                                    className="dropdown-toggle dropdown-trigger"
-                                    type="button"
-                                    aria-label="홈 하위 메뉴 열기"
-                                    aria-haspopup="true"
-                                    aria-expanded={homeOpen}
-                                    onClick={() => {
-                                        if (window.innerWidth < 992) {
-                                            setHomeOpen(prev => !prev);
-                                            setTournamentOpen(false);
-                                        }
-                                    }}
+                                <button type="button" className="dropdown-toggle dropdown-trigger"
+                                    aria-label="홈 하위 메뉴 열기" aria-haspopup="true" aria-expanded={homeOpen}
+                                    onClick={() => {if (window.innerWidth < 992) { setHomeOpen(prev => !prev); setTournamentOpen(false);}}}
                                 />
                             </div>
 
                             <ul className={`dropdown-menu dropdown-menu-dark ${homeOpen ? 'show' : ''}`}>
                                 <li>
                                     <Link className="dropdown-item" to="/" onClick={closeMenu}>
-                                        홈
+                                       - 홈
                                     </Link>
                                 </li>
                                 <li>
                                     <Link className="dropdown-item" to="/about" onClick={closeMenu}>
-                                        서비스 소개
+                                       - 서비스 소개
                                     </Link>
                                 </li>
                                 <li>
                                     <Link className="dropdown-item" to="/data-criteria" onClick={closeMenu}>
-                                        데이터 집계 기준
+                                       - 데이터 집계 기준
                                     </Link>
                                 </li>
                                 <li>
                                     <Link className="dropdown-item" to="/devhistory" onClick={closeMenu}>
-                                        패치노트
+                                       - 패치노트
                                     </Link>
                                 </li>
                             </ul>
                         </li>
                         <li className="nav-item" onClick={closeMenu}>
                             <Link className="nav-link" to="/streamer">
-                                <IoMdPerson className="fs-4"/> 스트리머
+                                <IoMdPerson className="fs-4 me-1"/> 스트리머
                             </Link>
                         </li>
                         <li className={`nav-item dropdown ${tournamentOpen ? 'show' : ''}`}>
                             <div className="dropdown-nav">
-                                <Link
-                                    className="nav-link dropdown-parent-link"
-                                    to="/tournament"
-                                    onClick={closeMenu}
-                                >
-                                    <SiLeagueoflegends className="fs-4" /> 대회
+                                <Link className="nav-link dropdown-parent-link" to="/tournament" onClick={closeMenu}>
+                                    <SiLeagueoflegends className="fs-4 me-1" /> 대회
                                 </Link>
-                                <button
-                                    className="dropdown-toggle dropdown-trigger"
-                                    type="button"
-                                    aria-label="대회 하위 메뉴 열기"
-                                    aria-haspopup="true"
-                                    aria-expanded={tournamentOpen}
-                                    onClick={() => {
-                                        if (window.innerWidth < 992) {
-                                            setTournamentOpen(prev => !prev);
-                                            setHomeOpen(false);
-                                        }
-                                    }}
-                                />
+                                <button type="button" className="dropdown-toggle dropdown-trigger"
+                                    aria-label="대회 하위 메뉴 열기" aria-haspopup="true" aria-expanded={tournamentOpen}
+                                    onClick={() => { if (window.innerWidth < 992) {setTournamentOpen(prev => !prev);setHomeOpen(false); }}} />
                             </div>
-
                             <ul className={`dropdown-menu dropdown-menu-dark ${tournamentOpen ? 'show' : ''}`}>
                                 <li>
                                     <Link className="dropdown-item" to="/tournament" onClick={closeMenu}>
-                                        대회
+                                       - 대회 목록
                                     </Link>
                                 </li>
                                 <li>
                                     <Link className="dropdown-item" to="/streamer/654" onClick={closeMenu}>
-                                        멸망전
+                                       - 멸망전
                                     </Link>
                                 </li>
                                 <li>
                                     <Link className="dropdown-item" to="/streamer/655" onClick={closeMenu}>
-                                        SLL
+                                       - SLL
                                     </Link>
                                 </li>
                             </ul>
