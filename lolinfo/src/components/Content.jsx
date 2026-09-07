@@ -62,6 +62,7 @@ return (<>
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/devhistory" element={<DevHistory />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/data-criteria" element={<About />} />
 
                 {/* 회원 */}
                 <Route path="/member/join" element={<MemberJoin/>} />
