@@ -3,6 +3,7 @@ import { useAtomValue } from "jotai";
 import { loginState } from "../../utils/jotai";
 import HomeStreamerSearch from "./HomeStreamerSearch";
 import HomeBookmark from "./HomeBookmark";
+import HomeStats from "./HomeStats";
 import "./Home.css";
 
 const features = [
@@ -100,6 +101,7 @@ export default function Home() {
     return (
         <main className="home-page">
             <HomeHero />
+            <HomeStats />
             <HomeNavigation />
             <HomeBookmark isLogin={isLogin} />
             <HomeFeatures />
