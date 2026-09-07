@@ -1,47 +1,63 @@
 import axios from "axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useParams, useOutletContext } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useOutletContext } from "react-router-dom";
 import StreamerCkListSection from "./StreamerCkListSection";
+import CkPeriodFilter from "./CkPeriodFilter";
+import { formatCkPeriod } from "../../utils/ckPeriod";
 
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
 
 export default function StreamerCk() {
   const { streamer, streamerId } = useOutletContext();
+  return <StreamerCkPage key={streamerId} streamer={streamer} streamerId={streamerId} />;
+}
+
+function StreamerCkPage({ streamer, streamerId }) {
+  const [period, setPeriod] = useState({ startDate: "", endDate: "" });
+  return (
+    <>
+      <CkPeriodFilter period={period} onApply={setPeriod} />
+      <StreamerCkContent key={`${streamerId}:${period.startDate}:${period.endDate}`}
+        streamer={streamer} streamerId={streamerId} period={period} />
+    </>
+  );
+}
+
+function StreamerCkContent({ streamer, streamerId, period }) {
+  const { startDate, endDate } = period;
+  const periodLabel = formatCkPeriod(period);
 
   // 맞라인 상대 전적 관련 상태 (CK 목록과 독립적)
   const [vsPositionStats, setVsPositionStats] = useState([]);
-  const [vsLoading, setVsLoading] = useState(false);
+  const [vsLoading, setVsLoading] = useState(true);
   const [vsError, setVsError] = useState(null);
   const [expandedVsStreamerNo, setExpandedVsStreamerNo] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
 
-  // 맞라인 상대 전적 API 호출 (streamerId가 바뀔 때만)
-  const loadVsStats = useCallback(async () => {
-    try {
+  // 기간 전환 시 이전 요청을 취소해 다른 기간의 응답이 섞이지 않도록 한다.
+  useEffect(() => {
+    const controller = new AbortController();
+    const load = async () => {
       setVsLoading(true);
       setVsError(null);
-      const { data } = await axios.get(`/ck/${streamerId}/vs`);
-      setVsPositionStats(data ?? []);
-    } catch (err) {
-      console.error("맞라인 전적 로드 실패", err);
-      setVsError("맞라인 전적을 불러오지 못했습니다.");
-      setVsPositionStats([]);
-    } finally {
-      setVsLoading(false);
-    }
-  }, [streamerId]);
-
-  // streamerId 변경 시 상태 초기화
-  useEffect(() => {
-    setVsPositionStats([]);
-    setVsLoading(false);
-    setVsError(null);
-    setExpandedVsStreamerNo(null);
-  }, [streamerId]);
-
-  // 맞라인 전적 로드
-  useEffect(() => {
-    loadVsStats();
-  }, [loadVsStats]);
+      try {
+        const { data } = await axios.get(`/ck/${streamerId}/vs`, {
+          params: startDate ? { startDate, endDate } : {},
+          signal: controller.signal,
+        });
+        if (!controller.signal.aborted) setVsPositionStats(data ?? []);
+      } catch {
+        if (!controller.signal.aborted) {
+          setVsError("선택한 기간의 통계를 불러오지 못했습니다.");
+          setVsPositionStats([]);
+        }
+      } finally {
+        if (!controller.signal.aborted) setVsLoading(false);
+      }
+    };
+    load();
+    return () => controller.abort();
+  }, [streamerId, startDate, endDate, retryCount]);
 
   const getWinRateColor = (rate) => {
         if (rate >= 70) return "#3bc9db";
@@ -121,19 +137,22 @@ export default function StreamerCk() {
       <div className="row mt-3 mb-3">
         <div className="col">
           <div className="card bg-dark border-secondary text-white p-3">
-            <div className="d-flex justify-content-between align-items-center">
+            <div className="d-flex flex-wrap gap-3 justify-content-between align-items-center">
               <div>
                 <h2 className="mb-1">CK 전적</h2>
                 <p className="mb-0 text-secondary">
                   {streamer?.streamerName ? `${streamer.streamerName}님의 CK 기록입니다.` : "스트리머의 CK 기록입니다."}
                 </p>
+                <p className="small text-secondary mb-0">{periodLabel}</p>
               </div>
+              {vsLoading ? <p role="status" className="mb-0">통계를 불러오는 중입니다.</p>
+                : vsError ? <p className="text-secondary mb-0">통계 조회 실패</p> : (
               <div className="text-end" style={{ minWidth: "150px" }}>
                 <div className="fs-5 fw-bold text-white mb-2">
                   {(() => {
                     const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount, 0);
                     const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount, 0);
-                    return `${totalWins}승 ${totalLoses}패`;
+                    return `${totalWins + totalLoses}전 ${totalWins}승 ${totalLoses}패`;
                   })()}
                 </div>
                 <div className="bg-white bg-opacity-10 rounded-pill" style={{ height: "8px", marginBottom: "6px" }}>
@@ -160,16 +179,18 @@ export default function StreamerCk() {
                     const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount, 0);
                     const totalGames = totalWins + totalLoses;
                     const totalWinRate = totalGames ? Number(((totalWins / totalGames) * 100).toFixed(1)) : 0;
-                    return `승률 ${totalWinRate}%`;
+                    return totalGames ? `승률 ${totalWinRate}%` : "선택한 기간의 전적 없음";
                   })()}
                 </div>
               </div>
+              )}
             </div>
           </div>
         </div>
       </div>
 
       {/* 포지션별 총 전적 */}
+      {!vsLoading && !vsError && (
       <div className="card bg-dark border-secondary text-white mb-3">
         <div className="card-header bg-white text-dark border-secondary">
           <h5 className="mb-0 fw-bold section-title">포지션별 총 전적</h5>
@@ -207,6 +228,7 @@ export default function StreamerCk() {
           </div>
         </div>
       </div>
+      )}
 
       {/* 맞라인 상대별 전적 + CK 목록 섹션 */}
       <div className="row g-3">
@@ -226,12 +248,14 @@ export default function StreamerCk() {
               {vsError && (
                 <div className="alert alert-danger" role="alert">
                   {vsError}
+                  <button type="button" className="btn btn-sm btn-outline-danger ms-2"
+                    onClick={() => setRetryCount((value) => value + 1)}>다시 시도</button>
                 </div>
               )}
 
               {!vsLoading && !vsError && vsSummaryStats.length === 0 && (
                 <div className="text-center text-secondary py-4">
-                  맞라인 상대 전적이 없습니다.
+                  선택한 기간의 맞라인 상대 전적이 없습니다.
                 </div>
               )}
 
@@ -316,7 +340,8 @@ export default function StreamerCk() {
 
         {/* 전체 CK 전적 목록 (분리된 컴포넌트) */}
         <div className="col-12 col-xl-8">
-          <StreamerCkListSection streamerId={streamerId} />
+          <StreamerCkListSection streamerId={streamerId} streamerName={streamer?.streamerName}
+            startDate={startDate} endDate={endDate} periodLabel={periodLabel} />
         </div>
       </div>
     </>
