@@ -42,7 +42,7 @@ const CkTableRow = memo(({ ck, onOpenModal, formatDate, getStatusClass }) => (
 CkTableRow.displayName = "CkTableRow";
 
 // 화면 크기와 관계없이 같은 형태로 생성되는 CK 공유 이미지 영역
-const CkShareCapture = memo(({ ckList, captureRef, formatDate }) => (
+const CkShareCapture = memo(({ ckList, captureRef, formatDate, streamerName, periodLabel, page }) => (
   <div
     ref={captureRef}
     style={{
@@ -71,7 +71,10 @@ const CkShareCapture = memo(({ ckList, captureRef, formatDate }) => (
         marginBottom: "24px",
       }}
     >
-       최근 CK 기록
+       {streamerName ? `${streamerName} CK 기록` : "CK 기록"}
+    </div>
+    <div style={{ fontSize: "16px", marginBottom: "20px", color: "#adb5bd" }}>
+      조회 기간: {periodLabel} · {page}페이지 기록
     </div>
 
     {ckList.map((ck) => (
@@ -286,13 +289,14 @@ const ParticipantTeam = memo(({ ckId, selectedCk, selectedParticipants, selected
 ParticipantTeam.displayName = "ParticipantTeam";
 
 // 메인 CK 목록 섹션 컴포넌트
-const StreamerCkListSection = memo(({ streamerId, streamerName }) => {
+const StreamerCkListSection = memo(({ streamerId, streamerName, startDate = "", endDate = "", periodLabel = "전체 기간" }) => {
   const [ckList, setCkList] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [pageVO, setPageVO] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   const [selectedCkId, setSelectedCkId] = useState(null);
   const [participantCache, setParticipantCache] = useState({});
@@ -302,25 +306,34 @@ const StreamerCkListSection = memo(({ streamerId, streamerName }) => {
   const [captureError, setCaptureError] = useState(null);
   const captureRef = useRef(null);
 
-  const loadCkList = useCallback(async () => {
-    try {
+  useEffect(() => {
+    const controller = new AbortController();
+    const loadCkList = async () => {
       setLoading(true);
       setError(null);
-      const { data } = await axios.get(`/ck/streamer/${streamerId}`, {
-        params: { page },
-      });
-      setCkList(data.list ?? []);
-      setPageVO(data.pageVO ?? null);
-      setPage(data.pageVO?.page ?? data.page ?? page);
-      setTotalPage(data.pageVO?.totalPage ?? data.totalPage ?? 1);
-    } catch (err) {
-      setError("CK 목록을 불러오지 못했습니다.");
-      setCkList([]);
-      setTotalPage(1);
-    } finally {
-      setLoading(false);
-    }
-  }, [page, streamerId]);
+      try {
+        const { data } = await axios.get(`/ck/streamer/${streamerId}`, {
+          params: { page, ...(startDate ? { startDate, endDate } : {}) },
+          signal: controller.signal,
+        });
+        if (controller.signal.aborted) return;
+        setCkList(data.list ?? []);
+        setPageVO(data.pageVO ?? null);
+        setPage(data.pageVO?.page ?? data.page ?? page);
+        setTotalPage(data.pageVO?.totalPage ?? data.totalPage ?? 1);
+      } catch {
+        if (!controller.signal.aborted) {
+          setError("선택한 기간의 CK 목록을 불러오지 못했습니다.");
+          setCkList([]);
+          setTotalPage(1);
+        }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    };
+    loadCkList();
+    return () => controller.abort();
+  }, [page, streamerId, startDate, endDate, retryCount]);
 
   useEffect(() => {
     setPage(1);
@@ -328,10 +341,6 @@ const StreamerCkListSection = memo(({ streamerId, streamerName }) => {
     setParticipantCache({});
     setParticipantError(null);
   }, [streamerId]);
-
-  useEffect(() => {
-    loadCkList();
-  }, [loadCkList]);
 
   const fetchParticipants = useCallback(
     async (ckId) => {
@@ -496,6 +505,8 @@ const StreamerCkListSection = memo(({ streamerId, streamerName }) => {
       {error && (
         <div className="alert alert-danger" role="alert">
           {error}
+          <button type="button" className="btn btn-sm btn-outline-danger ms-2"
+            onClick={() => setRetryCount((value) => value + 1)}>다시 시도</button>
         </div>
       )}
 
@@ -503,7 +514,8 @@ const StreamerCkListSection = memo(({ streamerId, streamerName }) => {
         <>
           {hasCkRecords ? (
             <>
-              <div className="d-flex justify-content-between mb-3">
+              <p className="text-secondary small">{periodLabel} · 총 {pageVO?.totalCount ?? 0}건</p>
+              <div className="d-flex flex-wrap gap-2 justify-content-between mb-3">
                 <span className="ms-3 fw-bold"> ※ 세트별 교체인원이 있는 CK의 경우, 전적이 등록되지 않습니다</span>
                 <button type="button" className="btn btn-sm btn-outline-light"
                   onClick={handleSaveImage} disabled={isCapturing}
@@ -570,7 +582,7 @@ const StreamerCkListSection = memo(({ streamerId, streamerName }) => {
           ) : (
             <div className="card bg-dark border-secondary text-white">
               <div className="card-body text-center text-secondary py-4">
-                참여한 CK가 없습니다.
+                선택한 기간에 참여한 CK가 없습니다.
               </div>
             </div>
           )}
@@ -583,6 +595,9 @@ const StreamerCkListSection = memo(({ streamerId, streamerName }) => {
           ckList={ckList}
           captureRef={captureRef}
           formatDate={formatDate}
+          streamerName={streamerName}
+          periodLabel={periodLabel}
+          page={page}
         />
       </div>
 
