@@ -10,7 +10,6 @@ import Swal from "sweetalert2";
 import { FaStar, FaRegStar } from "react-icons/fa6";
 import { Helmet } from 'react-helmet-async'
 import FeedbackModal from "../etc/FeedbackModal";
-import StreamerCkStreak from "./StreamerCkStreak";
 
 
 export default function StreamerDetail() {
@@ -169,8 +168,6 @@ export default function StreamerDetail() {
           </div>
           </div>
         </div>
-
-        <StreamerCkStreak streamerNo={streamerId} />
 
         {/* 콘텐츠 중간광고 */}
         <AdArea className="mt-3" variant="content" />
