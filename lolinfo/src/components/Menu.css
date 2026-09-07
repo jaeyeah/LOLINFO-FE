@@ -1,7 +1,5 @@
 /* 전체 Navbar 느낌: 시네마 분위기의 다크 + 글래스 */
-.cinema-navbar,
-.dropdown-menu
- {
+.cinema-navbar {
   background: rgba(26, 28, 31, 0.8) !important;
   /* border-bottom: 1px solid rgba(255, 200, 100, 0.15); */
   padding: 0.7rem 1rem;
@@ -38,8 +36,7 @@
     text-align: center;
 }
 
-.cinema-navbar .nav-link:before,
-.cinema-navbar .nav-link:after{
+.cinema-navbar .nav-link::before {
   content: "";
   transition: 0.3s all ease;
   -webkit-backface-visibility: hidden;
@@ -49,20 +46,11 @@
   height: 5px;
   background: rgba(255, 255, 255, 0.5);
   border-radius: 2px;
-}
-
-.cinema-navbar .nav-link:before{
-  right: 0;
-  top: 0;
-}
-
-.cinema-navbar .nav-link:after{
   left: 0;
   bottom: 0;
 }
 
-.cinema-navbar .nav-link:hover:before,
-.cinema-navbar .nav-link:hover:after{
+.cinema-navbar .nav-link:hover::before {
   width: 100%;
   background: linear-gradient(135deg, #012a9b9d, #00ccff);
 }
@@ -149,4 +137,125 @@
 
 .cinema-navbar .navbar-toggler:focus {
     box-shadow: none;
+}
+
+.cinema-navbar .dropdown-nav {
+  position: relative;
+  width: 100%;
+}
+
+.cinema-navbar .dropdown-parent-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.cinema-navbar .dropdown-trigger {
+  display: none;
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+}
+
+.cinema-navbar .mobile-nav-arrow {
+  display: block;
+}
+
+.cinema-navbar .dropdown-menu {
+  top: 100%;
+  margin-top: 0;
+  min-width: 10rem;
+  padding: 0.4rem 0;
+  background: rgba(26, 28, 31, 0.97) !important;
+  border: 1px solid rgba(0, 204, 255, 0.2);
+  border-radius: 0 0 0.35rem 0.35rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25);
+}
+
+.cinema-navbar .dropdown-item {
+  color: #ffffff;
+  padding: 0.55rem 1rem;
+}
+
+.cinema-navbar .dropdown-item:hover,
+.cinema-navbar .dropdown-item:focus {
+  color: #ffffff;
+  background: rgba(0, 204, 255, 0.25);
+}
+
+/* PC: hover로 열고, 메뉴와 하위 메뉴 사이에 끊기는 공간이 없도록 한다. */
+@media (min-width: 992px) {
+  .cinema-navbar .nav-item.dropdown:hover > .dropdown-menu {
+    display: block;
+  }
+
+  .cinema-navbar .nav-item.dropdown:not(:hover) > .dropdown-menu.show {
+    display: none;
+  }
+
+  .cinema-navbar .nav-item.dropdown:hover .dropdown-parent-link::before {
+    width: 100%;
+    background: linear-gradient(135deg, #012a9b9d, #00ccff);
+  }
+}
+
+/* 모바일: 일반 nav-link와 같은 크기로 세로 배치한다. */
+@media (max-width: 991.98px) {
+  .cinema-navbar .navbar-nav .nav-item,
+  .cinema-navbar .navbar-nav .dropdown-nav {
+    width: 100%;
+  }
+
+  .cinema-navbar .navbar-nav .dropdown-trigger {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+  }
+
+  .cinema-navbar .navbar-nav .nav-link {
+    width: 100%;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    text-align: center;
+  }
+
+  .cinema-navbar .navbar-nav .dropdown-trigger::before {
+    display: none;
+  }
+
+  .cinema-navbar .navbar-nav .dropdown-trigger::after {
+    margin: 0;
+    vertical-align: 0.15em;
+  }
+
+  .cinema-navbar .navbar-nav .dropdown-menu {
+    position: static !important;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0.25rem 0 0.35rem;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: rgba(26, 28, 31, 0.55) !important;
+  }
+
+  .cinema-navbar .navbar-nav .dropdown-item {
+    width: 100%;
+    padding: 0.6em 1rem 0.6em 2.5rem;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    color: #ffffff;
+    text-align: center;
+  }
 }
