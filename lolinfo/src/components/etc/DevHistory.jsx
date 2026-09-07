@@ -18,9 +18,9 @@ export default function DevHistory() {
                         <span className="text-secondary ms-4">└ 백엔드 서버 리전 이전을 통한 API 응답 속도 개선</span><br/>
                     </p>
                     <p className="privacy-note">
-                        - <span className="text-info fw-bold">메인페이지 기능 추가</span><br/>
+                        - 메인페이지 기능 추가<br/>
                         <span className="text-secondary ms-4">└ 즐겨찾기 스트리머 목록 및 사이트 기초 통계 화면</span><br/>
-                        - <span className="text-info fw-bold">스트리머 CK전적 : 기간 설정 추가</span><br/>
+                        - 스트리머 CK전적 : 기간 설정 추가<br/>
                     </p>
                 </section>
 

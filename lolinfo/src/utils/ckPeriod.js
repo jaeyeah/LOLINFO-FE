@@ -10,7 +10,7 @@ export function getKoreaToday(now = new Date()) {
 export function getPresetCkPeriod(mode, now = new Date()) {
   if (mode === "all") return { startDate: "", endDate: "" };
   const endDate = getKoreaToday(now);
-  if (mode === "month") return { startDate: `${endDate.slice(0, 7)}-01`, endDate };
+  if (mode === "year") return { startDate: `${endDate.slice(0, 4)}-01-01`, endDate };
   if (mode !== "30days") throw new Error("지원하지 않는 조회 기간입니다.");
   const start = new Date(`${endDate}T00:00:00Z`);
   start.setUTCDate(start.getUTCDate() - 29);

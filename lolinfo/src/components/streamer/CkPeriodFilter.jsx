@@ -11,7 +11,7 @@ export default function CkPeriodFilter({ period, onApply }) {
     setMode(next);
     setError("");
     if (next === "custom") {
-      const draft = period.startDate ? period : getPresetCkPeriod("month");
+      const draft = period.startDate ? period : getPresetCkPeriod("year");
       setStartDate(draft.startDate);
       setEndDate(draft.endDate);
       return;
@@ -29,7 +29,7 @@ export default function CkPeriodFilter({ period, onApply }) {
   return (
     <section className="card bg-dark border-secondary text-white p-3 mt-3" aria-label="CK 조회 기간">
       <div className="d-flex flex-wrap gap-2">
-        {[["all", "전체"], ["month", "이번 달"], ["30days", "최근 30일"], ["custom", "기간 지정"]].map(([value, label]) => (
+        {[["all", "전체"], ["30days", "최근 30일"],  ["year", "이번 연도"], ["custom", "기간 지정"]].map(([value, label]) => (
           <button key={value} type="button" aria-pressed={mode === value}
             className={`btn btn-sm ${mode === value ? "btn-primary" : "btn-outline-light"}`}
             onClick={() => selectMode(value)}>{label}</button>
