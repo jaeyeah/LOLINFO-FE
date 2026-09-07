@@ -65,13 +65,30 @@
   font-family: 'Arial', 'Helvetica', sans-serif;
 }
 
+.login-field-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-left: 12px;
+  padding-right: 12px;
+  box-sizing: border-box;
+}
+
 .login-wrapper {
+  width: 100%;
+  max-width: 400px !important;
+  min-width: 0 !important;
+
   box-shadow: 0 0 7px rgb(255, 149, 149) !important;
   border-radius: 0.8em;
   background-color: transparent;
-  max-width: 400px !important;
-  min-width: 100px !important;
-  margin: auto;
+
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.login-wrapper .form-control {
+  min-width: 0;
 }
 
 .login-wrapper:focus-within {
@@ -156,76 +173,38 @@
    로그인 페이지 모바일 대응
 ========================= */
 @media (max-width: 767.98px) {
-
   .login-form {
     width: calc(100% - 24px);
     max-width: none !important;
     min-height: auto !important;
 
-    padding: 45px 18px;
+    padding: 45px 12px;
     margin: 0 auto;
 
-    border-radius: 10px;
+    box-sizing: border-box;
   }
 
-  .login-form .page-title {
-    font-size: 1.8rem !important;
-    padding: 0.5rem !important;
+  .login-field-row {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .login-wrapper {
     width: 100%;
-    max-width: none !important;
+    max-width: 100% !important;
     min-width: 0 !important;
   }
 
   .login-label.input-group-text {
-    font-size: 0.95rem !important;
+    flex: 0 0 auto;
     min-width: 75px;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-  }
-
-  .login-bar.form-control {
-    font-size: 1rem !important;
-    min-width: 0;
-  }
-
-  .login.btn {
-    width: 100%;
-    max-width: none !important;
-    min-width: 0 !important;
-
-    font-size: 1.1rem !important;
-  }
-
-  .login-hr {
-    width: 100%;
-    max-width: none !important;
-    min-width: 0 !important;
-  }
-
-  .login-link {
-    font-size: 1rem !important;
-  }
-}
-@media (max-width: 420px) {
-
-  .login-form {
-    width: calc(100% - 16px);
-    padding: 35px 12px;
-  }
-
-  .login-label.input-group-text {
-    min-width: 68px;
-    font-size: 0.85rem !important;
-  }
-
-  .login-bar.form-control {
     font-size: 0.95rem !important;
   }
 
-  .login-form .page-title {
-    font-size: 1.6rem !important;
+  .login-bar.form-control {
+    min-width: 0;
+    width: 1%;
+    flex: 1 1 auto;
+    font-size: 1rem !important;
   }
 }
