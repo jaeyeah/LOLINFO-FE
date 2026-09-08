@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, NavLink, Outlet } from 'react-router-dom';
+import { Link, Navigate, NavLink, Outlet } from 'react-router-dom';
 import './AdminMain.css'; // 사이드바 스타일
 import { FaBars, FaXmark } from 'react-icons/fa6';
 import { adminState } from '../../utils/jotai';

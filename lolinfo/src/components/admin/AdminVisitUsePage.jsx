@@ -1,6 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './AdminMain.css';
+import 'chart.js/auto';
+import { Line } from 'react-chartjs-2';
 
 const featureColumns = [
     { key: 'tournamentList', label: '대회 목록' },
@@ -12,14 +14,6 @@ const featureColumns = [
     { key: 'teammate', label: '팀메이트' },
 ];
 
-const formatUseDate = (value, mode) => {
-    if (!value) return '';
-    const text = String(value);
-    if (mode === 'year') {
-        return `${text.slice(2, 4)}년 ${text.slice(5, 7)}월`;
-    }
-    return `${text.slice(2, 4)}년 ${text.slice(5, 7)}/${text.slice(8, 10)}`;
-};
 const now = new Date();
 const defaultMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 const defaultYear = String(now.getFullYear());
@@ -34,6 +28,130 @@ export default function AdminVisitUsePage() {
     const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
     const [selectedYear, setSelectedYear] = useState(defaultYear);
 
+    const chartUseData = [...useData].sort((a, b) =>
+        a.useDate > b.useDate ? 1 : a.useDate < b.useDate ? -1 : 0
+    );
+
+    const labels = chartUseData.map((row) => {
+        if (mode === 'year') {
+            return `${row.useDate.slice(5, 7)}월`;
+        }
+
+        return `${Number(row.useDate.slice(8, 10))}일`;
+    });
+
+    const totalChartData = {
+        labels,
+        datasets: [
+            {
+                label: '총 이용 횟수',
+                data: chartUseData.map((row) =>
+                    featureColumns.reduce(
+                        (sum, col) => sum + row[col.key],
+                        0
+                    )
+                ),
+                borderColor: '#22c55e',
+                backgroundColor: 'rgba(34, 197, 94, 0.15)',
+                fill: true,
+                tension: 0.3,
+                borderWidth: 2,
+                pointRadius: mode === 'month' ? 3 : 4,
+                pointHoverRadius: 6
+            }
+        ]
+    };
+
+    const featureColors = [
+        '#ef4444',
+        '#f97316',
+        '#eab308',
+        '#22c55e',
+        '#06b6d4',
+        '#3b82f6',
+        '#a855f7'
+    ];
+
+    const featureChartData = {
+        labels,
+
+        datasets: featureColumns.map((col, index) => ({
+            label: col.label,
+            data: chartUseData.map((row) => row[col.key]),
+            borderColor: featureColors[index],
+            backgroundColor: featureColors[index],
+            tension: 0.3,
+            borderWidth: 2,
+            pointRadius: mode === 'month' ? 2 : 3,
+            pointHoverRadius: 5,
+            fill: false
+        }))
+    };
+    const baseChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        interaction: {
+            mode: 'index',
+            intersect: false
+        },
+
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: (context) =>
+                        `${context.dataset.label}: ${context.raw.toLocaleString()}회`
+                }
+            }
+        },
+
+        scales: {
+            x: {
+                ticks: {
+                    color: '#aaa'
+                },
+                grid: {
+                    color: 'rgba(255,255,255,0.05)'
+                }
+            },
+
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#aaa',
+                    precision: 0
+                },
+                grid: {
+                    color: 'rgba(255,255,255,0.08)'
+                }
+            }
+        }
+    };
+
+    const totalChartOptions = {
+        ...baseChartOptions,
+        plugins: {
+            ...baseChartOptions.plugins,
+            legend: {
+                display: false
+            }
+        }
+    };
+
+    const featureChartOptions = {
+        ...baseChartOptions,
+        plugins: {
+            ...baseChartOptions.plugins,
+            legend: {
+                display: true,
+                labels: {
+                    color: '#ddd',
+                    usePointStyle: true,
+                    padding: 14
+                }
+            }
+        }
+    };
     const fetchUseData = async (queryMode = mode) => {
         setLoading(true);
         setError(null);
@@ -41,7 +159,7 @@ export default function AdminVisitUsePage() {
         try {
             const queryValue = queryMode === 'year' ? selectedYear : selectedMonth;
             const endpoint = queryMode === 'year' ? `/visit/use/year?year=${queryValue}`
-                                                  : `/visit/use/month?month=${queryValue}`;
+                : `/visit/use/month?month=${queryValue}`;
             const res = await axios.get(endpoint);
             const data = Array.isArray(res.data) ? res.data : [];
             const normalized = data.map((item) => ({
@@ -69,21 +187,8 @@ export default function AdminVisitUsePage() {
         fetchUseData(mode);
     }, [mode]);
 
-    const totalCount = useMemo(() => {
-        return useData.reduce((sum, row) => {
-            return sum + featureColumns.reduce((subSum, col) => subSum + row[col.key], 0);
-        }, 0);
-    }, [useData]);
-
-    const maxCount = useMemo(() => {
-        return Math.max(
-            ...useData.flatMap((row) => featureColumns.map((col) => row[col.key] || 0)),
-            1
-        );
-    }, [useData]);
-
     return (
-         <div className="admin-member-container admin-visit-use-page text-white">
+        <div className="admin-member-container admin-visit-use-page text-white">
             <h3 className="fw-bold mb-4">📊 기능별 이용 통계</h3>
 
             {/* 월간 / 연간 조회 */}
@@ -93,7 +198,7 @@ export default function AdminVisitUsePage() {
                         onClick={() => setMode('month')}  >
                         월간
                     </button>
-                    <button type="button"  className={`btn btn-sm ${mode === 'year' ? 'btn-primary' : 'btn-outline-light'}`}
+                    <button type="button" className={`btn btn-sm ${mode === 'year' ? 'btn-primary' : 'btn-outline-light'}`}
                         onClick={() => setMode('year')} >
                         연간
                     </button>
@@ -115,81 +220,54 @@ export default function AdminVisitUsePage() {
                 </div>
             </div>
 
-
-            <div className="admin-use-summary d-flex flex-wrap gap-3 mb-4">
-                <div className="admin-use-summary-card">
-                    <div className="text-secondary">기록된 기능 수</div>
-                    <strong>{featureColumns.length}개</strong>
-                </div>
-                <div className="admin-use-summary-card">
-                    <div className="text-secondary">총 이용 횟수</div>
-                    <strong>{totalCount}회</strong>
-                </div>
-            </div>
-
             {loading ? (
                 <div>기능 이용 통계를 불러오는 중입니다...</div>
             ) : error ? (
                 <div className="text-danger">{error}</div>
             ) : (
-                <div className="admin-table-container">
-                    <table className="admin-use-table text-center">
-                        <thead>
-                            <tr className="bg-secondary text-white bg-opacity-25">
-                                <th className="p-3">날짜</th>
-                                {featureColumns.map((col) => (
-                                    <th key={col.key} className="p-3">{col.label}</th>
-                                ))}
-                                <th className="p-3">일 합계</th>
-                            </tr>
-                        </thead>
+                <>
+                    <div className="admin-visit-chart mb-4">
+                        <div className="admin-visit-chart-header mb-3">
+                            <h5 className="fw-bold mb-1">
+                                {mode === 'month'
+                                    ? '일별 총 이용 횟수'
+                                    : '월별 총 이용 횟수'}
+                            </h5>
 
-                        <tbody>
-                            {useData.length === 0 ? (
-                                <tr>
-                                    <td colSpan={featureColumns.length + 2} className="py-5 text-white">
-                                        기능 이용 통계가 없습니다.
-                                    </td>
-                                </tr>
-                            ) : (
-                                useData.map((row, idx) => {
-                                    const rowTotal = featureColumns.reduce(
-                                        (sum, col) => sum + row[col.key],
-                                        0
-                                    );
+                            <small className="text-secondary">
+                                전체 기능 이용량 합계
+                            </small>
+                        </div>
 
-                                    return (
-                                        <tr key={idx} className="border-bottom border-secondary">
-                                            <td className="p-3">{formatUseDate(row.useDate, mode)}</td>
+                        <div className="admin-visit-chart-body">
+                            <Line
+                                data={totalChartData}
+                                options={totalChartOptions}
+                            />
+                        </div>
+                    </div>
 
-                                            {featureColumns.map((col) => (
-                                                <td key={col.key} className="p-3">
-                                                    <div className="d-flex align-items-center gap-2">
-                                                        <span style={{ minWidth: '35px' }}>
-                                                            {row[col.key]}
-                                                        </span>
-                                                        <div
-                                                            className="progress flex-grow-1"
-                                                            style={{ height: '16px', minWidth: '80px' }}
-                                                        >
-                                                            <div className="progress-bar bg-danger" role="progressbar"
-                                                                style={{
-                                                                    width: `${((row[col.key] || 0) / maxCount) * 100}%`
-                                                                }}
-                                                            ></div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            ))}
+                    <div className="admin-visit-chart">
+                        <div className="admin-visit-chart-header mb-3">
+                            <h5 className="fw-bold mb-1">
+                                {mode === 'month'
+                                    ? '일별 기능 이용 추이'
+                                    : '월별 기능 이용 추이'}
+                            </h5>
 
-                                            <td className="p-3 fw-bold">{rowTotal}</td>
-                                        </tr>
-                                    );
-                                })
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                            <small className="text-secondary">
+                                기능별 이용 횟수 비교
+                            </small>
+                        </div>
+
+                        <div className="admin-visit-chart-body">
+                            <Line
+                                data={featureChartData}
+                                options={featureChartOptions}
+                            />
+                        </div>
+                    </div>
+                </>
             )}
         </div>
     );

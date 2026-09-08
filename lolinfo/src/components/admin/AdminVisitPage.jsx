@@ -68,15 +68,6 @@ export default function AdminVisitPage() {
         fetchVisits(mode);
     }, [mode]);
 
-    const formatDate = (value, mode) => {
-        if (!value) return '';
-        if (mode === 'year') {
-            return `${value.slice(2, 4)}년 ${value.slice(5, 7)}월`;
-        }
-        return `${value.slice(2, 4)}년 ${value.slice(5, 7)}/${value.slice(8, 10)}`;
-    };
-    const maxVisitCount = Math.max(...visits.map((v) => v.visitCount || 0), 1);
-
     //chart.js 적용
     const chartVisits = [...visits].reverse();
     const chartData = {
