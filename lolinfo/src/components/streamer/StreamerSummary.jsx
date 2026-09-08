@@ -78,29 +78,6 @@ export default function StreamerSummary({ streamer }) {
             <p className="streamer-summary-text mb-0">
                 SOOPLOL에 집계된 {streamer.streamerName}의 SOOP LOL 활동 기록입니다.
 
-                {hasCkRecord && (
-                    <>
-                        {" "}CK 총{" "}
-                        <strong className="summary-highlight">
-                            {ckPlayCount}경기
-                        </strong>
-                        에서{" "}
-                        <strong className="summary-win">
-                            {ckWinCount}승
-                        </strong>{" "}
-                        <strong className="summary-lose">
-                            {ckLoseCount}패
-                        </strong>
-                        , 승률{" "}
-                        <strong
-                            className={`summary-value summary-rate ${getWinRateClass(ckWinRate)}`}
-                        >
-                            {ckWinRate.toFixed(1)}%
-                        </strong>
-                        를 기록하고 있습니다.
-                    </>
-                )}
-
                 {hasCurrentStreak && currentResult === "W" && (
     <>
         {" "}현재 CK{" "}
