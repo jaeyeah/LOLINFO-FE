@@ -7,16 +7,16 @@ import CkRankingList from "./CkRankingList";
 const LIMIT = 10;
 const MIN_PLAY_COUNT = 30;
 const RANKING_TYPES = [
-  ["month", "월간 다승"],
-  ["currentStreak", "현재 연속 기록"],
-  ["maxStreak", "역대 연속 기록"],
   ["allWins", "역대 다승"],
   ["yearWins", "올해 다승"],
+  ["month", "월간 다승"],
   ["winRate", "역대 승률"],
+  ["currentStreak", "현재 연속 기록"],
+  ["maxStreak", "역대 연속 기록"],
 ];
 
 export default function CkRanking() {
-  const [rankingType, setRankingType] = useState("month");
+  const [rankingType, setRankingType] = useState("allWins");
   const [year] = useState(() => Number(getKoreaToday().slice(0, 4)));
 
   return (

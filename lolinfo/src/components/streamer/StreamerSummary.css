@@ -76,14 +76,14 @@
 
 /* 현재 연승 */
 .summary-streak-win {
-    color: #ff8787;
-    background: rgba(220, 53, 69, 0.14);
+    color: #74c0fc;
+    background: rgba(13, 110, 253, 0.12);
 }
 
 /* 현재 연패 */
 .summary-streak-lose {
-    color: #74c0fc;
-    background: rgba(13, 110, 253, 0.12);
+    color: #ff8787;
+    background: rgba(220, 53, 69, 0.14);
 }
 
 /* 멸망전 우승 */
