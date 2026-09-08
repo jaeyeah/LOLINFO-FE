@@ -185,12 +185,11 @@ export default function StreamerList() {
                       onClick={() => setShowFeedback(true)} >
                         등록요청
                   </button>
+                  {isAdmin === true && (
+                    <Link to="/streamer/insert" className="ms-2 btn btn-success">등록</Link>
+                    )}
                 </div>
-                {isAdmin === true && (
-                    <div className="streamer-admin-action">
-                        <Link to="/streamer/insert" className="btn btn-success">등록</Link>
-                    </div>
-                )}
+                
             </div>
         </div>
     </div>

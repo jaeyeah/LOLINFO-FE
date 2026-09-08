@@ -121,7 +121,7 @@ export default function StreamerDetailInfo() {
                     {hostItem.tournamentYear}
                   </div>
                   <div
-                    className={`col-2 badge fs-6 tier-badge
+                    className={`col-3 badge fs-6 tier-badge
                               ${hostItem.tournamentTierType === "천상계" ? "top-tier text-dark"
                       : hostItem.tournamentTierType === "지상계" ? "bottom-tier"
                       : "all-tier"
@@ -129,7 +129,7 @@ export default function StreamerDetailInfo() {
                   >
                     {hostItem.tournamentTierType}
                   </div>
-                  <div className="col-8">
+                  <div className="col-7">
                     <Link to={`/tournament/${hostItem.hostTournament}`} className="streamer-link tournament-title text-warning">
                       {hostItem.tournamentName}
                     </Link>
@@ -148,7 +148,7 @@ export default function StreamerDetailInfo() {
             <div className="stat-box">
               {staff.map((staffItem) => (
                 <div
-                  className="row mt-2 text-center text-light align-items-center"
+                  className="row mt-2 text-center text-light align-items-center staff-row"
                   key={staffItem.staffTeam}
                 >
                   <div className={`col-2 fw-600 ${staffItem.tournamentYear % 2 === 0 ? "text-secondary" : ""}`}>
