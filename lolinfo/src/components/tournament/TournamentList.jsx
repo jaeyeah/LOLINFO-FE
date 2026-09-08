@@ -103,13 +103,12 @@ return(<>
                       onClick={() => setShowFeedback(true)} >
                       대회 제보
                   </button>
+                  {/* 등록창 */}
+                  {isAdmin === true && (
+                    <Link to="/tournament/insert" className="btn btn-success ms-2">등록</Link>
+                  )}
                 </div>
-                {/* 등록창 */}
-                {isAdmin === true && (
-                  <div className="streamer-admin-action">
-                      <Link to="/tournament/insert" className="btn btn-success">등록</Link>
-                  </div>
-                )}
+
             </div>
         </div>
     </div>

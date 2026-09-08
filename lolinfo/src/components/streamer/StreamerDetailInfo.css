@@ -23,6 +23,30 @@
     hyphens:auto;
   }
 }
+@media (max-width: 576px) {
+  .staff-row {
+    margin-top: 4px !important;
+    font-size: 0.78rem;
+    line-height: 1.15;
+  }
+
+  .staff-row > * {
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+
+  .staff-row .badge {
+    font-size: 0.68rem !important;
+    padding: 3px 4px;
+    white-space: nowrap;
+  }
+
+  .staff-wrap {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
 
 /* Desktop / default behavior: avoid breaking inside words (prevents single-character stacking) */
 .staff-wrap{
@@ -126,4 +150,21 @@
   left: -10000px;
   top: 0;
   pointer-events: none;
+}
+
+@media (max-width: 576px) {
+    .host-row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .host-row .tier-badge {
+        font-size: 0.7rem;
+        padding: 4px 5px;
+    }
+
+    .host-row > div {
+        padding-left: 4px;
+        padding-right: 4px;
+    }
 }
