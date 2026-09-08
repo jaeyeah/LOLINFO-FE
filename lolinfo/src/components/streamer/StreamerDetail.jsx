@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { NavLink, useParams, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
 import "./Streamer.css";
 import { FaEdit, FaHome } from "react-icons/fa";
 import { useAtomValue } from "jotai";
@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { FaStar, FaRegStar } from "react-icons/fa6";
 import { Helmet } from 'react-helmet-async'
 import FeedbackModal from "../etc/FeedbackModal";
+import StreamerSummary from "./StreamerSummary";
 
 
 export default function StreamerDetail() {
@@ -17,6 +18,7 @@ export default function StreamerDetail() {
     const isAdmin = useAtomValue(adminState);
     const isLogin = useAtomValue(loginState);
     const {streamerId} = useParams();
+    const location = useLocation();
     const [streamer, setStreamer] = useState({});
     const [bookmarked, setBookmarked] = useState(false);
     const [showFeedback, setShowFeedback] = useState(false);
@@ -75,6 +77,33 @@ export default function StreamerDetail() {
         loadData();
     },[streamerId, loadData]);
 
+    const streamerName = streamer?.streamerName;
+    const ckPlayCount = Number(streamer?.ckPlayCount ?? 0);
+    const ckWinCount = Number(streamer?.ckWinCount ?? 0);
+    const ckLoseCount = Number(streamer?.ckLoseCount ?? 0);
+    const ckWinRate = Number(streamer?.ckWinRate ?? 0);
+    const routeTitles = {
+      ckRecords: `${streamerName} CK 전적·승률 | SOOPLOL`,
+      tournaments: `${streamerName} 대회 참가 기록 | SOOPLOL`,
+      streamerWith: `${streamerName} 팀메이트·함께한 스트리머 | SOOPLOL`,
+      default: `${streamerName} CK 전적·승률·대회 기록 | SOOPLOL`
+    };
+    const routeDescriptions = {
+      ckRecords: `${streamerName}의 CK 전적입니다. 총 ${ckPlayCount}경기 ${ckWinCount}승 ${ckLoseCount}패, 승률 ${ckWinRate.toFixed(1)}%의 CK 기록을 확인하세요.`,
+      tournaments: `${streamerName}의 SOOP LOL 대회 참가 기록과 멸망전 활동 내역을 확인하세요.`,
+      streamerWith: `${streamerName}와 함께한 SOOP LOL 스트리머와 팀메이트 기록을 확인하세요.`,
+      default: ckPlayCount > 0
+        ? `${streamerName}의 SOOP LOL 기록입니다. CK ${ckPlayCount}경기 ${ckWinCount}승 ${ckLoseCount}패, 승률 ${ckWinRate.toFixed(1)}%와 대회 참가 기록을 확인하세요.`
+        : `${streamerName}의 SOOP LOL 대회 참가 및 활동 기록을 확인하세요.`
+    };
+    const routeKey = location.pathname.endsWith("/ck-records")
+      ? "ckRecords"
+      : location.pathname.endsWith("/tournaments")
+        ? "tournaments"
+        : location.pathname.endsWith("/streamerWith")
+          ? "streamerWith"
+          : "default";
+
 
     //render
     return (<>
@@ -82,13 +111,13 @@ export default function StreamerDetail() {
     {/* 헬멧 영역 */}
        <Helmet>
         <title>
-          {streamer?.streamerName ? `${streamer.streamerName} CK 전적·승률·대회 기록 | SOOPLOL`
+          {streamerName ? routeTitles[routeKey]
             : '스트리머 | SOOPLOL'}
         </title>
 
         <meta name="description"
-          content={  streamer?.streamerName
-              ? `${streamer.streamerName}의 CK, 대회, 스크림 및 롤 통계를 확인하세요.`
+            content={  streamerName
+              ? routeDescriptions[routeKey]
               : 'SOOP 롤 스트리머 정보를 확인하세요.'
           }
         />
@@ -108,32 +137,6 @@ export default function StreamerDetail() {
         </div>
     )}
 
-    {streamer.streamerName !== "SLL" && streamer.streamerName !== "멸망전" && (
-        <>
-          {/* 참여 대회 탭 네비게이션 */}
-          <div className="row mt-2">
-            <div className="col-12">
-              <div className="d-flex gap-2 mb-3 flex-wrap">
-                <NavLink to="" end className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
-                  경력
-                </NavLink>
-                <NavLink to="tournaments" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
-                  참여대회
-                </NavLink>
-                <NavLink to="ck-records" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
-                  CK 전적
-                </NavLink>
-                <NavLink to="streamerWith" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
-                  팀메이트
-                </NavLink>
-              </div>
-              
-            </div>
-          </div>
-        </>
-    )}
-
-
     {error && <p className="text-danger">{error}</p>}
     {/* 스트리머 상세 */}
     <div className="streamer-wrapper">
@@ -142,7 +145,7 @@ export default function StreamerDetail() {
           {/* 상단: 프로필 + 이름 + 버튼들 */}
           <div className="row align-items-center">
             <div className="col-auto">
-              <img src={streamer.streamerProfile} className="streamer-profile"/>
+              <img src={streamer.streamerProfile} className="streamer-profile" alt={`${streamer.streamerName} 프로필`}/>
             </div>
             <div className="col">
               <h3 className="card-title mb-1">{streamer.streamerName}</h3>
@@ -168,6 +171,29 @@ export default function StreamerDetail() {
           </div>
           </div>
         </div>
+
+        <StreamerSummary streamer={streamer} />
+
+        {streamer.streamerName !== "SLL" && streamer.streamerName !== "멸망전" && (
+            <div className="row mt-2">
+              <div className="col-12">
+                <div className="d-flex gap-2 mb-3 flex-wrap">
+                  <NavLink to="" end className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
+                    경력
+                  </NavLink>
+                  <NavLink to="tournaments" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
+                    참여대회
+                  </NavLink>
+                  <NavLink to="ck-records" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
+                    CK 전적
+                  </NavLink>
+                  <NavLink to="streamerWith" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
+                    팀메이트
+                  </NavLink>
+                </div>
+              </div>
+            </div>
+        )}
 
         {/* 콘텐츠 중간광고 */}
         <AdArea className="mt-3" variant="content" />
