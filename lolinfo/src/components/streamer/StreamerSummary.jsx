@@ -100,7 +100,7 @@ export default function StreamerSummary({ streamer }) {
 
                 {hasOfficialRecord && (
                     <>
-                        {" "}LOL 멸망전에서는{" "}
+                        {" "}LOL 멸망전 및 공식대회에서{" "}
                         {officialResults.map((result, index) => (
                             <React.Fragment key={index}>
                                 {index > 0 && ", "}
