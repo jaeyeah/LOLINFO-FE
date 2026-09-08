@@ -1,0 +1,93 @@
+.streamer-summary {
+    padding: 1rem 1.15rem;
+    margin-bottom: 1rem;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.streamer-summary-title {
+    margin-bottom: 0.6rem;
+
+    color: #f1f3f5;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.streamer-summary-text {
+    color: #adb5bd;
+    font-size: 0.9rem;
+    line-height: 1.8;
+}
+
+.summary-highlight {
+    color: #f8f9fa;
+    font-weight: 700;
+}
+
+.summary-win {
+    color: #f8f9fa;
+    font-weight: 700;
+}
+
+.summary-lose {
+    color: #ced4da;
+    font-weight: 700;
+}
+
+
+.summary-gold {
+    color: #ffd43b;
+}
+
+/* 공통 강조 */
+.summary-value {
+    display: inline-block;
+    padding: 1px 6px;
+    margin: 0 1px;
+
+    border-radius: 5px;
+
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+/* 승률 */
+.summary-rate-high {
+    color: #ff8787;
+    background: rgba(220, 53, 69, 0.14);
+}
+
+.summary-rate-good {
+    color: #ffa94d;
+    background: rgba(253, 126, 20, 0.12);
+}
+
+.summary-rate-low {
+    color: #74c0fc;
+    background: rgba(13, 110, 253, 0.10);
+}
+
+.summary-rate-bad {
+    color: #91a7ff;
+    background: rgba(76, 110, 245, 0.12);
+}
+
+/* 현재 연승 */
+.summary-streak-win {
+    color: #ff8787;
+    background: rgba(220, 53, 69, 0.14);
+}
+
+/* 현재 연패 */
+.summary-streak-lose {
+    color: #74c0fc;
+    background: rgba(13, 110, 253, 0.12);
+}
+
+/* 멸망전 우승 */
+.summary-ranking-win {
+    color: #ffd43b;
+    background: rgba(255, 212, 59, 0.10);
+}
