@@ -1,12 +1,25 @@
+/* 2~4연승 */
 .ck-ranking-streak {
   background: linear-gradient(
     90deg,
-    rgba(252, 40, 61, 0.329),
-    rgba(220, 53, 69, 0.06)
+    rgba(252, 40, 61, 0.20),
+    rgba(220, 53, 69, 0.04)
   );
 
-  border-color: rgba(220, 53, 69, 0.5) !important;
+  border-color: rgba(220, 53, 69, 0.4) !important;
 }
+
+/* 5연승 이상 */
+.ck-ranking-streak.streak-hot {
+  background: linear-gradient(
+    90deg,
+    rgba(252, 40, 61, 0.678),
+    rgba(220, 53, 69, 0.08)
+  );
+
+  border-color: rgba(255, 70, 85, 0.7) !important;
+}
+
 
 .streak-badge {
   position: relative;
@@ -41,4 +54,19 @@
 
   border-radius: 0 3px 3px 0;
   background: #ff4055;
+}
+
+.streamer-name-streak {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 모바일 */
+@media (max-width: 576px) {
+  .streamer-name-streak {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
 }

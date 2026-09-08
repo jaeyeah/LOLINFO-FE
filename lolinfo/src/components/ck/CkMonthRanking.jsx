@@ -90,7 +90,8 @@ export default function CkMonthRanking() {
 
               return (
                 <div key={`${streamerId}-${index}`} className={`border rounded p-1 ps-3 pe-3 ${
-                        item.currentResult === "W" && item.currentStreak > 1 ? "ck-ranking-streak" : "border-secondary bg-black bg-opacity-10" }`}>
+                      item.currentResult === "W" && item.currentStreak >= 5 ? "ck-ranking-streak streak-hot"
+                        : item.currentResult === "W" && item.currentStreak > 1 ? "ck-ranking-streak" : "border-secondary bg-black bg-opacity-10" }`}>
                   <div className="d-flex align-items-center gap-3">
                     <div className="fw-bold text-warning" style={{ width: 32 }}>
                       {index + 1}
@@ -100,14 +101,22 @@ export default function CkMonthRanking() {
                       className="rounded-circle border border-secondary" style={{ width: 44, height: 44, objectFit: "cover" }}  />
 
                     <div className="flex-grow-1 min-width-0">
-                      <div className="d-flex align-items-center gap-2">
-                        <Link to={`/streamer/${streamerId}`} className="fw-semibold text-white text-decoration-none">
+                      <div className="streamer-name-streak">
+                        <Link
+                          to={`/streamer/${streamerId}`}
+                          className="fw-semibold text-white text-decoration-none"
+                        >
                           {streamerName}
                         </Link>
+
                         {item.currentResult === "W" && item.currentStreak > 1 && (
-                          <div className="small streak-badge">
-                            현재 {item.currentStreak}연승
-                          </div>
+                          <span
+                            className={`streak-badge ${
+                              item.currentStreak >= 5 ? "streak-badge-hot" : ""
+                            }`}
+                          >
+                            {item.currentStreak}연승
+                          </span>
                         )}
                       </div>
                       <div className="small text-white-50">
