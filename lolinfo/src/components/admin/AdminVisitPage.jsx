@@ -1,6 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './AdminMain.css';
+import {Chart as ChartJS, CategoryScale,
+    LinearScale, PointElement, LineElement, BarElement,Title,
+    Tooltip,Legend,Filler} from 'chart.js';
+import { Line, Bar } from 'react-chartjs-2';
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler
+);
 
 const now = new Date();
 const defaultMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -53,15 +68,63 @@ export default function AdminVisitPage() {
         fetchVisits(mode);
     }, [mode]);
 
-    const formatDate = (value, mode) => {
-        if (!value) return '';
-        if (mode === 'year') {
-            return `${value.slice(2, 4)}년 ${value.slice(5, 7)}월`;
-        }
-        return `${value.slice(2, 4)}년 ${value.slice(5, 7)}/${value.slice(8, 10)}`;
-    };
+    //chart.js 적용
+    const chartVisits = [...visits].reverse();
+    const chartData = {
+        labels: chartVisits.map((v) => {
+            if (mode === 'year') {
+                return `${v.visitDate.slice(5, 7)}월`;
+            }
 
-    const maxVisitCount = Math.max(...visits.map((v) => v.visitCount || 0), 1);
+            return `${Number(v.visitDate.slice(8, 10))}일`;
+        }),
+
+        datasets: [
+            {
+                label: '전체 방문자',
+                data: chartVisits.map((v) => v.visitCount),
+                borderColor: '#22c55e',
+                backgroundColor: 'rgba(34, 197, 94, 0.15)',
+                tension: 0.3,
+                fill: true,
+                pointRadius: mode === 'month' ? 3 : 4,
+                pointHoverRadius: 6,
+                borderWidth: 2
+            },
+            {
+                label: '로그인 방문자',
+                data: chartVisits.map((v) => v.visitLogin),
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.12)',
+                tension: 0.3,
+                fill: false,
+                pointRadius: mode === 'month' ? 2 : 4,
+                pointHoverRadius: 6,
+                borderWidth: 2
+            }
+        ]
+    };
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        interaction: {mode: 'index', intersect: false},
+        plugins: {
+            legend: {
+                labels: { color: '#ddd', usePointStyle: true}
+            },
+            tooltip: {
+                callbacks: { label: (context) => `${context.dataset.label}: ${context.raw.toLocaleString()}명`}
+            }
+        },
+        scales: {
+            x: {ticks: {color: '#aaa' },grid: {  color: 'rgba(255,255,255,0.05)'}},
+            y: {beginAtZero: true,
+                ticks: {color: '#aaa', precision: 0 },
+                grid: {color: 'rgba(255,255,255,0.08)'}
+            }
+        }
+    };
 
     return (
         <div className="admin-member-container text-white">
@@ -100,47 +163,37 @@ export default function AdminVisitPage() {
             ) : error ? (
                 <div className="text-danger">{error}</div>
             ) : (
-                <div className="admin-table-container">
-                    <table className="admin-visit-table w-100 text-center">
-                        <thead>
-                            <tr className="bg-secondary text-white bg-opacity-25">
-                                <th className="p-3">날짜</th>
-                                <th className="p-3">전체 방문자 수</th>
-                                <th className="p-3">로그인 방문자 수</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {visits.length === 0 ? (
-                                <tr>
-                                    <td colSpan="4" className="py-5 text-white">
-                                        방문 통계가 없습니다.
-                                    </td>
-                                </tr>
+                <>
+                {visits.length > 0 && (
+                    <div className="admin-visit-chart mb-4">
+                        <div className="admin-visit-chart-header mb-3">
+                            <h5 className="fw-bold mb-1">
+                                {mode === 'month'
+                                    ? '일별 방문자 추이'
+                                    : '월별 방문자 추이'}
+                            </h5>
+
+                            <small className="text-secondary">
+                                전체 방문자 및 로그인 방문자
+                            </small>
+                        </div>
+
+                        <div className="admin-visit-chart-body">
+                            {mode === 'month' ? (
+                                <Line
+                                    data={chartData}
+                                    options={chartOptions}
+                                />
                             ) : (
-                                visits.map((v, idx) => (
-                                    <tr key={idx} className="border-bottom border-secondary">
-                                        <td className="p-3">{formatDate(v.visitDate, mode)}</td>
-                                        <td className="p-3">
-                                            <div className="d-flex align-items-center gap-2">
-                                                <span style={{ minWidth: '50px' }}>{v.visitCount}</span>
-                                                <div className="progress flex-grow-1" style={{ height: '20px', minWidth: '120px' }}>
-                                                    <div
-                                                        className="progress-bar bg-success"
-                                                        role="progressbar"
-                                                        style={{ width: `${((v.visitCount || 0) / maxVisitCount) * 100}%` }}
-                                                    >
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="p-3">{v.visitLogin}</td>
-                                    </tr>
-                                ))
+                                <Bar
+                                    data={chartData}
+                                    options={chartOptions}
+                                />
                             )}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+                        </div>
+                    </div>
+                )}
+            </>)}
         </div>
     );
 }

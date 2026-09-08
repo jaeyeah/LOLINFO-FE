@@ -896,15 +896,326 @@ textarea::placeholder {
   color: #00000098 !important;
   opacity: 1 !important;
 }
+
+
+
+/* =========================
+   CK 상단 Summary
+========================= */
+
+.ck-summary-layout {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.8fr) minmax(420px, 1.4fr);
+  align-items: center;
+  gap: 2.25rem;
+}
+
+.ck-summary-intro {
+  min-width: 0;
+}
+
 .ck-summary {
-  min-width: 150px;
+  display: grid;
+  grid-template-columns: minmax(150px, 0.8fr) minmax(240px, 1.2fr);
+  align-items: center;
+  gap: 1.4rem;
+  
+  width: 100%;
+  min-width: 0;
   text-align: right;
 }
 
+.ck-summary-record {
+  min-width: 0;
+  
+}
+
+
+/* =========================
+   CK Streak Area
+========================= */
+
+.ck-streak-area {
+  min-width: 0;
+  padding-left: 1.4rem;
+  /* margin-left: auto; */
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+/* 현재 연승 / 연패 */
+
+.ck-current-streak {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  padding: 0.75rem 0.9rem;
+
+  border-radius: 11px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  background: rgba(255, 255, 255, 0.025);
+
+  overflow: hidden;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+/* 왼쪽 상태 텍스트 */
+
+.ck-current-streak-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+
+  min-width: 0;
+}
+
+.ck-streak-current-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+
+  letter-spacing: 0.11em;
+
+  opacity: 0.72;
+}
+
+.ck-streak-current-desc {
+  color: rgba(255, 255, 255, 0.42);
+
+  font-size: 0.72rem;
+
+  white-space: nowrap;
+}
+
+
+/* 오른쪽 현재 streak */
+
+.ck-streak-current-value {
+  display: flex;
+  align-items: baseline;
+
+  white-space: nowrap;
+
+  line-height: 1;
+}
+
+.ck-streak-number {
+  font-size: 1.65rem;
+  font-weight: 900;
+
+  letter-spacing: -0.04em;
+}
+
+.ck-streak-unit {
+  margin-left: 0.18rem;
+
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+
+/* =========================
+   연승 단계
+========================= */
+
+.streak-win-low {
+  color: #74c0fc;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(51, 154, 240, 0.07),
+      rgba(51, 154, 240, 0.025)
+    );
+
+  border-color: rgba(51, 154, 240, 0.2);
+}
+
+.streak-win-mid {
+  color: #4dabf7;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(51, 154, 240, 0.13),
+      rgba(51, 154, 240, 0.035)
+    );
+
+  border-color: rgba(51, 154, 240, 0.35);
+}
+
+.streak-win-high {
+  color: #66d9e8;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(34, 184, 207, 0.18),
+      rgba(34, 184, 207, 0.04)
+    );
+
+  border-color: rgba(34, 184, 207, 0.48);
+
+  box-shadow:
+    inset 3px 0 0 rgba(102, 217, 232, 0.85),
+    0 0 20px rgba(34, 184, 207, 0.08);
+}
+
+
+/* =========================
+   연패 단계
+========================= */
+
+.streak-lose-low {
+  color: #ffa8a8;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 107, 107, 0.06),
+      rgba(255, 107, 107, 0.02)
+    );
+
+  border-color: rgba(255, 107, 107, 0.18);
+}
+
+.streak-lose-mid {
+  color: #ff8787;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 107, 107, 0.12),
+      rgba(255, 107, 107, 0.03)
+    );
+
+  border-color: rgba(255, 107, 107, 0.34);
+}
+
+.streak-lose-high {
+  color: #ff6b6b;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 107, 107, 0.18),
+      rgba(255, 107, 107, 0.04)
+    );
+
+  border-color: rgba(255, 107, 107, 0.48);
+
+  box-shadow:
+    inset 3px 0 0 rgba(255, 107, 107, 0.8),
+    0 0 20px rgba(255, 107, 107, 0.08);
+}
+
+
+/* =========================
+   최고 연승 / 최다 연패
+========================= */
+
+.ck-streak-records {
+  display: column;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 0.75rem;
+
+  margin-top: 0.65rem;
+
+  padding: 0 0.25rem;
+}
+
+.ck-streak-record {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ck-streak-record-label {
+  color: rgba(255, 255, 255, 0.4);
+
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.ck-streak-win-record {
+  color: #74c0fc;
+
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.ck-streak-lose-record {
+  color: #ff8787;
+
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.ck-streak-record-divider {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+.ck-streak-date {
+  font-size: 0.72rem;
+  font-weight: 500;
+  opacity: 0.6;
+}
 @media (max-width: 575.98px) {
+
+  .ck-summary-layout {
+    grid-template-columns: 1fr;
+    gap: 1.15rem;
+  }
+
   .ck-summary {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+
     width: 100%;
-    min-width: 0;
+
     text-align: left;
+  }
+
+  .ck-streak-area {
+    padding: 1rem 0 0;
+
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .ck-current-streak {
+    width: 100%;
+
+    padding: 0.8rem 0.9rem;
+  }
+
+  .ck-streak-number {
+    font-size: 1.55rem;
+  }
+
+  .ck-streak-records {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    gap: 0.5rem 0.7rem;
+
+    padding-left: 0.15rem;
   }
 }

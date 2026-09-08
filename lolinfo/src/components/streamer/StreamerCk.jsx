@@ -131,53 +131,188 @@ function StreamerCkContent({ streamer, streamerId, period }) {
     [vsPositionStats, expandedVsStreamerNo]
   );
 
+
+  // 연승, 연패
+  const [streak, setStreak] = useState(null);
+  useEffect(() => {
+    if (!streamerId) return;
+    const controller = new AbortController();
+    const loadStreak = async () => {
+      try {
+        const { data } = await axios.get(`/ck/streak/${streamerId}`, {signal: controller.signal,});
+        if (!controller.signal.aborted) {
+          setStreak(data ?? null);
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error("CK 연승 기록 조회 실패", error);
+          setStreak(null);
+        }
+      }
+    };
+    
+    loadStreak();
+    console.log(streak);
+    return () => controller.abort();
+  }, [streamerId]);
+
+    const getStreakClass = (result, count) => {
+    if (!result || !count) return "";
+
+    if (result === "W") {
+      if (count >= 5) return "streak-win-high";
+      if (count >= 3) return "streak-win-mid";
+      return "streak-win-low";
+    }
+
+    if (result === "L") {
+      if (count >= 5) return "streak-lose-high";
+      if (count >= 3) return "streak-lose-mid";
+      return "streak-lose-low";
+    }
+
+    return "";
+  };
+
+  //날짜 포맷
+  const formatDate = (date) => {
+    if (!date) return "-";
+
+    const d = new Date(date);
+
+    const year = String(d.getFullYear()).slice(2);
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+
+    return `${year}.${month}.${day}`;
+  };
+
   return (
     <>
       {/* 상단 CK 전적 제목 카드 */}
       <div className="row mt-3 mb-3">
         <div className="col">
           <div className="card bg-dark border-secondary text-white p-3">
-            <div className="d-flex flex-column flex-sm-row gap-3 justify-content-between align-items-start align-items-sm-center">
-              <div>
+            <div className="ck-summary-layout">
+
+              {/* 왼쪽 제목 영역 */}
+              <div className="ck-summary-intro">
                 <h2 className="mb-1">CK 전적</h2>
-                <p className="mb-0 text-secondary"> {streamer?.streamerName ? `${streamer.streamerName}님의 CK 기록입니다.` : "스트리머의 CK 기록입니다."}</p>
-                <p className="small text-secondary mb-0">{periodLabel}</p>
+
+                <p className="mb-0 text-secondary">
+                  {streamer?.streamerName
+                    ? `${streamer.streamerName}님의 CK 기록입니다.`
+                    : "스트리머의 CK 기록입니다."}
+                </p>
+
+                <p className="small text-secondary mb-0">
+                  {periodLabel}
+                </p>
               </div>
 
+              {/* 오른쪽 통계 영역 */}
               {vsLoading ? (
-                <p role="status" className="mb-0"> 통계를 불러오는 중입니다. </p>
-              ) : vsError ? ( <p className="text-secondary mb-0">통계 조회 실패</p>
+                <p role="status" className="mb-0">
+                  통계를 불러오는 중입니다.
+                </p>
+              ) : vsError ? (
+                <p className="text-secondary mb-0">
+                  통계 조회 실패
+                </p>
               ) : (
                 <div className="ck-summary">
-                  <div className="fs-5 fw-bold text-white mb-2">
-                    {(() => {
-                      const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount, 0);
-                      const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount, 0);
-                      return `${totalWins + totalLoses}전 ${totalWins}승 ${totalLoses}패`;
-                    })()}
+
+                  <div className="ck-summary-record">
+                    {/* 전체 전적 */}
+                    <div className="fs-5 fw-bold text-white mb-2">
+                      {(() => {
+                        const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount,0);
+                        const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount,0);
+                        return `${totalWins + totalLoses}전 ${totalWins}승 ${totalLoses}패`;
+                      })()}
+                    </div>
+
+                    {/* 승률 게이지 */}
+                    <div className="bg-white bg-opacity-10 rounded-pill" style={{height: "8px", marginBottom: "6px", }}>
+                      {(() => {
+                        const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount,0);
+                        const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount, 0);
+                        const totalGames = totalWins + totalLoses;
+                        const totalWinRate = totalGames ? Number(((totalWins / totalGames) * 100).toFixed(1)): 0;
+                        return (
+                          <div className="rounded-pill"style={{width: `${totalWinRate}%`, height: "100%",backgroundColor: getWinRateColor(totalWinRate), }} />
+                        );
+                      })()}
+                    </div>
+
+                    {/* 승률 */}
+                    <div className="text-secondary small">
+                      {(() => {
+                        const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount,0 );
+                        const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount,0);
+                        const totalGames = totalWins + totalLoses;
+                        const totalWinRate = totalGames? Number(((totalWins / totalGames) * 100).toFixed(1)) : 0;
+
+                        return totalGames? `승률 ${totalWinRate}%` : "선택한 기간의 전적 없음";
+                      })()}
+                    </div>
                   </div>
 
-                  <div className="bg-white bg-opacity-10 rounded-pill" style={{ height: "8px", marginBottom: "6px" }}>
-                    {(() => {
-                      const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount,0);
-                      const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount,0);
-                      const totalGames = totalWins + totalLoses;
-                      const totalWinRate = totalGames ? Number(((totalWins / totalGames) * 100).toFixed(1)): 0;
-                      return (
-                        <div className="rounded-pill" style={{ width: `${totalWinRate}%`, height: "100%", backgroundColor: getWinRateColor(totalWinRate),}}/>
-                      );
-                    })()}
-                  </div>
+                  {/* 연승 / 연패 */}
+                  {streak && (
+                    <section className="ck-streak-area" aria-label="연승 및 연패 기록">
+                      <div
+                        className={`ck-current-streak ${getStreakClass(
+                          streak.currentResult,
+                          streak.currentStreak
+                        )}`}
+                      >
+                        <div className="ck-current-streak-info">
+                          <span className="ck-streak-current-label">
+                            CURRENT STREAK
+                          </span>
 
-                  <div className="text-secondary small">
-                    {(() => {
-                      const totalWins = positionSummaryStats.reduce((sum, stat) => sum + stat.winCount,0);
-                      const totalLoses = positionSummaryStats.reduce((sum, stat) => sum + stat.loseCount,0);
-                      const totalGames = totalWins + totalLoses;
-                      const totalWinRate = totalGames ? Number(((totalWins / totalGames) * 100).toFixed(1)) : 0;
-                      return totalGames ? `승률 ${totalWinRate}%` : "선택한 기간의 전적 없음";
-                    })()}
-                  </div>
+                          <span className="ck-streak-current-desc">
+                            현재 CK 흐름
+                          </span>
+                        </div>
+
+                        <strong className="ck-streak-current-value">
+                          <span className="ck-streak-number">
+                            {streak.currentStreak}
+                          </span>
+                          <span className="ck-streak-unit">
+                            {streak.currentResult === "W" ? "연승" : "연패"}
+                          </span>
+                        </strong>
+                      </div>
+
+                      <div className="ck-streak-records">
+                        <div className="ck-streak-record">
+                          <span className="ck-streak-record-label">최고 연승</span>
+                          <strong className="ck-streak-win-record">
+                            {streak.maxWinStreak}연승
+                            <span className="ms-1 ck-streak-date">
+                              ({formatDate(streak.maxWinStart)}~{formatDate(streak.maxWinEnd)})
+                          </span>
+                          </strong>
+                        </div>
+
+                        <hr className="ck-streak-record-divider" />
+
+                        <div className="ck-streak-record">
+                          <span className="ck-streak-record-label">최다 연패</span>
+                          <strong className="ck-streak-lose-record">
+                            {streak.maxLoseStreak}연패
+                            <span className="ms-1 ck-streak-date">
+                              ({formatDate(streak.maxLoseStart)}~{formatDate(streak.maxLoseEnd)})
+                            </span>
+                          </strong>
+                        </div>
+                      </div>
+                    </section>
+                  )}
+
                 </div>
               )}
             </div>

@@ -1,0 +1,72 @@
+/* 2~4연승 */
+.ck-ranking-streak {
+  background: linear-gradient(
+    90deg,
+    rgba(252, 40, 61, 0.20),
+    rgba(220, 53, 69, 0.04)
+  );
+
+  border-color: rgba(220, 53, 69, 0.4) !important;
+}
+
+/* 5연승 이상 */
+.ck-ranking-streak.streak-hot {
+  background: linear-gradient(
+    90deg,
+    rgba(252, 40, 61, 0.678),
+    rgba(220, 53, 69, 0.08)
+  );
+
+  border-color: rgba(255, 70, 85, 0.7) !important;
+}
+
+
+.streak-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  padding: 3px 8px 3px 11px;
+  border-radius: 4px;
+
+  /* 행 배경과 구분 */
+  background: rgba(35, 12, 15, 0.75);
+
+  color: #ffc4c9;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+
+  white-space: nowrap;
+}
+
+.streak-badge::before {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  top: 3px;
+  bottom: 3px;
+
+  width: 3px;
+
+  border-radius: 0 3px 3px 0;
+  background: #ff4055;
+}
+
+.streamer-name-streak {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 모바일 */
+@media (max-width: 576px) {
+  .streamer-name-streak {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+}

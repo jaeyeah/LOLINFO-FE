@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
+import "./Ck.css";
 
 export default function CkMonthRanking() {
   const [month, setMonth] = useState(() => {
@@ -88,7 +89,9 @@ export default function CkMonthRanking() {
               const streamerSoopId = item.streamerSoopId || "";
 
               return (
-                <div key={`${streamerId}-${index}`} className="border border-secondary rounded p-1 ps-3 pe-3 bg-black bg-opacity-10">
+                <div key={`${streamerId}-${index}`} className={`border rounded p-1 ps-3 pe-3 ${
+                      item.currentResult === "W" && item.currentStreak >= 5 ? "ck-ranking-streak streak-hot"
+                        : item.currentResult === "W" && item.currentStreak > 1 ? "ck-ranking-streak" : "border-secondary bg-black bg-opacity-10" }`}>
                   <div className="d-flex align-items-center gap-3">
                     <div className="fw-bold text-warning" style={{ width: 32 }}>
                       {index + 1}
@@ -98,9 +101,24 @@ export default function CkMonthRanking() {
                       className="rounded-circle border border-secondary" style={{ width: 44, height: 44, objectFit: "cover" }}  />
 
                     <div className="flex-grow-1 min-width-0">
-                      <Link to={`/streamer/${streamerId}`} className="fw-semibold text-white text-decoration-none">
-                        {streamerName}
-                      </Link>
+                      <div className="streamer-name-streak">
+                        <Link
+                          to={`/streamer/${streamerId}`}
+                          className="fw-semibold text-white text-decoration-none"
+                        >
+                          {streamerName}
+                        </Link>
+
+                        {item.currentResult === "W" && item.currentStreak > 1 && (
+                          <span
+                            className={`streak-badge ${
+                              item.currentStreak >= 5 ? "streak-badge-hot" : ""
+                            }`}
+                          >
+                            {item.currentStreak}연승
+                          </span>
+                        )}
+                      </div>
                       <div className="small text-white-50">
                         <span className="me-2">{item.playCount ?? 0}전 |</span>
                         <span className="fw-semibold">{item.winCount ?? 0}승 · {item.loseCount ?? 0}패</span>

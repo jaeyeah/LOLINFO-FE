@@ -83,7 +83,7 @@
     box-sizing: border-box;
 }
 
-/* Feature statistics keep their readable cell width and scroll inside this box. */
+/* Shared admin page sizing. */
 .admin-member-container,
 .admin-visit-use-page {
     width: 100%;
@@ -103,81 +103,6 @@
 .admin-visit-input-row input {
     width: 150px;
     max-width: 100%;
-}
-
-.admin-visit-use-page .admin-table-container {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    border: 1px solid #333;
-    border-radius: 8px;
-    background-color: #1e1e1e;
-}
-
-.admin-visit-use-page .admin-use-table {
-    width: 100%;
-    min-width: 1280px;
-    color: #e0e0e0;
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
-.admin-use-table th,
-.admin-use-table td {
-    min-width: 150px;
-    padding: 12px 15px;
-    white-space: nowrap;
-    vertical-align: middle;
-    text-align: center;
-    border-bottom: 1px solid #333;
-}
-
-.admin-use-table th:first-child,
-.admin-use-table td:first-child {
-    min-width: 115px;
-    width: 115px;
-    position: sticky;
-    left: 0;
-    z-index: 2;
-    background-color: #2c2c2c;
-}
-
-.admin-use-table td:first-child {
-    background-color: #1e1e1e;
-}
-
-.admin-use-table th:first-child {
-    z-index: 3;
-}
-
-.admin-use-table th:last-child,
-.admin-use-table td:last-child {
-    min-width: 100px;
-}
-
-.admin-use-table td > div {
-    min-width: 120px;
-}
-
-.admin-use-table td > div > span {
-    min-width: 35px;
-    flex: 0 0 35px;
-}
-
-.admin-use-table td .progress {
-    min-width: 80px;
-}
-
-/* AdminMember.css has a separate mobile card rule; keep this table tabular. */
-.admin-visit-use-page .admin-use-table thead tr {
-    position: static;
-}
-
-.admin-visit-use-page .admin-use-table td::before {
-    content: none;
 }
 
 @media (max-width: 768px) {
@@ -224,6 +149,7 @@
     .admin-visit-filter {
         align-items: stretch !important;
         flex-direction: column;
+        gap: 0.75rem !important;
     }
 
     .admin-visit-filter .btn-group,
@@ -237,6 +163,7 @@
 
     .admin-visit-input-row {
         align-items: stretch !important;
+        flex-wrap: nowrap !important;
     }
 
     .admin-visit-input-row label,
@@ -253,20 +180,11 @@
         width: 100%;
     }
 
-    .admin-use-summary {
-        flex-direction: column;
+    .admin-visit-input-row button {
+        flex: 0 0 auto;
+        min-width: 4.5rem;
     }
 
-    .admin-use-summary-card {
-        width: 100%;
-        min-width: 0;
-    }
-
-    .admin-use-table th,
-    .admin-use-table td {
-        padding: 10px 12px;
-    }
-    
     /* 배경 어둡게 (오버레이) */
     .admin-sidebar-overlay {
         position: fixed;
@@ -277,5 +195,32 @@
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 9000;
         backdrop-filter: blur(2px);
+    }
+}
+
+
+/* 통계 차트js css */
+.admin-visit-chart {
+    min-width: 0;
+    padding: clamp(14px, 2vw, 20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.025);
+    overflow: hidden;
+}
+
+.admin-visit-chart-body {
+    position: relative;
+    width: 100%;
+    height: clamp(240px, 32vw, 340px);
+}
+
+@media (max-width: 768px) {
+    .admin-visit-chart {
+        padding: 14px;
+    }
+
+    .admin-visit-chart-body {
+        height: 240px;
     }
 }

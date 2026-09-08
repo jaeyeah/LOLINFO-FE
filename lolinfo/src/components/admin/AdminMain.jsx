@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
-import { Link, NavLink, Outlet } from 'react-router-dom';
+import { Link, Navigate, NavLink, Outlet } from 'react-router-dom';
 import './AdminMain.css'; // 사이드바 스타일
 import { FaBars, FaXmark } from 'react-icons/fa6';
+import { adminState } from '../../utils/jotai';
+import { useAtomValue } from 'jotai';
 
 export default function AdminMain() {
-
     // 사이드바 열림/닫힘 상태 관리 (모바일용)
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
     // 토글 함수
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
     const closeSidebar = () => setIsSidebarOpen(false);
+    // 관리자 아닐때 접근차단
+    const isAdmin = useAtomValue(adminState);
+    if(!isAdmin) {
+        return <Navigate to="/" replace />;
+    }
+
 
     return (
         <div className="d-flex admin-layout-container" style={{ minHeight: '100vh', backgroundColor: '#121212' }}>
