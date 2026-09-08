@@ -12,12 +12,10 @@ export default function DevHistory() {
             </header>
 
             <div className="privacy-body">
-                <section><h2 className="fw-bold">26.09.07</h2>
-                    <p className="danger-note">
-                        - 서버 성능 개선<br/>
-                        <span className="text-secondary ms-4">└ 백엔드 서버 리전 이전을 통한 API 응답 속도 개선</span><br/>
-                    </p>
+                <section><h2 className="fw-bold">26.09.08</h2>
                     <p className="privacy-note">
+                         - 신규기능 : <span className="text-info fw-bold">랭킹 - CK</span> 구현<br/>
+                        - 스트리머 상세 : <span className="text-info fw-bold">연승/연패</span> 기능 추가<br/>
                         - 메인페이지 기능 추가<br/>
                         <span className="text-secondary ms-4">└ 즐겨찾기 스트리머 목록 및 사이트 기초 통계 화면</span><br/>
                         - 스트리머 CK전적 : 기간 설정 추가<br/>
@@ -30,6 +28,10 @@ export default function DevHistory() {
                         - 신규기능 : <span className="text-info fw-bold">비회원 피드백</span> 구현<br/>
                         - Footer 및 개인정보처리방침 추가<br/>
                         - 검색엔진 노출 개선 (SEO 및 사이트맵 적용)<br/>
+                    </p>
+                    <p className="danger-note">
+                        - 서버 성능 개선<br/>
+                        <span className="text-secondary ms-4">└ 백엔드 서버 리전 이전을 통한 API 응답 속도 개선</span><br/>
                     </p>
                 </section>
 

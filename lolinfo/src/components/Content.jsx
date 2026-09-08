@@ -46,6 +46,8 @@ import Terms from "./Terms";
 import Home from "./home/Home";
 import DevHistory from "./etc/DevHistory";
 import About from "./About";
+import Ranking from "./ranking/Ranking";
+import CkRanking from "./ranking/ck/CkRanking";
 
 export default function Content(){
 
@@ -120,6 +122,11 @@ return (<>
                     <Route path="ranking" element={<CkMonthRanking />} />
                 </Route>
                 <Route path="/ck/insert" element={<CkInsert/>}/>
+
+                <Route path="/ranking" element={<Ranking />}>
+                    <Route index element={<Navigate to="ck" replace />} />
+                    <Route path="ck" element={<CkRanking />} />
+                </Route>
 
                 {/* 게시판 */}
                 <Route path="/board" element={<BoardList/>}/>
