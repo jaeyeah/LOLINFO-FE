@@ -1,11 +1,151 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import StreamerCkListSection from "./StreamerCkListSection";
 import CkPeriodFilter from "./CkPeriodFilter";
 import { formatCkPeriod } from "../../utils/ckPeriod";
 
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+// CSS wrapper 변경 시 Chart.js가 다시 계산하는 실제 canvas 폭을 사용한다.
+const getPositionLabelLayout = (chart, stats, total) => {
+  const compact = chart.width <= 230;
+  const fontSize = compact ? 10 : 11;
+  const { ctx } = chart;
+  ctx.save();
+  ctx.font = `${fontSize}px sans-serif`;
+  const labels = stats.map((stat) => {
+    const ratio = `${total > 0 ? (stat.totalCount / total * 100).toFixed(1) : "0.0"}%`;
+    const lines = compact ? [stat.ckPosition, ratio] : [`${stat.ckPosition} ${ratio}`];
+    return { lines, width: Math.max(...lines.map((line) => ctx.measureText(line).width)) };
+  });
+  ctx.restore();
+  const side = Math.ceil(Math.max(0, ...labels.map((label) => label.width))) + 16;
+  return { labels, fontSize, lineHeight: 12, labelHeight: compact ? 24 : 12,
+    padding: { left: side, right: side, top: 18, bottom: 18 } };
+};
+
+const positionTotalPlugin = {
+  id: "positionTotal",
+  afterDraw(chart, _args, options) {
+    const arc = chart.getDatasetMeta(0).data[0];
+    if (!arc) return;
+    const { ctx } = chart;
+    const maxWidth = Math.max(arc.innerRadius * 1.8, 1);
+    const fontSize = Math.min(18, Math.max(12, arc.innerRadius * 0.45));
+    const offset = Math.min(12, arc.innerRadius * 0.3);
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#adb5bd";
+    ctx.font = `${Math.min(13, fontSize)}px sans-serif`;
+    ctx.fillText("총", arc.x, arc.y - offset, maxWidth);
+    ctx.fillStyle = "#f8f9fa";
+    ctx.font = `600 ${fontSize}px sans-serif`;
+    ctx.fillText(`${options.total.toLocaleString()}경기`, arc.x, arc.y + offset, maxWidth);
+    ctx.restore();
+  },
+};
+
+const positionLabelPlugin = {
+  id: "positionLabelPlugin",
+  afterDatasetsDraw(chart, _args, options) {
+    const meta = chart.getDatasetMeta(0);
+    const arcs = meta?.data ?? [];
+    const stats = options?.stats ?? [];
+    const total = options?.totalPositionGames ?? 0;
+
+    if (!arcs.length || !stats.length) return;
+
+    const { ctx, chartArea } = chart;
+    if (!chartArea) return;
+
+    const layout = getPositionLabelLayout(chart, stats, total);
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    // chartArea 바깥의 layout.padding도 라벨을 위한 canvas 내부 영역이다.
+    const bounds = {
+      left: Math.max(4, chartArea.left - layout.padding.left + 4),
+      right: Math.min(chart.width - 4, chartArea.right + layout.padding.right - 4),
+      top: Math.max(4, chartArea.top - layout.padding.top + 4),
+      bottom: Math.min(chart.height - 4, chartArea.bottom + layout.padding.bottom - 4),
+    };
+    const groups = { left: [], right: [] };
+
+    ctx.save();
+    ctx.font = `${layout.fontSize}px sans-serif`;
+    ctx.textBaseline = "middle";
+    ctx.lineWidth = 1;
+
+    stats.forEach((stat, index) => {
+      if (!stat || stat.totalCount <= 0) return;
+
+      const arc = arcs[index];
+      if (!arc) return;
+
+      const midAngle = (arc.startAngle + arc.endAngle) / 2;
+      const direction = Math.cos(midAngle) >= 0 ? 1 : -1;
+      const startX = arc.x + Math.cos(midAngle) * arc.outerRadius;
+      const startY = arc.y + Math.sin(midAngle) * arc.outerRadius;
+      const outerX = arc.x + Math.cos(midAngle) * (arc.outerRadius + 6);
+      const outerY = arc.y + Math.sin(midAngle) * (arc.outerRadius + 6);
+      groups[direction > 0 ? "right" : "left"].push({
+        ...layout.labels[index], stat, direction, startX, startY, outerX, outerY, y: outerY,
+      });
+    });
+
+    Object.values(groups).forEach((labels) => {
+      labels.sort((a, b) => a.y - b.y);
+      const minY = bounds.top + layout.labelHeight / 2;
+      const maxY = bounds.bottom - layout.labelHeight / 2;
+      const gap = layout.labelHeight + 6;
+      labels.forEach((label, index) => {
+        label.y = Math.max(clamp(label.y, minY, maxY), index ? labels[index - 1].y + gap : minY);
+      });
+      // 하단에서 역방향 보정해 작은 조각도 생략 없이 일정 간격을 확보한다.
+      for (let index = labels.length - 1; index >= 0; index -= 1) {
+        labels[index].y = Math.min(labels[index].y, index === labels.length - 1 ? maxY : labels[index + 1].y - gap);
+      }
+      labels.forEach((label) => {
+        const right = label.direction > 0;
+        const textX = right
+          ? clamp(chartArea.right + 12, bounds.left, bounds.right - label.width)
+          : clamp(chartArea.left - 12, bounds.left + label.width, bounds.right);
+        const endX = textX - label.direction * 3;
+        const laneX = right ? chartArea.right + 4 : chartArea.left - 4;
+        const color = POSITION_CHART_COLORS[label.stat.ckPosition] ?? "#adb5bd";
+        ctx.strokeStyle = color;
+        ctx.globalAlpha = 0.7;
+        ctx.beginPath();
+        ctx.moveTo(label.startX, label.startY);
+        ctx.lineTo(label.outerX, label.outerY);
+        ctx.lineTo(laneX, label.y);
+        ctx.lineTo(endX, label.y);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = color;
+        ctx.textAlign = right ? "left" : "right";
+        label.lines.forEach((line, index) => {
+          ctx.fillText(line, textX, label.y + (index - (label.lines.length - 1) / 2) * layout.lineHeight);
+        });
+      });
+    });
+
+    ctx.restore();
+  },
+};
+
+const POSITION_CHART_PLUGINS = [positionTotalPlugin, positionLabelPlugin];
+
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
+const POSITION_CHART_COLORS = {
+  TOP: "#f4c95d",
+  JUG: "#8f9bb3",
+  MID: "#55c59d",
+  AD: "#ef7f8d",
+  SUP: "#6f9df5",
+};
 
 export default function StreamerCk() {
   const { streamer, streamerId } = useOutletContext();
@@ -93,6 +233,73 @@ function StreamerCkContent({ streamer, streamerId, period }) {
       winRate: item.totalCount ? Number(((item.winCount / item.totalCount) * 100).toFixed(1)) : 0,
     }));
   }, [vsPositionStats]);
+
+  const activePositionStats = useMemo(
+    () => positionSummaryStats.filter((stat) => stat.totalCount > 0),
+    [positionSummaryStats]
+  );
+
+  const totalPositionGames = useMemo(
+    () => positionSummaryStats.reduce((sum, stat) => sum + stat.totalCount, 0),
+    [positionSummaryStats]
+  );
+
+  const positionDoughnutData = useMemo(() => {
+    if (totalPositionGames === 0) return null;
+
+    return {
+      labels: activePositionStats.map((stat) => stat.ckPosition),
+      datasets: [
+        {
+          data: activePositionStats.map((stat) => stat.totalCount),
+          backgroundColor: activePositionStats.map(
+            (stat) => POSITION_CHART_COLORS[stat.ckPosition] ?? "#adb5bd"
+          ),
+          borderColor: "rgba(255,255,255,0.75)",
+          borderWidth: 1,
+          hoverBorderColor: "#ffffff",
+          hoverBorderWidth: 2,
+          hoverOffset: 4,
+        },
+      ],
+    };
+  }, [activePositionStats, totalPositionGames]);
+
+  const positionDoughnutOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: "65%",
+    layout: {
+      padding: (context) => getPositionLabelLayout(context.chart, activePositionStats, totalPositionGames).padding,
+    },
+    plugins: {
+      positionTotal: { total: totalPositionGames },
+      positionLabelPlugin: {
+        stats: activePositionStats,
+        totalPositionGames,
+      },
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const stat = activePositionStats[context.dataIndex];
+            const ratio = totalPositionGames > 0
+              ? ((stat.totalCount / totalPositionGames) * 100).toFixed(1)
+              : "0.0";
+
+            return [
+              `플레이 비율: ${ratio}%`,
+              `총 ${stat.totalCount}경기`,
+              `${stat.winCount}승 ${stat.loseCount}패`,
+              `승률: ${stat.winRate}%`,
+            ];
+          },
+        },
+      },
+    },
+  };
 
   // 맞라인 상대별 전적 요약
   const vsSummaryStats = useMemo(() => {
@@ -327,35 +534,51 @@ function StreamerCkContent({ streamer, streamerId, period }) {
           <h5 className="mb-0 fw-bold section-title">포지션별 총 전적</h5>
         </div>
         <div className="card-body">
-          <div className="d-flex flex-wrap gap-3 justify-content-center">
-            {positionSummaryStats.map((stat) => (
-              <div
-                key={stat.ckPosition}
-                className={`position-summary-card ${stat.totalCount === 0 ? "inactive" : ""}`}
-              >
-                <div className="position-summary-label">{stat.ckPosition}</div>
-                {stat.totalCount > 0 ? (
-                  <>
-                    <div className="position-summary-record">
-                      <span className={`${stat.winCount == 0 ? "text-secondary" : "text-white"} fw-semibold fs-5`}>{stat.winCount}승</span>
-                      <span className={`${stat.loseCount == 0 ? "text-secondary" : "text-danger"} fw-semibold fs-5`}>{stat.loseCount}패</span>
-                    </div>
-                    <div className="position-summary-bar bg-white bg-opacity-10 rounded-pill">
-                      <div
-                        className="position-summary-bar-fill rounded-pill"
-                        style={{
-                          width: `${stat.winRate}%`,
-                          backgroundColor: getWinRateColor(stat.winRate),
-                        }}
-                      />
-                    </div>
-                    <div className="text-secondary small mt-1">승률 {stat.winRate}%</div>
-                  </>
+          <div className="row g-3 align-items-stretch">
+            <div className="col-12 col-lg-7">
+              <div className="position-summary-grid">
+                {positionSummaryStats.map((stat) => (
+                  <div
+                    key={stat.ckPosition}
+                    className={`position-summary-card ${stat.totalCount === 0 ? "inactive" : ""}`}
+                  >
+                    <div className="position-summary-label">{stat.ckPosition}</div>
+                    {stat.totalCount > 0 ? (
+                      <>
+                        <div className="position-summary-record">
+                          <span className={`${stat.winCount == 0 ? "text-secondary" : "text-white"} fw-semibold fs-5`}>{stat.winCount}승</span>
+                          <span className={`${stat.loseCount == 0 ? "text-secondary" : "text-danger"} fw-semibold fs-5`}>{stat.loseCount}패</span>
+                        </div>
+                        <div className="position-summary-bar bg-white bg-opacity-10 rounded-pill">
+                          <div
+                            className="position-summary-bar-fill rounded-pill"
+                            style={{
+                              width: `${stat.winRate}%`,
+                              backgroundColor: getWinRateColor(stat.winRate),
+                            }}
+                          />
+                        </div>
+                        <div className="text-secondary small mt-1">승률 {stat.winRate}%</div>
+                      </>
+                    ) : (
+                      <div className="position-summary-empty">전적 없음</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="col-12 col-lg-5 position-doughnut-column">
+              <div className="position-doughnut-panel">
+                {totalPositionGames > 0 && positionDoughnutData ? (
+                  <div className="position-doughnut-chart">
+                    <Doughnut data={positionDoughnutData} options={positionDoughnutOptions} plugins={POSITION_CHART_PLUGINS} role="img"
+                      aria-label={`${activePositionStats.map((stat) => `${stat.ckPosition} ${((stat.totalCount / totalPositionGames) * 100).toFixed(1)}%`).join(", ")}`} />
+                  </div>
                 ) : (
-                  <div className="position-summary-empty">전적 없음</div>
+                  <div className="position-doughnut-empty">포지션 전적이 없습니다.</div>
                 )}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>

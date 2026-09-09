@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from "../../utils/axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import Pagination from "../Pagination";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import { adminState, loginIdState, loginState } from "../../utils/jotai";
@@ -9,641 +9,757 @@ import { FaEdit } from "react-icons/fa";
 import AdArea from '../../components/etc/AdArea.jsx'
 import { Helmet } from 'react-helmet-async'
 import FeedbackModal from "../etc/FeedbackModal";
+import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement, Filler, Tooltip, Legend } from "chart.js";
+import { Line } from "react-chartjs-2";
+import "./CkList.css";
 
+ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Filler, Tooltip, Legend);
+
+const MONTHLY_CHART_OPTIONS = {
+   responsive: true,
+   maintainAspectRatio: false,
+   interaction: { mode: "index", intersect: false },
+   plugins: {
+      legend: { display: false },
+      tooltip: {
+         callbacks: {
+            title: (items) => `${items[0]?.label ?? ""}`,
+            label: (context) => `${context.label ?? ""} ${context.parsed.y.toLocaleString()}건`,
+         },
+      },
+   },
+   scales: {
+      x: {
+         ticks: { color: "#aaa", maxRotation: 0 },
+         grid: { color: "rgba(255,255,255,0.02)" },
+      },
+      y: {
+         beginAtZero: true,
+         ticks: { color: "#aaa", precision: 0 },
+         grid: { color: "rgba(255,255,255,0.05)" },
+      },
+   },
+};
 
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
 
 export default function CkList() {
-  const loginId = useAtomValue(loginIdState);
-  const isAdmin = useAtomValue(adminState);
-  const isLogin = useAtomValue(loginState);
-  const [showFeedback, setShowFeedback] = useState(false);
+   const loginId = useAtomValue(loginIdState);
+   const isAdmin = useAtomValue(adminState);
+   const isLogin = useAtomValue(loginState);
+   const [showFeedback, setShowFeedback] = useState(false);
 
-  const [ckList, setCkList] = useState([]);
-  const [page, setPage] = useState(1);
-  const [pageData, setPageData] = useState({
-    page: 1,
-    size: 10,
-    totalCount: 0,
-    totalPage: 0,
-    blockStart: 1,
-    blockFinish: 1,
-    prev: false,
-    next: false,
-  });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+   const [monthlyCount, setMonthlyCount] = useState([]);
+   const [monthlyLoading, setMonthlyLoading] = useState(true);
+   const [monthlyError, setMonthlyError] = useState(null);
+   const now = new Date();
+   const currentYear = now.getFullYear();
+   const currentMonth = now.getMonth() + 1;
 
-  const [selectedCkId, setSelectedCkId] = useState(null);
-  const [participantCache, setParticipantCache] = useState({});
-  const [participantLoading, setParticipantLoading] = useState(false);
-  const [participantError, setParticipantError] = useState(null);
+   useEffect(() => {
+      const controller = new AbortController();
+      const loadMonthlyCount = async () => {
+         setMonthlyLoading(true);
+         setMonthlyError(null);
+         setMonthlyCount([]);
+         try {
+            const { data } = await axios.get("/ck/monthlyCount", {
+               params: { year: currentYear },
+               signal: controller.signal,
+            });
+            if (controller.signal.aborted) return;
+            if (!Array.isArray(data)) throw new Error("Invalid monthly count response");
+            setMonthlyCount(data);
+         } catch (err) {
+            if (controller.signal.aborted || axios.isCancel(err)) return;
+            setMonthlyError("통계를 불러올 수 없습니다.");
+         } finally {
+            if (!controller.signal.aborted) setMonthlyLoading(false);
+         }
+      };
 
-  // CK 항목 부분 수정 상태
-  const [editingDateId, setEditingDateId] = useState(null);
-  const [editingMemoId, setEditingMemoId] = useState(null);
-  const [editingWinnerId, setEditingWinnerId] = useState(null);
-  const [editDateValue, setEditDateValue] = useState("");
-  const [editMemoValue, setEditMemoValue] = useState("");
-  const [editWinnerValue, setEditWinnerValue] = useState("");
-  const [isUpdating, setIsUpdating] = useState(false);
+      loadMonthlyCount();
+      return () => controller.abort();
+   }, [currentYear]);
 
-  const loadCkList = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const { data } = await axios.get("/ck/", { params: { page } });
-      setCkList(data.list ?? []);
-      setPageData(data.pageVO ?? {
-        page,
-        size: 10,
-        totalCount: 0,
-        totalPage: 0,
-        blockStart: 1,
-        blockFinish: 1,
-        prev: false,
-        next: false,
-      });
-      // console.log("CK 목록 로드 성공", data.list);
-    } catch (err) {
-      console.error("CK 목록 로드 실패", err);
-      setError("CK 목록을 불러오지 못했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  }, [page]);
+   const monthMap = useMemo(() => {
+      return (monthlyCount ?? [])
+         .filter((item) => item?.ckMonth != null)
+         .reduce((acc, item) => {
+            acc[Number(item.ckMonth)] = Number(item.ckCount) || 0;
+            return acc;
+         }, {});
+   }, [monthlyCount]);
 
-  const fetchParticipants = useCallback(
-    async (ckId) => {
-      if (!ckId) return;
-      if (participantCache[ckId]) return;
+   const monthlyChartData = useMemo(() => {
+      return Array.from({ length: currentMonth }, (_, index) => ({
+         month: index + 1,
+         count: monthMap[index + 1] ?? 0,
+      }));
+   }, [monthMap, currentMonth]);
 
+   const yearlyTotal = monthlyChartData.reduce((sum, item) => sum + item.count, 0);
+   const monthlyLineData = useMemo(() => ({
+      labels: monthlyChartData.map((item) => `${item.month}월`),
+      datasets: [{
+         label: "CK 등록 건수",
+         data: monthlyChartData.map((item) => item.count),
+         borderColor: "#22c55e",
+         backgroundColor: "rgba(34, 197, 94, 0.08)",
+         borderWidth: 2,
+         fill: true,
+         tension: 0.32,
+         pointRadius: 3,
+         pointHoverRadius: 5,
+         pointBorderColor: "#86efac",
+         pointBackgroundColor: "#22c55e",
+      }],
+   }), [monthlyChartData]);
+
+   const [ckList, setCkList] = useState([]);
+   const [page, setPage] = useState(1);
+   const [pageData, setPageData] = useState({
+      page: 1,
+      size: 10,
+      totalCount: 0,
+      totalPage: 0,
+      blockStart: 1,
+      blockFinish: 1,
+      prev: false,
+      next: false,
+   });
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState(null);
+
+   const [selectedCkId, setSelectedCkId] = useState(null);
+   const [participantCache, setParticipantCache] = useState({});
+   const [participantLoading, setParticipantLoading] = useState(false);
+   const [participantError, setParticipantError] = useState(null);
+
+   // CK 항목 부분 수정 상태
+   const [editingDateId, setEditingDateId] = useState(null);
+   const [editingMemoId, setEditingMemoId] = useState(null);
+   const [editingWinnerId, setEditingWinnerId] = useState(null);
+   const [editDateValue, setEditDateValue] = useState("");
+   const [editMemoValue, setEditMemoValue] = useState("");
+   const [editWinnerValue, setEditWinnerValue] = useState("");
+   const [isUpdating, setIsUpdating] = useState(false);
+
+   const loadCkList = useCallback(async () => {
       try {
-        setParticipantLoading(true);
-        setParticipantError(null);
-        const { data } = await axios.get(`/ck/${ckId}/participant`);
-        const winner = data[0]?.ckWinner ?? null;
-        //console.log("참가자 정보 로드 성공", { ckId, data, winner });
-        setParticipantCache((prev) => ({
-          ...prev,
-          [ckId]: {
-            participants: data,
-            winner,
-          },
-        }));
+         setLoading(true);
+         setError(null);
+         const { data } = await axios.get("/ck/", { params: { page } });
+         setCkList(data.list ?? []);
+         setPageData(data.pageVO ?? {
+            page,
+            size: 10,
+            totalCount: 0,
+            totalPage: 0,
+            blockStart: 1,
+            blockFinish: 1,
+            prev: false,
+            next: false,
+         });
+         // console.log("CK 목록 로드 성공", data.list);
       } catch (err) {
-        console.error("CK 참가자 정보 로드 실패", err);
-        setParticipantError("팀원 정보를 불러올 수 없습니다.");
+         console.error("CK 목록 로드 실패", err);
+         setError("CK 목록을 불러오지 못했습니다.");
       } finally {
-        setParticipantLoading(false);
+         setLoading(false);
       }
-    },
-    [participantCache]
-  );
+   }, [page]);
 
-  useEffect(() => {
-    loadCkList();
-  }, [loadCkList]);
+   const fetchParticipants = useCallback(
+      async (ckId) => {
+         if (!ckId) return;
+         if (participantCache[ckId]) return;
 
-  useEffect(() => {
-    if (selectedCkId !== null) {
-      fetchParticipants(selectedCkId);
-    }
-  }, [selectedCkId, fetchParticipants]);
+         try {
+            setParticipantLoading(true);
+            setParticipantError(null);
+            const { data } = await axios.get(`/ck/${ckId}/participant`);
+            const winner = data[0]?.ckWinner ?? null;
+            //console.log("참가자 정보 로드 성공", { ckId, data, winner });
+            setParticipantCache((prev) => ({
+               ...prev,
+               [ckId]: {
+                  participants: data,
+                  winner,
+               },
+            }));
+         } catch (err) {
+            console.error("CK 참가자 정보 로드 실패", err);
+            setParticipantError("팀원 정보를 불러올 수 없습니다.");
+         } finally {
+            setParticipantLoading(false);
+         }
+      },
+      [participantCache]
+   );
 
-  // 날짜 수정
-  const handleEditDate = useCallback((ck) => {
-    setEditingDateId(ck.ckId);
-    setEditDateValue(ck.ckDate ? new Date(ck.ckDate).toISOString().slice(0, 10) : "");
-  }, []);
+   useEffect(() => {
+      loadCkList();
+   }, [loadCkList]);
 
-  const handleCancelDate = useCallback(() => {
-    setEditingDateId(null);
-    setEditDateValue("");
-  }, []);
+   useEffect(() => {
+      if (selectedCkId !== null) {
+         fetchParticipants(selectedCkId);
+      }
+   }, [selectedCkId, fetchParticipants]);
 
-  const handleSaveDate = useCallback(async (ckId) => {
-    if (!editDateValue) {
-      alert("변경할 날짜를 입력해주세요.");
-      return;
-    }
+   // 날짜 수정
+   const handleEditDate = useCallback((ck) => {
+      setEditingDateId(ck.ckId);
+      setEditDateValue(ck.ckDate ? new Date(ck.ckDate).toISOString().slice(0, 10) : "");
+   }, []);
 
-    try {
-      setIsUpdating(true);
-      const { data } = await axios.patch(`/ck/${ckId}`, { ckDate: editDateValue });
-      setCkList((prev) =>
-        prev.map((ck) => (ck.ckId === ckId ? { ...ck, ckDate: data.ckDate ?? editDateValue } : ck))
-      );
+   const handleCancelDate = useCallback(() => {
       setEditingDateId(null);
       setEditDateValue("");
-    } catch (err) {
-      console.error("CK 날짜 수정 실패", err);
-      alert("CK 날짜를 수정하지 못했습니다.");
-    } finally {
-      setIsUpdating(false);
-    }
-  }, [editDateValue]);
+   }, []);
 
-  //메모(어떤 ck인지) 수정
-  const handleEditMemo = useCallback((ck) => {
-    setEditingMemoId(ck.ckId);
-    setEditMemoValue(ck.ckMemo ?? "");
-  }, []);
+   const handleSaveDate = useCallback(async (ckId) => {
+      if (!editDateValue) {
+         alert("변경할 날짜를 입력해주세요.");
+         return;
+      }
 
-  const handleCancelMemo = useCallback(() => {
-    setEditingMemoId(null);
-    setEditMemoValue("");
-  }, []);
+      try {
+         setIsUpdating(true);
+         const { data } = await axios.patch(`/ck/${ckId}`, { ckDate: editDateValue });
+         setCkList((prev) =>
+            prev.map((ck) => (ck.ckId === ckId ? { ...ck, ckDate: data.ckDate ?? editDateValue } : ck))
+         );
+         setEditingDateId(null);
+         setEditDateValue("");
+      } catch (err) {
+         console.error("CK 날짜 수정 실패", err);
+         alert("CK 날짜를 수정하지 못했습니다.");
+      } finally {
+         setIsUpdating(false);
+      }
+   }, [editDateValue]);
 
-  const handleSaveMemo = useCallback(async (ckId) => {
-    if (!editMemoValue.trim()) {
-      alert("메모를 입력해주세요.");
-      return;
-    }
+   //메모(어떤 ck인지) 수정
+   const handleEditMemo = useCallback((ck) => {
+      setEditingMemoId(ck.ckId);
+      setEditMemoValue(ck.ckMemo ?? "");
+   }, []);
 
-    try {
-      setIsUpdating(true);
-      const { data } = await axios.patch(`/ck/${ckId}`, { ckMemo: editMemoValue });
-      setCkList((prev) =>
-        prev.map((ck) => (ck.ckId === ckId ? { ...ck, ckMemo: data.ckMemo ?? editMemoValue } : ck))
-      );
+   const handleCancelMemo = useCallback(() => {
       setEditingMemoId(null);
       setEditMemoValue("");
-    } catch (err) {
-      console.error("CK 메모 수정 실패", err);
-      alert("CK 메모를 수정하지 못했습니다.");
-    } finally {
-      setIsUpdating(false);
-    }
-  }, [editMemoValue]);
+   }, []);
 
-  //승리팀 수정
-  const handleEditWinner = useCallback((ck) => {
-    setEditingWinnerId(ck.ckId);
-    setEditWinnerValue(ck.ckWinner ?? "");
-  }, []);
+   const handleSaveMemo = useCallback(async (ckId) => {
+      if (!editMemoValue.trim()) {
+         alert("메모를 입력해주세요.");
+         return;
+      }
 
-  const handleCancelWinner = useCallback(() => {
-    setEditingWinnerId(null);
-    setEditWinnerValue("");
-  }, []);
+      try {
+         setIsUpdating(true);
+         const { data } = await axios.patch(`/ck/${ckId}`, { ckMemo: editMemoValue });
+         setCkList((prev) =>
+            prev.map((ck) => (ck.ckId === ckId ? { ...ck, ckMemo: data.ckMemo ?? editMemoValue } : ck))
+         );
+         setEditingMemoId(null);
+         setEditMemoValue("");
+      } catch (err) {
+         console.error("CK 메모 수정 실패", err);
+         alert("CK 메모를 수정하지 못했습니다.");
+      } finally {
+         setIsUpdating(false);
+      }
+   }, [editMemoValue]);
 
-  const handleSaveWinner = useCallback(async (ckId) => {
-    if (!editWinnerValue) {
-      alert("승리팀을 선택해주세요.");
-      return;
-    }
+   //승리팀 수정
+   const handleEditWinner = useCallback((ck) => {
+      setEditingWinnerId(ck.ckId);
+      setEditWinnerValue(ck.ckWinner ?? "");
+   }, []);
 
-    try {
-      setIsUpdating(true);
-
-      const { data } = await axios.patch(`/ck/${ckId}`, {
-        ckWinner: editWinnerValue,
-      });
-
-      setCkList((prev) =>
-        prev.map((ck) =>
-          ck.ckId === ckId
-            ? { ...ck, ckWinner: data.ckWinner ?? editWinnerValue }
-            : ck
-        )
-      );
-
-      setParticipantCache((prev) => {
-        if (!prev[ckId]) return prev;
-        return {
-          ...prev,
-          [ckId]: {
-            ...prev[ckId],
-            winner: editWinnerValue,
-          },
-        };
-      });
-
+   const handleCancelWinner = useCallback(() => {
       setEditingWinnerId(null);
       setEditWinnerValue("");
-    } catch (err) {
-      console.error("CK 결과 수정 실패", err);
-      alert("CK 결과를 수정하지 못했습니다.");
-    } finally {
-      setIsUpdating(false);
-    }
-  }, [editWinnerValue]);
+   }, []);
+
+   const handleSaveWinner = useCallback(async (ckId) => {
+      if (!editWinnerValue) {
+         alert("승리팀을 선택해주세요.");
+         return;
+      }
+
+      try {
+         setIsUpdating(true);
+
+         const { data } = await axios.patch(`/ck/${ckId}`, {
+            ckWinner: editWinnerValue,
+         });
+
+         setCkList((prev) =>
+            prev.map((ck) =>
+               ck.ckId === ckId
+                  ? { ...ck, ckWinner: data.ckWinner ?? editWinnerValue }
+                  : ck
+            )
+         );
+
+         setParticipantCache((prev) => {
+            if (!prev[ckId]) return prev;
+            return {
+               ...prev,
+               [ckId]: {
+                  ...prev[ckId],
+                  winner: editWinnerValue,
+               },
+            };
+         });
+
+         setEditingWinnerId(null);
+         setEditWinnerValue("");
+      } catch (err) {
+         console.error("CK 결과 수정 실패", err);
+         alert("CK 결과를 수정하지 못했습니다.");
+      } finally {
+         setIsUpdating(false);
+      }
+   }, [editWinnerValue]);
 
 
-  //모달
-  const openParticipantModal = useCallback(
-    (ckId) => {
+   //모달
+   const openParticipantModal = useCallback(
+      (ckId) => {
+         setParticipantError(null);
+         setSelectedCkId(ckId);
+      }, []);
+
+   const closeModal = useCallback(() => {
+      setSelectedCkId(null);
       setParticipantError(null);
-      setSelectedCkId(ckId);
-    },[] );
+   }, []);
 
-  const closeModal = useCallback(() => {
-    setSelectedCkId(null);
-    setParticipantError(null);
-  }, []);
+   const selectedCk = useMemo(
+      () => ckList.find((ck) => ck.ckId === selectedCkId) ?? null,
+      [ckList, selectedCkId]
+   );
 
-  const selectedCk = useMemo(
-    () => ckList.find((ck) => ck.ckId === selectedCkId) ?? null,
-    [ckList, selectedCkId]
-  );
+   const selectedParticipantData = selectedCkId ? participantCache[selectedCkId]?.participants ?? [] : [];
+   const selectedWinner = selectedCkId ? participantCache[selectedCkId]?.winner : null;
 
-  const selectedParticipantData = selectedCkId ? participantCache[selectedCkId]?.participants ?? [] : [];
-  const selectedWinner = selectedCkId ? participantCache[selectedCkId]?.winner : null;
+   const redTeam = useMemo(
+      () =>
+         selectedParticipantData
+            .filter((p) => p.ckSide === "red")
+            .sort((a, b) => POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition)),
+      [selectedParticipantData]
+   );
 
-  const redTeam = useMemo(
-    () =>
-      selectedParticipantData
-        .filter((p) => p.ckSide === "red")
-        .sort((a, b) => POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition)),
-    [selectedParticipantData]
-  );
+   const blueTeam = useMemo(
+      () =>
+         selectedParticipantData
+            .filter((p) => p.ckSide === "blue")
+            .sort((a, b) => POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition)),
+      [selectedParticipantData]
+   );
 
-  const blueTeam = useMemo(
-    () =>
-      selectedParticipantData
-        .filter((p) => p.ckSide === "blue")
-        .sort((a, b) => POSITION_ORDER.indexOf(a.ckPosition) - POSITION_ORDER.indexOf(b.ckPosition)),
-    [selectedParticipantData]
-  );
+   const formatDate = (date) => {
+      if (!date) return "-";
 
-  const formatDate = (date) => {
-    if (!date) return "-";
+      const d = new Date(date);
 
-    const d = new Date(date);
+      const year = String(d.getFullYear()).slice(2);
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
 
-    const year = String(d.getFullYear()).slice(2);
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
+      return `${year}.${month}.${day}`;
+   };
 
-    return `${year}.${month}.${day}`;
-  };
-
-  // CK 삭제
-      const deleteCk = useCallback(async(ckId)=>{
-        try{
-            await axios.delete(`/ck/${ckId}`);
-            loadCkList();
-            console.log("CK 삭제 실행");
-        }catch (err) {
-            console.error("CK 삭제 실패", err);
-        }
-    })
+   // CK 삭제
+   const deleteCk = useCallback(async (ckId) => {
+      try {
+         await axios.delete(`/ck/${ckId}`);
+         loadCkList();
+         console.log("CK 삭제 실행");
+      } catch (err) {
+         console.error("CK 삭제 실패", err);
+      }
+   })
 
 
 
 
-  return (
-    <>
-      {/* 헬멧 영역 */}
-       <Helmet>
-        <title>CK | SOOPLOL</title>
+   return (
+      <>
+         {/* 헬멧 영역 */}
+         <Helmet>
+            <title>CK | SOOPLOL</title>
 
-        <meta
-          name="description"
-          content="SOOP 롤 스트리머들의 CK 기록, 팀 구성, 승리 결과 및 월간 CK 랭킹을 확인하세요."
-        />
-      </Helmet>
+            <meta
+               name="description"
+               content="SOOP 롤 스트리머들의 CK 기록, 팀 구성, 승리 결과 및 월간 CK 랭킹을 확인하세요."
+            />
+         </Helmet>
 
 
-      <div className="row g-4 justify-content-center">
-        {/* 월별 ck 랭킹 */}
-        <div className="col-12 col-lg-4">
-          <div className="sticky-top" style={{ top: "90px" }}>
-            <Outlet />
-          </div>
-        </div>
-
-        {/* ck목록 */}
-        <div className="col-12 col-lg-8">
-          <div className="card bg-dark border-secondary text-white p-3 mb-3">
-            <h3 className="mb-1 section-title">CK 전체 목록</h3>
-            <p className="mb-0 text-secondary">
-              - CK 목록은 최소 데이터(세트X)만 조회하며 팀원 상세 정보는 별도 API로 분리됩니다.<br/>
-              - 세트별 교체인원이 있는 CK의 경우(EX 넛저밧CK), 전적이 등록되지 않습니다
-            </p>
-            {/* 피드백 모달 트리거 */}
-            <button type="button" className="btn btn-sm btn-outline-light mt-3"
-                onClick={() => setShowFeedback(true)} >
-                오류·누락 제보
-            </button>
-            {isLogin && (
-              <Link className="btn btn-dark border-secondary mt-1" to="/ck/insert">
-                CK 등록
-              </Link>
-            )}
-          </div>
-          {loading && (
-            <div className="d-flex justify-content-center py-5">
-              <div className="spinner-border text-light" role="status" />
-            </div>
-          )}
-
-          {error && (
-            <div className="alert alert-danger" role="alert">
-              {error}
-            </div>
-          )}
-
-          {!loading && !error && ckList.length === 0 && (
-            <div className="card bg-dark border-secondary text-white p-4 text-center">
-              등록된 CK가 없습니다.
-            </div>
-          )}
-          
-          {/* 콘텐츠 중간광고 */}
-          <AdArea className="mt-1" variant="default" />
-
-          {!loading && !error && ckList.length > 0 && (
-            <div className="card bg-dark border-secondary text-white mb-3">
-              <div className="table-responsive">
-                <table className="table table-dark table-striped mb-0 align-middle">
-                  <thead className="text-center table-secondary text-dark ">
-                    <tr>
-                      <th className="col-2">CK 날짜</th>
-                      <th className="col-5">CK 메모</th>
-                      <th className="col-2">팀원</th>
-                      {isLogin && <>
-                        <th className="col-2">승리변경</th>
-                        <th className="col-1">기능</th>
-                      </>}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ckList.map((ck) => (
-                      <tr key={ck.ckId} className="border-secondary text-center">
-                        <td>
-                          {editingDateId === ck.ckId ? (
-                            <div className="d-flex align-items-center justify-content-center gap-2">
-                              <input type="date" className="form-control form-control-sm"
-                                value={editDateValue} style={{ maxWidth: 170 }}
-                                onChange={(e) => setEditDateValue(e.target.value)}
-                              />
-                              <button type="button" className="btn btn-sm btn-outline-light"
-                                onClick={() => handleSaveDate(ck.ckId)} disabled={isUpdating} >
-                                저장
-                              </button>
-                              <button type="button" className="btn btn-sm btn-outline-secondary" onClick={handleCancelDate}>
-                                취소
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="d-flex align-items-center justify-content-center gap-2">
-                              <span>{formatDate(ck.ckDate)}</span>
-                              {isAdmin && 
-                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEditDate(ck)}>
-                                  <FaEdit />
-                                </button>
-                              }
-                            </div>
-                          )}
-                        </td>
-                        <td>
-                          {editingMemoId === ck.ckId ? (
-                            <div className="d-flex align-items-center justify-content-center gap-2">
-                              <input
-                                type="text"
-                                className="form-control form-control-sm"
-                                value={editMemoValue}
-                                onChange={(e) => setEditMemoValue(e.target.value)}
-                                style={{ minWidth: 200 }}
-                              />
-                              <button
-                                type="button"
-                                className="btn btn-sm btn-outline-light"
-                                onClick={() => handleSaveMemo(ck.ckId)}
-                                disabled={isUpdating}
-                              >
-                                저장
-                              </button>
-                              <button type="button" className="btn btn-sm btn-outline-secondary" onClick={handleCancelMemo}>
-                                취소
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="d-flex align-items-center justify-content-center gap-2">
-                              <span>{ck.ckMemo || "-"}</span>
-                              {isAdmin && 
-                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEditMemo(ck)}>
-                                  <FaEdit />
-                                </button>
-                              }
-                            </div>
-                          )}
-                        </td>
-                        <td>
-                          <button type="button" className="btn btn-sm btn-outline-light"
-                            onClick={() => openParticipantModal(ck.ckId)}
-                            > 팀원 보기 </button>
-                        </td>
-                        {(isAdmin || ck.ckCreatedBy === loginId) ? (<>
-                          <td>
-                            {editingWinnerId !== ck.ckId && (
-                            <div className="d-flex align-items-center justify-content-center gap-2">
-                                <button
-                                  type="button"
-                                  className="btn btn-sm btn-outline-secondary"
-                                  onClick={() => handleEditWinner(ck)}
-                                >
-                                  <FaEdit />
-                                </button>
-                            </div>
-                            )}
-                            {editingWinnerId === ck.ckId && (
-                              <div className="mt-2">
-                                <div className="btn-group w-100 mb-2" role="group">
-                                  <input
-                                    type="radio"
-                                    className="btn-check"
-                                    name={`winner-${ck.ckId}`}
-                                    id={`redWin-${ck.ckId}`}
-                                    value="red"
-                                    checked={editWinnerValue === "red"}
-                                    onChange={(e) => setEditWinnerValue(e.target.value)}
-                                  />
-                                  <label className="btn btn-sm btn-outline-danger" htmlFor={`redWin-${ck.ckId}`}>
-                                    레드 승
-                                  </label>
-
-                                  <input
-                                    type="radio"
-                                    className="btn-check"
-                                    name={`winner-${ck.ckId}`}
-                                    id={`blueWin-${ck.ckId}`}
-                                    value="blue"
-                                    checked={editWinnerValue === "blue"}
-                                    onChange={(e) => setEditWinnerValue(e.target.value)}
-                                  />
-                                  <label className="btn btn-sm btn-outline-primary" htmlFor={`blueWin-${ck.ckId}`}>
-                                    블루 승
-                                  </label>
-                                </div>
-
-                                <div className="d-flex gap-2">
-                                  <button
-                                    type="button"
-                                    className="btn btn-sm btn-outline-light flex-fill"
-                                    onClick={() => handleSaveWinner(ck.ckId)}
-                                    disabled={isUpdating || !editWinnerValue}
-                                  >
-                                    저장
-                                  </button>
-
-                                  <button
-                                    type="button"
-                                    className="btn btn-sm btn-outline-secondary flex-fill"
-                                    onClick={handleCancelWinner}
-                                  >
-                                    취소
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </td>
-
-                        <td>
-                          <button type="button" className="btn btn-sm btn-outline-danger"
-                            onClick={() => deleteCk(ck.ckId)}
-                            > 삭제 </button> 
-                        </td>
-                        </>):
-                          isLogin ? (
-                          <>
-                            <td><span>-</span></td>
-                            <td><span>-</span></td>
-                          </>) : (
-                          <></>)}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {selectedCkId !== null && (
-            <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-               onClick={closeModal} style={{ backgroundColor: "rgba(0, 0, 0, 0.75)", zIndex: 1050 }}
-              >
-              <div className="card bg-dark border-secondary text-white w-100 mx-3"
-                onClick={(e) => e.stopPropagation()} style={{ maxWidth: 960 }}
-              >
-                <div className="card-header d-flex justify-content-between align-items-center">
-                  <div>
-                    <h5 className="mb-1">CK 팀원 정보</h5>
-                    <div className="text-secondary">
-                      {selectedCk ? `${formatDate(selectedCk.ckDate)} ${selectedCk.ckMemo || ""}` : ""}
-                    </div>
+         <div className="row g-4 justify-content-center">
+            <div className="col-12 col-lg-4">
+               <section className="ck-monthly-chart card bg-dark border-secondary text-white mb-3"
+                  aria-labelledby="ck-monthly-chart-title" aria-busy={monthlyLoading}>
+                  <div className="ck-monthly-chart-header">
+                     <h5 id="ck-monthly-chart-title" className="ck-monthly-chart-title">{currentYear} 월별 CK 추이</h5>
+                     {!monthlyLoading && !monthlyError && (
+                        <span className="ck-monthly-chart-total">올해 총 {yearlyTotal.toLocaleString()}건</span>
+                     )}
                   </div>
-                  <button className="btn btn-sm btn-outline-light" onClick={closeModal}>
-                    닫기
+                  <div className="ck-monthly-chart-body">
+                     {monthlyLoading ? (
+                        <div className="ck-monthly-chart-status" role="status">통계를 불러오는 중입니다...</div>
+                     ) : monthlyError ? (
+                        <div className="ck-monthly-chart-status" role="alert">{monthlyError}</div>
+                     ) : (
+                        <Line data={monthlyLineData} options={MONTHLY_CHART_OPTIONS} role="img"
+                           aria-label={`${currentYear}년 월별 CK 현황: ${monthlyChartData.map((item) => `${item.month}월 ${item.count}건`).join(", ")}`} />
+                     )}
+                  </div>
+                  {!monthlyLoading && !monthlyError && yearlyTotal === 0 && (
+                     <p className="ck-monthly-chart-total mt-2 mb-0">해당 기간에 등록된 CK가 없습니다.</p>
+                  )}
+               </section>
+
+               <div className="sticky-top" style={{ top: "90px" }}>
+                  <Outlet />
+               </div>
+            </div>
+
+            <div className="col-12 col-lg-8 ck-list-main">
+               <div className="card bg-dark border-secondary text-white p-3 mb-3">
+                  <h3 className="mb-1 section-title">CK 전체 목록</h3>
+                  <p className="mb-0 text-secondary">
+                     - CK 목록은 최소 데이터(세트X)만 조회하며 팀원 상세 정보는 별도 API로 분리됩니다.<br />
+                     - 세트별 교체인원이 있는 CK의 경우(EX 넛저밧CK), 전적이 등록되지 않습니다
+                  </p>
+                  <button type="button" className="btn btn-sm btn-outline-light mt-3"
+                     onClick={() => setShowFeedback(true)} >
+                     오류·누락 제보
                   </button>
-                </div>
-                <div className="card-body ck-modal-body-scroll">
-                  {participantLoading && (
-                    <div className="d-flex justify-content-center py-4">
-                      <div className="spinner-border text-light" role="status" />
-                    </div>
+                  {isLogin && (
+                     <Link className="btn btn-dark border-secondary mt-1" to="/ck/insert">
+                        CK 등록
+                     </Link>
                   )}
+               </div>
+               {loading && (
+                  <div className="d-flex justify-content-center py-5">
+                     <div className="spinner-border text-light" role="status" />
+                  </div>
+               )}
 
-                  {participantError && (
-                    <div className="alert alert-danger" role="alert">
-                      {participantError}
-                    </div>
-                  )}
+               {error && (
+                  <div className="alert alert-danger" role="alert">
+                     {error}
+                  </div>
+               )}
 
-                  {!participantLoading && !participantError && selectedParticipantData.length === 0 && (
-                    <div className="text-white text-center py-4">참여 인원이 없습니다.</div>
-                  )}
+               {!loading && !error && ckList.length === 0 && (
+                  <div className="card bg-dark border-secondary text-white p-4 text-center">
+                     등록된 CK가 없습니다.
+                  </div>
+               )}
 
-                  {!participantLoading && !participantError && selectedParticipantData.length > 0 && (
-                    <div className="d-grid gap-2">
-                      
-                      {POSITION_ORDER.map((position) => {
-                        const redParticipant = redTeam.find((p) => p.ckPosition === position);
-                        const blueParticipant = blueTeam.find((p) => p.ckPosition === position);
-                        const redWin = selectedWinner === "red";
-                        const blueWin = selectedWinner === "blue";
+               {!loading && !error && ckList.length > 0 && (
+                  <div className="card bg-dark border-secondary text-white mb-3">
+                     <div className="table-responsive">
+                        <table className="table table-dark table-striped mb-0 align-middle">
+                           <thead className="text-center table-secondary text-dark ">
+                              <tr>
+                                 <th className="col-2">CK 날짜</th>
+                                 <th className="col-5">CK 메모</th>
+                                 <th className="col-2">팀원</th>
+                                 {isLogin && <>
+                                    <th className="col-2">승리변경</th>
+                                    <th className="col-1">기능</th>
+                                 </>}
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {ckList.map((ck) => (
+                                 <tr key={ck.ckId} className="border-secondary text-center">
+                                    <td>
+                                       {editingDateId === ck.ckId ? (
+                                          <div className="d-flex align-items-center justify-content-center gap-2">
+                                             <input type="date" className="form-control form-control-sm"
+                                                value={editDateValue} style={{ maxWidth: 170 }}
+                                                onChange={(e) => setEditDateValue(e.target.value)}
+                                             />
+                                             <button type="button" className="btn btn-sm btn-outline-light"
+                                                onClick={() => handleSaveDate(ck.ckId)} disabled={isUpdating} >
+                                                저장
+                                             </button>
+                                             <button type="button" className="btn btn-sm btn-outline-secondary" onClick={handleCancelDate}>
+                                                취소
+                                             </button>
+                                          </div>
+                                       ) : (
+                                          <div className="d-flex align-items-center justify-content-center gap-2">
+                                             <span>{formatDate(ck.ckDate)}</span>
+                                             {isAdmin &&
+                                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEditDate(ck)}>
+                                                   <FaEdit />
+                                                </button>
+                                             }
+                                          </div>
+                                       )}
+                                    </td>
+                                    <td>
+                                       {editingMemoId === ck.ckId ? (
+                                          <div className="d-flex align-items-center justify-content-center gap-2">
+                                             <input
+                                                type="text"
+                                                className="form-control form-control-sm"
+                                                value={editMemoValue}
+                                                onChange={(e) => setEditMemoValue(e.target.value)}
+                                                style={{ minWidth: 200 }}
+                                             />
+                                             <button
+                                                type="button"
+                                                className="btn btn-sm btn-outline-light"
+                                                onClick={() => handleSaveMemo(ck.ckId)}
+                                                disabled={isUpdating}
+                                             >
+                                                저장
+                                             </button>
+                                             <button type="button" className="btn btn-sm btn-outline-secondary" onClick={handleCancelMemo}>
+                                                취소
+                                             </button>
+                                          </div>
+                                       ) : (
+                                          <div className="d-flex align-items-center justify-content-center gap-2">
+                                             <span>{ck.ckMemo || "-"}</span>
+                                             {isAdmin &&
+                                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEditMemo(ck)}>
+                                                   <FaEdit />
+                                                </button>
+                                             }
+                                          </div>
+                                       )}
+                                    </td>
+                                    <td>
+                                       <button type="button" className="btn btn-sm btn-outline-light"
+                                          onClick={() => openParticipantModal(ck.ckId)}
+                                       > 팀원 보기 </button>
+                                    </td>
+                                    {(isAdmin || ck.ckCreatedBy === loginId) ? (<>
+                                       <td>
+                                          {editingWinnerId !== ck.ckId && (
+                                             <div className="d-flex align-items-center justify-content-center gap-2">
+                                                <button
+                                                   type="button"
+                                                   className="btn btn-sm btn-outline-secondary"
+                                                   onClick={() => handleEditWinner(ck)}
+                                                >
+                                                   <FaEdit />
+                                                </button>
+                                             </div>
+                                          )}
+                                          {editingWinnerId === ck.ckId && (
+                                             <div className="mt-2">
+                                                <div className="btn-group w-100 mb-2" role="group">
+                                                   <input
+                                                      type="radio"
+                                                      className="btn-check"
+                                                      name={`winner-${ck.ckId}`}
+                                                      id={`redWin-${ck.ckId}`}
+                                                      value="red"
+                                                      checked={editWinnerValue === "red"}
+                                                      onChange={(e) => setEditWinnerValue(e.target.value)}
+                                                   />
+                                                   <label className="btn btn-sm btn-outline-danger" htmlFor={`redWin-${ck.ckId}`}>
+                                                      레드 승
+                                                   </label>
 
-                        return (
-                          <div key={position} className="ck-participant-line">
-                            <div className="ck-participant-slot justify-content-end">
-                              {redParticipant ? (
-                                <Link to={`/streamer/${redParticipant.ckStreamer}`}
-                                  className={`ck-participant-card red ${redWin ? "win" : ""} text-white text-decoration-none justify-content-end`}
-                                >
-                                  {redWin && <span className="badge bg-danger">승</span>}
-                                  <div className="ck-participant-info text-end">
-                                    <div className="ck-participant-name">{redParticipant.streamerName || "-"}</div>
-                                    <div className="ck-participant-meta">{redParticipant.ckPosition || position}</div>
-                                  </div>
-                                  <img src={buildProfileUrl(redParticipant.streamerSoopId)}
-                                    className="ck-participant-avatar" alt={redParticipant.streamerName || "Red 팀원"}
-                                  />
-                                </Link>
-                              ) : (
-                                <div className="ck-participant-card none justify-content-center">참가 없음</div>
-                              )}
-                            </div>
+                                                   <input
+                                                      type="radio"
+                                                      className="btn-check"
+                                                      name={`winner-${ck.ckId}`}
+                                                      id={`blueWin-${ck.ckId}`}
+                                                      value="blue"
+                                                      checked={editWinnerValue === "blue"}
+                                                      onChange={(e) => setEditWinnerValue(e.target.value)}
+                                                   />
+                                                   <label className="btn btn-sm btn-outline-primary" htmlFor={`blueWin-${ck.ckId}`}>
+                                                      블루 승
+                                                   </label>
+                                                </div>
 
-                            <div className="ck-participant-vs">
-                              <span className="badge bg-secondary text-white">VS</span>
-                            </div>
+                                                <div className="d-flex gap-2">
+                                                   <button
+                                                      type="button"
+                                                      className="btn btn-sm btn-outline-light flex-fill"
+                                                      onClick={() => handleSaveWinner(ck.ckId)}
+                                                      disabled={isUpdating || !editWinnerValue}
+                                                   >
+                                                      저장
+                                                   </button>
 
-                            <div className="ck-participant-slot justify-content-start">
-                              {blueParticipant ? (
-                                <Link to={`/streamer/${blueParticipant.ckStreamer}`}
-                                  className={`ck-participant-card blue ${blueWin ? "win" : ""} text-white text-decoration-none justify-content-start`}
-                                >
-                                  
-                                  <img  src={buildProfileUrl(blueParticipant.streamerSoopId)}
-                                    className="ck-participant-avatar" alt={blueParticipant.streamerName || "Blue 팀원"}
-                                  />
-                                  <div className="ck-participant-info text-start">
-                                    <div className="ck-participant-name">{blueParticipant.streamerName || "-"}</div>
-                                    <div className="ck-participant-meta">{blueParticipant.ckPosition || position}</div>
-                                  </div>
-                                  {blueWin && <span className="badge bg-primary">승</span>}
-                                </Link>
-                              ) : (
-                                <div className="ck-participant-card none justify-content-center">참가 없음</div>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </div>
+                                                   <button
+                                                      type="button"
+                                                      className="btn btn-sm btn-outline-secondary flex-fill"
+                                                      onClick={handleCancelWinner}
+                                                   >
+                                                      취소
+                                                   </button>
+                                                </div>
+                                             </div>
+                                          )}
+                                       </td>
+
+                                       <td>
+                                          <button type="button" className="btn btn-sm btn-outline-danger"
+                                             onClick={() => deleteCk(ck.ckId)}
+                                          > 삭제 </button>
+                                       </td>
+                                    </>) :
+                                       isLogin ? (
+                                          <>
+                                             <td><span>-</span></td>
+                                             <td><span>-</span></td>
+                                          </>) : (
+                                          <></>)}
+                                 </tr>
+                              ))}
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               )}
+
+               {/* 콘텐츠 중간광고 */}
+               <AdArea className="mt-1" variant="default" />
+
+               {selectedCkId !== null && (
+                  <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                     onClick={closeModal} style={{ backgroundColor: "rgba(0, 0, 0, 0.75)", zIndex: 1050 }}
+                  >
+                     <div className="card bg-dark border-secondary text-white w-100 mx-3"
+                        onClick={(e) => e.stopPropagation()} style={{ maxWidth: 960 }}
+                     >
+                        <div className="card-header d-flex justify-content-between align-items-center">
+                           <div>
+                              <h5 className="mb-1">CK 팀원 정보</h5>
+                              <div className="text-secondary">
+                                 {selectedCk ? `${formatDate(selectedCk.ckDate)} ${selectedCk.ckMemo || ""}` : ""}
+                              </div>
+                           </div>
+                           <button className="btn btn-sm btn-outline-light" onClick={closeModal}>
+                              닫기
+                           </button>
+                        </div>
+                        <div className="card-body ck-modal-body-scroll">
+                           {participantLoading && (
+                              <div className="d-flex justify-content-center py-4">
+                                 <div className="spinner-border text-light" role="status" />
+                              </div>
+                           )}
+
+                           {participantError && (
+                              <div className="alert alert-danger" role="alert">
+                                 {participantError}
+                              </div>
+                           )}
+
+                           {!participantLoading && !participantError && selectedParticipantData.length === 0 && (
+                              <div className="text-white text-center py-4">참여 인원이 없습니다.</div>
+                           )}
+
+                           {!participantLoading && !participantError && selectedParticipantData.length > 0 && (
+                              <div className="d-grid gap-2">
+
+                                 {POSITION_ORDER.map((position) => {
+                                    const redParticipant = redTeam.find((p) => p.ckPosition === position);
+                                    const blueParticipant = blueTeam.find((p) => p.ckPosition === position);
+                                    const redWin = selectedWinner === "red";
+                                    const blueWin = selectedWinner === "blue";
+
+                                    return (
+                                       <div key={position} className="ck-participant-line">
+                                          <div className="ck-participant-slot justify-content-end">
+                                             {redParticipant ? (
+                                                <Link to={`/streamer/${redParticipant.ckStreamer}`}
+                                                   className={`ck-participant-card red ${redWin ? "win" : ""} text-white text-decoration-none justify-content-end`}
+                                                >
+                                                   {redWin && <span className="badge bg-danger">승</span>}
+                                                   <div className="ck-participant-info text-end">
+                                                      <div className="ck-participant-name">{redParticipant.streamerName || "-"}</div>
+                                                      <div className="ck-participant-meta">{redParticipant.ckPosition || position}</div>
+                                                   </div>
+                                                   <img src={buildProfileUrl(redParticipant.streamerSoopId)}
+                                                      className="ck-participant-avatar" alt={redParticipant.streamerName || "Red 팀원"}
+                                                   />
+                                                </Link>
+                                             ) : (
+                                                <div className="ck-participant-card none justify-content-center">참가 없음</div>
+                                             )}
+                                          </div>
+
+                                          <div className="ck-participant-vs">
+                                             <span className="badge bg-secondary text-white">VS</span>
+                                          </div>
+
+                                          <div className="ck-participant-slot justify-content-start">
+                                             {blueParticipant ? (
+                                                <Link to={`/streamer/${blueParticipant.ckStreamer}`}
+                                                   className={`ck-participant-card blue ${blueWin ? "win" : ""} text-white text-decoration-none justify-content-start`}
+                                                >
+
+                                                   <img src={buildProfileUrl(blueParticipant.streamerSoopId)}
+                                                      className="ck-participant-avatar" alt={blueParticipant.streamerName || "Blue 팀원"}
+                                                   />
+                                                   <div className="ck-participant-info text-start">
+                                                      <div className="ck-participant-name">{blueParticipant.streamerName || "-"}</div>
+                                                      <div className="ck-participant-meta">{blueParticipant.ckPosition || position}</div>
+                                                   </div>
+                                                   {blueWin && <span className="badge bg-primary">승</span>}
+                                                </Link>
+                                             ) : (
+                                                <div className="ck-participant-card none justify-content-center">참가 없음</div>
+                                             )}
+                                          </div>
+                                       </div>
+                                    );
+                                 })}
+                              </div>
+                           )}
+                        </div>
+                     </div>
+                  </div>
+               )}
+
+               {!loading && !error && (
+                  <div className="row mt-2">
+                     <div className="col-12 d-flex flex-column align-items-center gap-2">
+                        <div className="text-white">
+                           현재 페이지: <strong>{pageData.page}</strong> / 전체 페이지: <strong>{pageData.totalPage}</strong>
+                        </div>
+                        <Pagination
+                           page={page}
+                           totalPage={pageData.totalPage}
+                           blockStart={pageData.blockStart}
+                           blockFinish={pageData.blockFinish}
+                           onPageChange={setPage}
+                        />
+                     </div>
+                  </div>
+               )}
             </div>
-          )}
+         </div>
 
-          {/* 페이지네이션 */}
-          {!loading && !error && (
-            <div className="row mt-2">
-              <div className="col-12 d-flex flex-column align-items-center gap-2">
-                <div className="text-white">
-                  현재 페이지: <strong>{pageData.page}</strong> / 전체 페이지: <strong>{pageData.totalPage}</strong>
-                </div>
-                <Pagination
-                  page={page}
-                  totalPage={pageData.totalPage}
-                  blockStart={pageData.blockStart}
-                  blockFinish={pageData.blockFinish}
-                  onPageChange={setPage}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-      
-      {/* 피드백 모달 */}
-      <FeedbackModal  show={showFeedback}
-        onClose={() => setShowFeedback(false)}
-        targetType="CK" targetId="" targetName="CK"
-      />
-    </>
-  );
+         {/* 피드백 모달 */}
+         <FeedbackModal show={showFeedback}
+            onClose={() => setShowFeedback(false)}
+            targetType="CK" targetId="" targetName="CK"
+         />
+      </>
+   );
 }

@@ -535,6 +535,17 @@
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
 
+.board-detail-content a {
+    color: #0759b5;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+
+.board-detail-content a:hover,
+.board-detail-content a:focus-visible {
+    color: #043c7c;
+}
+
 .board-detail-content::selection {
     background: rgba(234, 134, 133, 0.35);
 }

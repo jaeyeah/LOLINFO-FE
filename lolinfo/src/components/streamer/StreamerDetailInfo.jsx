@@ -4,6 +4,49 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+const participationTotalPlugin = {
+  id: "streamerParticipationTotal",
+  afterDraw(chart, _args, options) {
+    const { ctx, chartArea } = chart;
+    if (!chartArea) return;
+    const arc = chart.getDatasetMeta(0).data[0];
+    const x = arc?.x ?? (chartArea.left + chartArea.right) / 2;
+    const y = arc?.y ?? (chartArea.top + chartArea.bottom) / 2;
+    ctx.save();
+    ctx.fillStyle = "#f8f9fa";
+    ctx.font = "600 16px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(`총 ${options.total.toLocaleString()}회`, x, y, Math.max((arc?.innerRadius ?? 65) * 1.8, 1));
+    ctx.restore();
+  },
+};
+const RECORD_CHART_PLUGINS = [participationTotalPlugin];
+const RECORD_CHART_OPTIONS = {
+  responsive: true,
+  maintainAspectRatio: false,
+  cutout: "68%",
+  plugins: {
+    legend: {
+      position: "bottom",
+      labels: { color: "#ced4da", usePointStyle: true, boxWidth: 8, boxHeight: 8, padding: 12 },
+    },
+    tooltip: {
+      callbacks: {
+        label: (context) => {
+          const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
+          const percent = total > 0 ? (context.parsed / total * 100).toFixed(1) : "0.0";
+          return `${context.label}: ${context.parsed}회 (${percent}%)`;
+        },
+      },
+    },
+  },
+};
 
 export default function StreamerDetailInfo() {
   const { streamer, streamerId } = useOutletContext();
@@ -101,7 +144,29 @@ export default function StreamerDetailInfo() {
       ],
       filter: () => true,
     },
-  ];
+  ].map((section) => {
+    const teams = streamerTeam.filter(section.filter);
+    const total = teams.length;
+    const counts = section.stats.map((stat) => Number(stat.value ?? 0));
+    const placedTotal = counts.reduce((sum, value) => sum + value, 0);
+    // 집계가 참가 수를 초과하면 임의로 횟수를 줄이거나 비율을 왜곡하지 않는다.
+    const chartAvailable = counts.every((count) => Number.isInteger(count) && count >= 0) && placedTotal <= total;
+    return {
+      ...section,
+      teams,
+      total,
+      chartAvailable,
+      chartData: {
+        labels: ["우승", "준우승", "4강", "기타"],
+        datasets: [{
+          data: [...counts, Math.max(total - placedTotal, 0)],
+          backgroundColor: ["#c9ad63", "#b8c0cc", "#ac8870", "#495057"],
+          borderWidth: 0,
+          hoverOffset: 3,
+        }],
+      },
+    };
+  });
 
   return (
     <>
@@ -182,7 +247,7 @@ export default function StreamerDetailInfo() {
 
       <div className="row g-3 mt-2">
         {sections.map((section) => {
-          const filteredTeams = streamerTeam.filter(section.filter);
+          const filteredTeams = section.teams;
 
           return (
             <div className="col-md-6" key={section.key}>
@@ -190,6 +255,23 @@ export default function StreamerDetailInfo() {
                 <span className="detail-section-title">{section.title}</span>
               </div>
               <div className="stat-box">
+                {section.chartAvailable ? (
+                  <div className="streamer-record-chart">
+                    <Doughnut data={section.chartData} plugins={RECORD_CHART_PLUGINS}
+                      options={{
+                        ...RECORD_CHART_OPTIONS,
+                        plugins: {
+                          ...RECORD_CHART_OPTIONS.plugins,
+                          streamerParticipationTotal: { total: section.total },
+                        },
+                      }}
+                      role="img" aria-label={`${section.title}, 총 ${section.total}회. ${section.chartData.labels.map((label, index) => `${label} ${section.chartData.datasets[0].data[index]}회`).join(", ")}`} />
+                  </div>
+                ) : (
+                  <p className="streamer-record-chart-notice" role="status">
+                    참가 대회 수와 입상 통계가 일치하지 않아 차트를 표시할 수 없습니다.
+                  </p>
+                )}
                 <div className="row text-center">
                   {section.stats.map((stat) => (
                     <div className="col" key={stat.label}>

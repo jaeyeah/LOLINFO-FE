@@ -48,6 +48,7 @@ import DevHistory from "./etc/DevHistory";
 import About from "./About";
 import Ranking from "./ranking/Ranking";
 import CkRanking from "./ranking/ck/CkRanking";
+import MyeolmangRanking from "./ranking/myeolmang/MyeolmangRanking";
 
 export default function Content(){
 
@@ -118,14 +119,15 @@ return (<>
 
                 {/* CK */}
                 <Route path="/ck" element={<CkList />}>
-                    <Route index element={<Navigate to="ranking" replace />} />
-                    <Route path="ranking" element={<CkMonthRanking />} />
+                    <Route index element={<CkMonthRanking />} />
+                    <Route path="ranking" element={<Navigate to="/ck" replace />} />
                 </Route>
                 <Route path="/ck/insert" element={<CkInsert/>}/>
 
                 <Route path="/ranking" element={<Ranking />}>
                     <Route index element={<Navigate to="ck" replace />} />
                     <Route path="ck" element={<CkRanking />} />
+                    <Route path="myeolmang" element={<MyeolmangRanking />} />
                 </Route>
 
                 {/* 게시판 */}

@@ -3,8 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import "./Ck.css";
+import { motion, useReducedMotion } from "motion/react";
+import { getRankingRowMotion } from "../ranking/ck/rankingMotion";
 
-export default function CkMonthRanking() {
+export default function CkMonthRanking({ animateRows = false, motionProps = {} }) {
+  const shouldReduceMotion = useReducedMotion();
+  const Card = animateRows ? motion.div : "div";
+  const Row = animateRows ? motion.div : "div";
   const [month, setMonth] = useState(() => {
     const now = new Date();
     const year = now.getFullYear();
@@ -57,7 +62,7 @@ export default function CkMonthRanking() {
 
 
   return (
-    <div className="card bg-dark border-secondary text-white shadow-sm h-100">
+    <Card {...motionProps} className="card bg-dark border-secondary text-white shadow-sm h-100">
       <div className="card-body">
         <div className="d-flex justify-content-between align-items-center mb-3">
             <h3 className="mb-1 section-title">월간 다승 Top 10</h3>
@@ -89,7 +94,9 @@ export default function CkMonthRanking() {
               const streamerSoopId = item.streamerSoopId || "";
 
               return (
-                <div key={`${streamerId}-${index}`} className={`border rounded p-1 ps-3 pe-3 ${
+                <Row key={animateRows ? streamerId : `${streamerId}-${index}`}
+                  {...(animateRows ? getRankingRowMotion(index, shouldReduceMotion) : {})}
+                  className={`border rounded p-1 ps-3 pe-3 ${
                       item.currentResult === "W" && item.currentStreak >= 5 ? "ck-ranking-streak streak-hot"
                         : item.currentResult === "W" && item.currentStreak > 1 ? "ck-ranking-streak" : "border-secondary bg-black bg-opacity-10" }`}>
                   <div className="d-flex align-items-center gap-3">
@@ -134,12 +141,12 @@ export default function CkMonthRanking() {
                         </div>
                     </div>
                   </div>
-                </div>
+                </Row>
               );
             })}
           </div>
         )}
       </div>
-    </div>
+    </Card>
   );
 }

@@ -1,0 +1,112 @@
+.ck-list-main,
+.ck-monthly-chart {
+  min-width: 0;
+}
+
+.ck-monthly-chart {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.ck-monthly-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.ck-monthly-chart-title {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.ck-monthly-chart-total {
+  color: #aaa;
+  font-size: 0.78rem;
+}
+
+.ck-monthly-chart-body {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  height: 184px;
+}
+
+.ck-monthly-chart-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #aaa;
+  text-align: center;
+}
+
+.ck-monthly-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.ck-monthly-chart-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.ck-monthly-chart-total {
+  color: #aaa;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+@media (min-width: 992px) {
+  .ck-monthly-chart {
+    height: auto;
+  }
+
+  .ck-monthly-chart-body {
+    height: 184px;
+  }
+}
+
+@media (max-width: 991px) {
+  .ck-monthly-chart {
+    padding: 14px;
+  }
+
+  .ck-monthly-chart-body {
+    height: 182px;
+  }
+
+  .col-12.col-lg-4 {
+    order: 1;
+  }
+
+  .col-12.col-lg-8.ck-list-main {
+    order: 2;
+  }
+
+  .sticky-top {
+    position: static !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .ck-monthly-chart {
+    padding: 12px;
+  }
+
+  .ck-monthly-chart-body {
+    height: 180px;
+  }
+}

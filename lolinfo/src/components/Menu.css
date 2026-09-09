@@ -178,6 +178,13 @@
   padding: 0.55rem 1rem;
 }
 
+.cinema-navbar .sub-item {
+  color: #ffffff;
+  background: rgba(26, 31, 59, 0.315) ;
+} 
+
+
+
 .cinema-navbar .dropdown-item:hover,
 .cinema-navbar .dropdown-item:focus {
   color: #ffffff;
