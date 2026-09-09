@@ -119,8 +119,8 @@ return (<>
 
                 {/* CK */}
                 <Route path="/ck" element={<CkList />}>
-                    <Route index element={<Navigate to="ranking" replace />} />
-                    <Route path="ranking" element={<CkMonthRanking />} />
+                    <Route index element={<CkMonthRanking />} />
+                    <Route path="ranking" element={<Navigate to="/ck" replace />} />
                 </Route>
                 <Route path="/ck/insert" element={<CkInsert/>}/>
 
