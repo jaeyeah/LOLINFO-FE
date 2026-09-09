@@ -811,6 +811,261 @@
   box-shadow: 0 6px 16px rgba(0,0,0,0.25);  /* 검은배경에서도 떠보이게 */
 }
 
+/* 참여 대회: 공통 대회 카드 스타일의 영향은 이 화면 안에서만 조정 */
+.streamer-tournaments {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  min-width: 0;
+}
+
+.streamer-tournaments-section,
+.streamer-tournaments-layout,
+.streamer-tournaments-body {
+  min-width: 0;
+}
+
+.streamer-tournaments .section-title-isofficial {
+  background: #142c50;
+  border: 1px solid #294b7c;
+  box-shadow: none;
+  font-size: 1rem;
+  letter-spacing: 0;
+  margin-bottom: 12px;
+}
+
+.streamer-tournaments .streamer-tournaments-card {
+  min-width: 0;
+  margin-bottom: 16px;
+  padding: 18px;
+  /* 기존 .team-card / .is-champion의 important 배경과 모서리 덮어쓰기 */
+  background: #182130 !important;
+  border: 1px solid #334155;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+  color: #e2e8f0;
+}
+
+.streamer-tournaments .team-card.is-champion {
+  background: linear-gradient(
+    90deg,
+    rgba(199, 181, 22, 0.753),
+    rgba(226, 188, 85, 0.178)
+  ) !important;
+  border-color: #8c7537;
+  border-left: 3px solid #e2bd55;
+}
+
+.streamer-tournaments .team-card.is-second {
+  background: linear-gradient(
+    90deg,
+    rgba(113, 124, 141, 0.863),
+    rgba(185, 196, 210, 0.171)
+  ) !important;
+  border-color: #677487;
+  border-left: 3px solid #b9c4d2;
+}
+
+.streamer-tournaments-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.streamer-tournaments .streamer-year-tag {
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+
+.streamer-tournaments-metadata .badge {
+  width: auto;
+  max-width: 100%;
+  padding: 5px 7px;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.streamer-tournaments-metadata .tier-text {
+  color: #182130;
+}
+
+.streamer-tournaments-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) fit-content(28%);
+  align-items: start;
+  gap: 12px;
+}
+
+.streamer-tournaments .tournament-row {
+  flex-direction: column;
+  align-items: flex-start;
+  height: auto;
+  gap: 6px;
+}
+
+.streamer-tournaments .tournament-title {
+  max-width: 100%;
+  color: #f1f5f9;
+  font-size: 1.2rem;
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+.streamer-tournaments .team-name {
+  max-width: 100%;
+  padding: 0;
+  background: none;
+  color: #aab8ca !important;
+  font-size: 0.9rem !important;
+}
+
+/* 공통 .team-card의 강제 한 줄 표시를 해제 */
+.streamer-tournaments .tournament-title,
+.streamer-tournaments .team-name,
+.streamer-tournaments .team-ranking {
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+
+.streamer-tournaments-ranking {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-width: 0;
+  min-height: 34px;
+  text-align: right;
+}
+
+.streamer-tournaments .team-ranking {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+}
+
+.streamer-tournaments-roster {
+  margin-top: 16px;
+  background: #111a28;
+  border: 1px solid #293548;
+  border-radius: 10px;
+}
+
+.streamer-tournaments .team-member {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: start;
+  gap: 6px;
+  padding: 12px 8px;
+}
+
+.streamer-tournaments .streamer-link,
+.streamer-tournaments .player {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.streamer-tournaments .player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transform: none;
+}
+
+.streamer-tournaments .player-profile {
+  /* 공통 .team-member의 60px 고정 크기 해제 */
+  width: 48px !important;
+  height: auto !important;
+  max-width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.streamer-tournaments .player-name {
+  display: block;
+  max-width: 100%;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  text-align: center;
+  color: #cbd5e1;
+}
+
+.streamer-tournaments .player-name.highlighted {
+  background: #253b5c;
+  padding: 0 4px;
+}
+
+.streamer-tournaments a:focus-visible {
+  outline: 2px solid #82b5ff;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .streamer-tournaments .team-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.24);
+  }
+}
+
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .streamer-tournaments .team-card:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .streamer-tournaments {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .streamer-tournaments .streamer-tournaments-card {
+    padding: 14px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .streamer-tournaments .streamer-tournaments-card {
+    padding: 12px 10px;
+  }
+
+  .streamer-tournaments-metadata {
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+
+  .streamer-tournaments-metadata .badge {
+    font-size: 0.7rem;
+    padding: 4px 6px;
+  }
+
+  .streamer-tournaments-header {
+    gap: 8px;
+  }
+
+  .streamer-tournaments .tournament-title {
+    font-size: 1.1rem;
+  }
+
+  .streamer-tournaments .team-member {
+    gap: 4px;
+    padding: 10px 5px;
+  }
+
+  .streamer-tournaments .player-profile {
+    width: 42px !important;
+  }
+
+  .streamer-tournaments .player-name {
+    font-size: 0.75rem;
+  }
+}
+
 .stat-badge{
   display: block;
   width: 100%;
@@ -1207,6 +1462,98 @@ textarea::placeholder {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   opacity: 1;
 }
+.streamer-ck-list-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.streamer-ck-list-period {
+  min-width: 0;
+  margin: 0;
+  color: #a5b1c2;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.streamer-ck-list-notice {
+  min-width: 0;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.streamer-ck-list-save.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid #42638e;
+  border-radius: 9px;
+  background: #203653;
+  color: #e6efff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color .15s ease, border-color .15s ease;
+}
+
+.streamer-ck-list-save.btn:hover:not(:disabled) {
+  background: #2b486d;
+  border-color: #7199ce;
+  color: #fff;
+}
+
+.streamer-ck-list-save.btn:focus-visible {
+  outline: 2px solid #91baff;
+  outline-offset: 3px;
+}
+
+.streamer-ck-list-save.btn:disabled {
+  opacity: 0.6;
+}
+
+.streamer-ck-list-save svg,
+.streamer-ck-list-save .spinner-border {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .streamer-ck-list-toolbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px 12px;
+  }
+
+  .streamer-ck-list-notice {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .streamer-ck-list-save.btn {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .streamer-ck-list-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .streamer-ck-list-save.btn {
+    width: 100%;
+  }
+}
+
 .ck-streak-date {
   font-size: 0.72rem;
   font-weight: 500;

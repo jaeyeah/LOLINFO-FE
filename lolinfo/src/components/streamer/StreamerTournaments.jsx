@@ -52,40 +52,40 @@ export default function StreamerTournaments() {
 
   return (
 
-    <div className="row mt-0">
+    <div className="streamer-tournaments">
       {/* 공식 대회 */}
-      <div className="col-lg-6 col-12 mb-2">
+      <div className="streamer-tournaments-section">
         <span className="section-title-isofficial text-center mt-2"> 공식 </span>
         {officialTeams.length > 0 ? (
           officialTeams.map((team) => (
             <div
-              className={`card team-card mb-3 mt-2
+              className={`card team-card streamer-tournaments-card
                           ${team.teamRanking === "우승" ? "is-champion" : ""}
                           ${team.teamRanking === "준우승" ? "is-second" : ""}`}
               key={team.teamId}
             >
-              <div className="row">
+              <div className="streamer-tournaments-layout">
                 {/* 대회연도와 배지형 타입구분 */}
-                <div className="col-3">
-                  <span className={`streamer-year-tag mb-2 ${team.tournamentYear % 2 === 0 ? "even" : "odd"}`}>
+                <div className="streamer-tournaments-metadata">
+                  <span className={`streamer-year-tag ${team.tournamentYear % 2 === 0 ? "even" : "odd"}`}>
                     {team.tournamentYear}
                   </span>
-                  <span className={`tier-text ms-2 badge ${team.tournamentTierType === "통합" ? "all-tier" : team.tournamentTierType === "천상계" ? "top-tier" : "bottom-tier"}`}>
+                  <span className={`tier-text badge ${team.tournamentTierType === "통합" ? "all-tier" : team.tournamentTierType === "천상계" ? "top-tier" : "bottom-tier"}`}>
                     {" "}
                     {team.tournamentTierType}
                   </span>
-                  {team.tournamentName?.includes("멸망전") && <span className="badge official-badge2 ms-2">멸망전</span>}
-                  {team.tournamentIsOfficial === "Y" && <span className="badge official-badge ms-2">공식</span>}
+                  {team.tournamentName?.includes("멸망전") && <span className="badge official-badge2">멸망전</span>}
+                  {team.tournamentIsOfficial === "Y" && <span className="badge official-badge">공식</span>}
                 </div>
-                <div className="col-9">
-                  <div className="row">
-                    <div className="col-9 tournament-row">
+                <div className="streamer-tournaments-body">
+                  <div className="streamer-tournaments-header">
+                    <div className="tournament-row">
                       <Link to={`/tournament/${team.tournamentId}`} className="tournament-title">
                         {team.tournamentName}
                       </Link>
                       {team.teamName && <span className="team-name">{team.teamName} </span>}
                     </div>
-                    <div className="col-3 text-end">
+                    <div className="streamer-tournaments-ranking">
                       {team.teamRanking === "우승" ? (
                         <FaTrophy className="fs-3 text-warning" />
                       ) : team.teamRanking === "준우승" ? (
@@ -96,12 +96,11 @@ export default function StreamerTournaments() {
                     </div>
                   </div>
                   {/* 팀원 정보 */}
-                  <div className="row card team-card mt-2">
-                    <div className="col-12 period-box-body team-member">
+                  <div className="streamer-tournaments-roster">
+                    <div className="period-box-body team-member">
                       <Link to={`/streamer/${team.teamTop}`} className="streamer-link">
                         <div className="player">
                           <img className="player-profile mb-1" src={buildProfileUrl(team.topId)} alt={team.topName} />
-                          <br />
                           <span className={`player-name ${team.topName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.topName}
                           </span>
@@ -110,7 +109,6 @@ export default function StreamerTournaments() {
                       <Link to={`/streamer/${team.teamJug}`} className="streamer-link">
                         <div className="player">
                           <img className="player-profile mb-1" src={buildProfileUrl(team.jugId)} alt={team.jugName} />
-                          <br />
                           <span className={`player-name ${team.jugName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.jugName}
                           </span>
@@ -119,7 +117,6 @@ export default function StreamerTournaments() {
                       <Link to={`/streamer/${team.teamMid}`} className="streamer-link">
                         <div className="player">
                           <img className="player-profile mb-1" src={buildProfileUrl(team.midId)} alt={team.midName} />
-                          <br />
                           <span className={`player-name ${team.midName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.midName}
                           </span>
@@ -128,7 +125,6 @@ export default function StreamerTournaments() {
                       <Link to={`/streamer/${team.teamAd}`} className="streamer-link">
                         <div className="player">
                           <img className="player-profile mb-1" src={buildProfileUrl(team.adId)} alt={team.adName} />
-                          <br />
                           <span className={`player-name ${team.adName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.adName}
                           </span>
@@ -137,7 +133,6 @@ export default function StreamerTournaments() {
                       <Link to={`/streamer/${team.teamSup}`} className="streamer-link">
                         <div className="player">
                           <img className="player-profile mb-1" src={buildProfileUrl(team.supId)} alt={team.supName} />
-                          <br />
                           <span className={`player-name ${team.supName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.supName}
                           </span>
@@ -155,39 +150,38 @@ export default function StreamerTournaments() {
       </div>
 
       {/* 스트리머 개최대회 */}
-      <div className="col-lg-6 col-12">
+      <div className="streamer-tournaments-section">
         <span className="section-title-isofficial text-center mt-2"> 스트리머 개최 </span>
         {streamerHostTeams.length > 0 ? (
           streamerHostTeams.map((team) => (
             <div
-              className={`card team-card mb-3 mt-2
+              className={`card team-card streamer-tournaments-card
                           ${team.teamRanking === "우승" ? "is-champion" : ""}
                           ${team.teamRanking === "준우승" ? "is-second" : ""}`}
               key={team.teamId}
             >
-              <div className="row">
+              <div className="streamer-tournaments-layout">
                 {/* 대회연도와 배지형 타입구분 */}
-                <div className="col-3">
-                  <span className={`streamer-year-tag mb-2 ${team.tournamentYear % 2 === 0 ? "even" : "odd"}`}>
+                <div className="streamer-tournaments-metadata">
+                  <span className={`streamer-year-tag ${team.tournamentYear % 2 === 0 ? "even" : "odd"}`}>
                     {team.tournamentYear}
                   </span>
-                  <span className={`tier-text ms-2 badge ${team.tournamentTierType === "통합" ? "all-tier" : team.tournamentTierType === "천상계" ? "top-tier" : "bottom-tier"}`}>
+                  <span className={`tier-text badge ${team.tournamentTierType === "통합" ? "all-tier" : team.tournamentTierType === "천상계" ? "top-tier" : "bottom-tier"}`}>
                     {" "}
                     {team.tournamentTierType}
                   </span>
-                  {team.tournamentName?.includes("멸망전") && <span className="badge official-badge2 ms-2">멸망전</span>}
-                  {team.tournamentIsOfficial === "Y" && <span className="badge official-badge ms-2">공식</span>}
+                  {team.tournamentName?.includes("멸망전") && <span className="badge official-badge2">멸망전</span>}
+                  {team.tournamentIsOfficial === "Y" && <span className="badge official-badge">공식</span>}
                 </div>
-                <div className="col-9">
-                  <div className="row">
-                    <div className="col-8 tournament-row">
+                <div className="streamer-tournaments-body">
+                  <div className="streamer-tournaments-header">
+                    <div className="tournament-row">
                       <Link to={`/tournament/${team.tournamentId}`} className="tournament-title">
                         {team.tournamentName}
                       </Link>
-                      <span> </span>
                       {team.teamName && <span className="team-name">{team.teamName}</span>}
                     </div>
-                    <div className="col-3 text-end ms-4">
+                    <div className="streamer-tournaments-ranking">
                       {team.teamRanking === "우승" ? (
                         <FaTrophy className="fs-3 text-warning" />
                       ) : team.teamRanking === "준우승" ? (
@@ -198,12 +192,11 @@ export default function StreamerTournaments() {
                     </div>
                   </div>
                   {/* 팀원 정보 */}
-                  <div className="card team-card mt-2">
+                  <div className="streamer-tournaments-roster">
                     <div className="period-box-body team-member">
                       <Link to={`/streamer/${team.teamTop}`} className="streamer-link">
                         <div className="player">
                           <img className="player-profile mb-1" src={buildProfileUrl(team.topId)} alt={team.topName} />
-                          <br />
                           <span className={`player-name ${team.topName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.topName}
                           </span>
@@ -212,7 +205,6 @@ export default function StreamerTournaments() {
                       <Link to={`/streamer/${team.teamJug}`} className="streamer-link">
                         <div className="player">
                           <img className="player-profile mb-1" src={buildProfileUrl(team.jugId)} alt={team.jugName} />
-                          <br />
                           <span className={`player-name ${team.jugName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.jugName}
                           </span>
@@ -221,7 +213,6 @@ export default function StreamerTournaments() {
                       <Link to={`/streamer/${team.teamMid}`} className="streamer-link">
                         <div className="player">
                           <img className="player-profile mb-1" src={buildProfileUrl(team.midId)} alt={team.midName} />
-                          <br />
                           <span className={`player-name ${team.midName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.midName}
                           </span>
@@ -230,7 +221,6 @@ export default function StreamerTournaments() {
                       <Link to={`/streamer/${team.teamAd}`} className="streamer-link">
                         <div className="player">
                           <img className="player-profile mb-1" src={buildProfileUrl(team.adId)} alt={team.adName} />
-                          <br />
                           <span className={`player-name ${team.adName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.adName}
                           </span>
@@ -239,7 +229,6 @@ export default function StreamerTournaments() {
                       <Link to={`/streamer/${team.teamSup}`} className="streamer-link">
                         <div className="player">
                           <img className="player-profile mb-1" src={buildProfileUrl(team.supId)} alt={team.supName} />
-                          <br />
                           <span className={`player-name ${team.supName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.supName}
                           </span>

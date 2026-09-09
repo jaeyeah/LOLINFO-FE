@@ -2,6 +2,7 @@ import axios from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState, memo } from "react";
 import { Link } from "react-router-dom";
 import { toPng } from "html-to-image";
+import { FaDownload } from "react-icons/fa";
 import Pagination from "../Pagination";
 import { buildProfileUrl } from "../../utils/profileUrl";
 
@@ -514,13 +515,19 @@ const StreamerCkListSection = memo(({ streamerId, streamerName, startDate = "", 
         <>
           {hasCkRecords ? (
             <>
-              <p className="text-secondary small">{periodLabel} · 총 {pageVO?.totalCount ?? 0}건</p>
-              <div className="d-flex flex-wrap gap-2 justify-content-between mb-3">
-                <span className="ms-3 fw-bold"> ※ 세트별 교체인원이 있는 CK의 경우, 전적이 등록되지 않습니다</span>
-                <button type="button" className="btn btn-sm btn-outline-light"
+              <div className="streamer-ck-list-toolbar">
+                <p className="streamer-ck-list-period">{periodLabel} · 총 {pageVO?.totalCount ?? 0}건</p>
+                <span className="streamer-ck-list-notice">| ※ 세트별 교체인원이 있는 CK의 경우, 전적이 등록되지 않습니다</span>
+                <button type="button" className="btn streamer-ck-list-save"
                   onClick={handleSaveImage} disabled={isCapturing}
+                  aria-busy={isCapturing}
                 >
-                  {isCapturing ? "이미지 생성 중..." : "이미지 저장"}
+                  {isCapturing ? (
+                    <span className="spinner-border spinner-border-sm" aria-hidden="true" />
+                  ) : (
+                    <FaDownload aria-hidden="true" />
+                  )}
+                  <span>{isCapturing ? "이미지 생성 중..." : "이미지 저장"}</span>
                 </button>
               </div>
               {captureError && <div className="alert alert-danger py-2" role="alert">{captureError}</div>}
