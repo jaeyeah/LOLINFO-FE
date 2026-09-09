@@ -11,6 +11,7 @@ export default function Ranking() {
       </header>
       <nav className="ranking-categories mb-4" aria-label="랭킹 대분류">
         <NavLink to="/ranking/ck" className="ranking-category">CK</NavLink>
+        <NavLink to="/ranking/myeolmang" className="ranking-category">멸망전</NavLink>
       </nav>
       <Outlet />
     </section>
