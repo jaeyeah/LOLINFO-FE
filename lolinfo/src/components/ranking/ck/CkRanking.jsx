@@ -3,8 +3,11 @@ import axios from "../../../utils/axios";
 import { getKoreaToday } from "../../../utils/ckPeriod";
 import CkMonthRanking from "../../ck/CkMonthRanking";
 import CkRankingList from "./CkRankingList";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { getRankingTransition } from "./rankingMotion";
 
 const LIMIT = 10;
+const MotionSection = motion.section;
 const MIN_PLAY_COUNT = 30;
 const RANKING_TYPES = [
   ["allWins", "역대 다승"],
@@ -16,6 +19,7 @@ const RANKING_TYPES = [
 ];
 
 export default function CkRanking() {
+  const shouldReduceMotion = useReducedMotion();
   const [rankingType, setRankingType] = useState("allWins");
   const [year] = useState(() => Number(getKoreaToday().slice(0, 4)));
 
@@ -28,14 +32,19 @@ export default function CkRanking() {
             onClick={() => setRankingType(value)}>{label}</button>
         ))}
       </div>
-      {rankingType === "month" ? <CkMonthRanking /> : (
-        <RankingResults key={`${rankingType}:${year}`} rankingType={rankingType} year={year} />
-      )}
+      <AnimatePresence mode="wait">
+        {rankingType === "month" ? (
+          <CkMonthRanking key={rankingType} animateRows motionProps={getRankingTransition(shouldReduceMotion)} />
+        ) : (
+          <RankingResults key={rankingType} rankingType={rankingType} year={year}
+            motionProps={getRankingTransition(shouldReduceMotion)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
-function RankingResults({ rankingType, year }) {
+function RankingResults({ rankingType, year, motionProps }) {
   const [result, setResult] = useState("W");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -83,7 +92,7 @@ function RankingResults({ rankingType, year }) {
   const rows = isStreak ? data?.[result === "W" ? "winList" : "loseList"] ?? [] : data ?? [];
 
   return (
-    <section className="card bg-dark border-secondary text-white shadow-sm" aria-busy={loading}>
+    <MotionSection {...motionProps} className="card bg-dark border-secondary text-white shadow-sm" aria-busy={loading}>
       <div className="card-body">
         <div className="ck-ranking-page-heading">
           <h2 className="h4 mb-0">{title} Top {LIMIT}</h2>
@@ -106,6 +115,6 @@ function RankingResults({ rankingType, year }) {
           : rows.length === 0 ? <p className="text-center text-secondary py-4 mb-0">랭킹 데이터가 없습니다.</p>
           : <CkRankingList rows={rows} rankingType={rankingType} result={result} />}
       </div>
-    </section>
+    </MotionSection>
   );
 }
