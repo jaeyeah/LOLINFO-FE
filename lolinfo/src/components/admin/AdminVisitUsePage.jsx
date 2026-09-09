@@ -12,6 +12,7 @@ const featureColumns = [
     { key: 'ckStreamer', label: '스트리머 CK' },
     { key: 'ckList', label: 'CK 목록' },
     { key: 'teammate', label: '팀메이트' },
+    { key: 'ranking', label: '랭킹' },
 ];
 
 const now = new Date();
@@ -171,6 +172,7 @@ export default function AdminVisitUsePage() {
                 ckStreamer: Number(item.ckStreamer ?? 0),
                 ckList: Number(item.ckList ?? 0),
                 teammate: Number(item.teammate ?? 0),
+                ranking: Number(item.ranking ?? 0),
             }));
 
             setUseData(normalized);
