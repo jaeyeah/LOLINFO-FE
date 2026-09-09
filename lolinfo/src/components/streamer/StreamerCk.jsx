@@ -1,11 +1,102 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import StreamerCkListSection from "./StreamerCkListSection";
 import CkPeriodFilter from "./CkPeriodFilter";
 import { formatCkPeriod } from "../../utils/ckPeriod";
 
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+const positionTotalPlugin = {
+  id: "positionTotal",
+  afterDraw(chart, _args, options) {
+    const arc = chart.getDatasetMeta(0).data[0];
+    if (!arc) return;
+    const { ctx } = chart;
+    const maxWidth = Math.max(arc.innerRadius * 1.8, 1);
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#adb5bd";
+    ctx.font = "13px sans-serif";
+    ctx.fillText("총", arc.x, arc.y - 12, maxWidth);
+    ctx.fillStyle = "#f8f9fa";
+    ctx.font = "600 18px sans-serif";
+    ctx.fillText(`${options.total.toLocaleString()}경기`, arc.x, arc.y + 12, maxWidth);
+    ctx.restore();
+  },
+};
+
+const positionLabelPlugin = {
+  id: "positionLabelPlugin",
+  afterDatasetsDraw(chart, _args, options) {
+    const meta = chart.getDatasetMeta(0);
+    const arcs = meta?.data ?? [];
+    const stats = options?.stats ?? [];
+    const total = options?.totalPositionGames ?? 0;
+
+    if (!arcs.length || !stats.length) return;
+
+    const { ctx, chartArea } = chart;
+    if (!chartArea) return;
+
+    const centerX = (chartArea.left + chartArea.right) / 2;
+    const centerY = (chartArea.top + chartArea.bottom) / 2;
+    const fontSize = Math.min(Math.max(chart.width / 34, 10), 12);
+
+    ctx.save();
+    ctx.font = `${fontSize}px sans-serif`;
+    ctx.textBaseline = "middle";
+    ctx.strokeStyle = "rgba(255,255,255,0.45)";
+    ctx.lineWidth = 1;
+
+    stats.forEach((stat, index) => {
+      if (!stat || stat.totalCount <= 0) return;
+
+      const arc = arcs[index];
+      if (!arc) return;
+
+      const midAngle = (arc.startAngle + arc.endAngle) / 2;
+      const labelRatio = total > 0 ? ((stat.totalCount / total) * 100).toFixed(1) : "0.0";
+      const labelText = `${stat.ckPosition} ${labelRatio}%`;
+
+      const direction = Math.cos(midAngle) >= 0 ? 1 : -1;
+      const startX = arc.x + Math.cos(midAngle) * arc.outerRadius;
+      const startY = arc.y + Math.sin(midAngle) * arc.outerRadius;
+      const outerX = arc.x + Math.cos(midAngle) * (arc.outerRadius + 20);
+      const outerY = arc.y + Math.sin(midAngle) * (arc.outerRadius + 20);
+      const textX = arc.x + Math.cos(midAngle) * (arc.outerRadius + 42);
+      const textY = arc.y + Math.sin(midAngle) * (arc.outerRadius + 42);
+      const labelFinalX = direction >= 0 ? textX + 8 : textX - 8;
+      const labelFinalY = textY + (index % 2 === 0 ? -2 : 2);
+
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(outerX, outerY);
+      ctx.lineTo(direction >= 0 ? outerX + 16 : outerX - 16, outerY);
+      ctx.stroke();
+
+      ctx.fillStyle = "#e9ecef";
+      ctx.textAlign = direction >= 0 ? "left" : "right";
+      ctx.fillText(labelText, labelFinalX, labelFinalY);
+    });
+
+    ctx.restore();
+  },
+};
+
+const POSITION_CHART_PLUGINS = [positionTotalPlugin, positionLabelPlugin];
+
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
+const POSITION_CHART_COLORS = {
+  TOP: "#f4c95d",
+  JUG: "#8f9bb3",
+  MID: "#55c59d",
+  AD: "#ef7f8d",
+  SUP: "#6f9df5",
+};
 
 export default function StreamerCk() {
   const { streamer, streamerId } = useOutletContext();
@@ -93,6 +184,78 @@ function StreamerCkContent({ streamer, streamerId, period }) {
       winRate: item.totalCount ? Number(((item.winCount / item.totalCount) * 100).toFixed(1)) : 0,
     }));
   }, [vsPositionStats]);
+
+  const activePositionStats = useMemo(
+    () => positionSummaryStats.filter((stat) => stat.totalCount > 0),
+    [positionSummaryStats]
+  );
+
+  const totalPositionGames = useMemo(
+    () => positionSummaryStats.reduce((sum, stat) => sum + stat.totalCount, 0),
+    [positionSummaryStats]
+  );
+
+  const positionDoughnutData = useMemo(() => {
+    if (totalPositionGames === 0) return null;
+
+    return {
+      labels: activePositionStats.map((stat) => stat.ckPosition),
+      datasets: [
+        {
+          label: "포지션 비율",
+          data: activePositionStats.map((stat) => stat.totalCount),
+          backgroundColor: activePositionStats.map(
+            (stat) => POSITION_CHART_COLORS[stat.ckPosition] ?? "#adb5bd"
+          ),
+          borderColor: "rgba(255,255,255,0.75)",
+          borderWidth: 1,
+          hoverBorderColor: "#ffffff",
+          hoverBorderWidth: 2,
+          hoverOffset: 4,
+        },
+      ],
+    };
+  }, [activePositionStats, totalPositionGames]);
+
+  const positionDoughnutOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: "65%",
+    plugins: {
+      positionTotal: { total: totalPositionGames },
+      positionLabelPlugin: {
+        stats: activePositionStats,
+        totalPositionGames,
+      },
+      legend: {
+        position: "bottom",
+        labels: {
+          color: "#ccc",
+          usePointStyle: true,
+          padding: 12,
+          boxWidth: 8,
+          boxHeight: 8,
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const stat = activePositionStats[context.dataIndex];
+            const ratio = totalPositionGames > 0
+              ? ((stat.totalCount / totalPositionGames) * 100).toFixed(1)
+              : "0.0";
+
+            return [
+              `플레이 비율: ${ratio}%`,
+              `총 ${stat.totalCount}경기`,
+              `${stat.winCount}승 ${stat.loseCount}패`,
+              `승률: ${stat.winRate}%`,
+            ];
+          },
+        },
+      },
+    },
+  };
 
   // 맞라인 상대별 전적 요약
   const vsSummaryStats = useMemo(() => {
@@ -327,35 +490,52 @@ function StreamerCkContent({ streamer, streamerId, period }) {
           <h5 className="mb-0 fw-bold section-title">포지션별 총 전적</h5>
         </div>
         <div className="card-body">
-          <div className="d-flex flex-wrap gap-3 justify-content-center">
-            {positionSummaryStats.map((stat) => (
-              <div
-                key={stat.ckPosition}
-                className={`position-summary-card ${stat.totalCount === 0 ? "inactive" : ""}`}
-              >
-                <div className="position-summary-label">{stat.ckPosition}</div>
-                {stat.totalCount > 0 ? (
-                  <>
-                    <div className="position-summary-record">
-                      <span className={`${stat.winCount == 0 ? "text-secondary" : "text-white"} fw-semibold fs-5`}>{stat.winCount}승</span>
-                      <span className={`${stat.loseCount == 0 ? "text-secondary" : "text-danger"} fw-semibold fs-5`}>{stat.loseCount}패</span>
-                    </div>
-                    <div className="position-summary-bar bg-white bg-opacity-10 rounded-pill">
-                      <div
-                        className="position-summary-bar-fill rounded-pill"
-                        style={{
-                          width: `${stat.winRate}%`,
-                          backgroundColor: getWinRateColor(stat.winRate),
-                        }}
-                      />
-                    </div>
-                    <div className="text-secondary small mt-1">승률 {stat.winRate}%</div>
-                  </>
+          <div className="row g-3 align-items-center">
+            <div className="col-12 col-lg-7">
+              <div className="d-flex flex-wrap gap-3 justify-content-center">
+                {positionSummaryStats.map((stat) => (
+                  <div
+                    key={stat.ckPosition}
+                    className={`position-summary-card ${stat.totalCount === 0 ? "inactive" : ""}`}
+                  >
+                    <div className="position-summary-label">{stat.ckPosition}</div>
+                    {stat.totalCount > 0 ? (
+                      <>
+                        <div className="position-summary-record">
+                          <span className={`${stat.winCount == 0 ? "text-secondary" : "text-white"} fw-semibold fs-5`}>{stat.winCount}승</span>
+                          <span className={`${stat.loseCount == 0 ? "text-secondary" : "text-danger"} fw-semibold fs-5`}>{stat.loseCount}패</span>
+                        </div>
+                        <div className="position-summary-bar bg-white bg-opacity-10 rounded-pill">
+                          <div
+                            className="position-summary-bar-fill rounded-pill"
+                            style={{
+                              width: `${stat.winRate}%`,
+                              backgroundColor: getWinRateColor(stat.winRate),
+                            }}
+                          />
+                        </div>
+                        <div className="text-secondary small mt-1">승률 {stat.winRate}%</div>
+                      </>
+                    ) : (
+                      <div className="position-summary-empty">전적 없음</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="col-12 col-lg-5">
+              <div className="position-doughnut-panel">
+                <div className="position-doughnut-title">포지션 비율</div>
+                {totalPositionGames > 0 && positionDoughnutData ? (
+                  <div className="position-doughnut-chart">
+                    <Doughnut data={positionDoughnutData} options={positionDoughnutOptions} plugins={POSITION_CHART_PLUGINS} role="img"
+                      aria-label={`포지션 비율: ${activePositionStats.map((stat) => `${stat.ckPosition} ${((stat.totalCount / totalPositionGames) * 100).toFixed(1)}%`).join(", ")}`} />
+                  </div>
                 ) : (
-                  <div className="position-summary-empty">전적 없음</div>
+                  <div className="position-doughnut-empty">포지션 전적이 없습니다.</div>
                 )}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>

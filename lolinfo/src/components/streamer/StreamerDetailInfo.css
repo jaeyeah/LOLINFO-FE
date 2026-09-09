@@ -1,3 +1,19 @@
+.streamer-record-chart {
+  position: relative;
+  width: 230px;
+  max-width: 100%;
+  min-width: 0;
+  height: 260px;
+  margin: 0 auto 1rem;
+}
+
+.streamer-record-chart-notice {
+  color: #adb5bd;
+  font-size: 0.85rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
 .tier-badge{
   display:flex;
   align-items:center;
