@@ -9,9 +9,8 @@ import "./Board.css";
 const CATEGORIES = [
     { value: "자유", label: "자유" },
     { value: "제보", label: "제보" },
-    { value: "신고", label: "신고" },
     { value: "문의", label: "문의" },
-    { value: "개발", label: "개발" },
+    { value: "정보", label: "정보" },
 ];
 
 // Byte 기준 상수
