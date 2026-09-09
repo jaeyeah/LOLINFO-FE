@@ -97,22 +97,22 @@ export default function Menu() {
 
                             <ul className={`dropdown-menu dropdown-menu-dark ${homeOpen ? 'show' : ''}`}>
                                 <li>
-                                    <Link className="dropdown-item" to="/" onClick={closeMenu}>
+                                    <Link className="dropdown-item sub-item" to="/" onClick={closeMenu}>
                                        - 홈
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item" to="/about" onClick={closeMenu}>
+                                    <Link className="dropdown-item sub-item" to="/about" onClick={closeMenu}>
                                        - 서비스 소개
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item" to="/data-criteria" onClick={closeMenu}>
+                                    <Link className="dropdown-item sub-item" to="/data-criteria" onClick={closeMenu}>
                                        - 데이터 집계 기준
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item" to="/devhistory" onClick={closeMenu}>
+                                    <Link className="dropdown-item sub-item" to="/devhistory" onClick={closeMenu}>
                                        - 패치노트
                                     </Link>
                                 </li>
@@ -134,17 +134,17 @@ export default function Menu() {
                             </div>
                             <ul className={`dropdown-menu dropdown-menu-dark ${tournamentOpen ? 'show' : ''}`}>
                                 <li>
-                                    <Link className="dropdown-item" to="/tournament" onClick={closeMenu}>
+                                    <Link className="dropdown-item sub-item" to="/tournament" onClick={closeMenu}>
                                        - 대회 목록
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item" to="/streamer/654" onClick={closeMenu}>
+                                    <Link className="dropdown-item sub-item" to="/streamer/654" onClick={closeMenu}>
                                        - 멸망전
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item" to="/streamer/655" onClick={closeMenu}>
+                                    <Link className="dropdown-item sub-item" to="/streamer/655" onClick={closeMenu}>
                                        - SLL
                                     </Link>
                                 </li>

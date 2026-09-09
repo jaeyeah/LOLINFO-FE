@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import "./Board.css";
 import { adminState, loginIdState } from "../../utils/jotai";
 import { useAtomValue } from "jotai";
+import { renderContentWithLinks } from "../../utils/renderContentWithLinks";
 
 export default function BoardDetail() {
     const { boardId } = useParams();
@@ -74,7 +75,7 @@ export default function BoardDetail() {
                 </div>
 
                 <div className="board-detail-content">
-                    {board.boardContent}
+                    {renderContentWithLinks(board.boardContent)}
                 </div>
 
                 <div className="board-detail-footer">
