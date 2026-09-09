@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import CountUp from "react-countup";
 import "./HomeStats.css";
 
 const statItems = [
@@ -9,8 +10,6 @@ const statItems = [
     { key: "tournamentCount", label: "등록 대회", unit: "개", to: "/tournament" },
     { key: "ckCount", label: "누적 CK 경기", unit: "경기", to: "/ck" },
 ];
-
-const formatNumber = (value) => Number(value ?? 0).toLocaleString("ko-KR");
 
 export default function HomeStats() {
     const [stats, setStats] = useState(null);
@@ -74,7 +73,16 @@ export default function HomeStats() {
                                 />
                             ) : (
                                 <p className="home-stats-value">
-                                    <strong>{formatNumber(stats[item.key])}</strong>
+                                    <CountUp
+                                        start={0}
+                                        end={Number(stats[item.key] ?? 0)}
+                                        duration={1.4}
+                                        separator=","
+                                        enableScrollSpy
+                                        scrollSpyOnce
+                                    >
+                                        {({ countUpRef }) => <strong ref={countUpRef}>0</strong>}
+                                    </CountUp>
                                     <span>{item.unit}</span>
                                 </p>
                             )}
