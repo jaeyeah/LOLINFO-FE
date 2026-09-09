@@ -2,8 +2,14 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { getSearchDropdownMotion, getSearchResultMotion } from "../streamer/searchMotion";
+
+const MotionDropdown = motion.div;
+const MotionResult = motion.button;
 
 export default function HomeStreamerSearch() {
+    const shouldReduceMotion = useReducedMotion();
     const navigate = useNavigate();
     const [keyword, setKeyword] = useState("");
     const [autoSearch, setAutoSearch] = useState([]);
@@ -69,10 +75,12 @@ export default function HomeStreamerSearch() {
                     <FaSearch aria-hidden="true" />
                 </button>
             </form>
+            <AnimatePresence>
             {autoSearch.length > 0 && (
-                <div className="home-autocomplete" role="listbox">
-                    {autoSearch.map((streamer) => (
-                        <button
+                <MotionDropdown key="suggestions" {...getSearchDropdownMotion(shouldReduceMotion)} className="home-autocomplete" role="listbox">
+                    {autoSearch.map((streamer, index) => (
+                        <MotionResult
+                            {...getSearchResultMotion(index, shouldReduceMotion)}
                             type="button"
                             role="option"
                             aria-selected="false"
@@ -80,10 +88,11 @@ export default function HomeStreamerSearch() {
                             onClick={() => handleSuggestionClick(streamer.streamerNo)}
                         >
                             {streamer.streamerName}
-                        </button>
+                        </MotionResult>
                     ))}
-                </div>
+                </MotionDropdown>
             )}
+            </AnimatePresence>
         </div>
     );
 }

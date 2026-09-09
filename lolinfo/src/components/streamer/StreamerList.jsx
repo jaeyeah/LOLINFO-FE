@@ -11,8 +11,14 @@ import { adminState, loginState } from "../../utils/jotai";
 import { useSearchParams } from "react-router-dom";
 import FeedbackModal from "../etc/FeedbackModal";
 import { Helmet } from 'react-helmet-async'
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { getSearchDropdownMotion, getSearchResultMotion } from "./searchMotion";
+
+const MotionDropdown = motion.div;
+const MotionResult = motion.div;
 
 export default function StreamerList() {
+    const shouldReduceMotion = useReducedMotion();
 
     const isLogin = useAtomValue(loginState);
     const isAdmin = useAtomValue(adminState);
@@ -162,10 +168,12 @@ export default function StreamerList() {
                             <FaSearch className="fs-4" />
                         </button>
                     </div>
+                    <AnimatePresence>
                     {autoSearch.length > 0 && (
-                        <div className="autocomplete-box">
-                            {autoSearch.map(streamer => (
-                                <div
+                        <MotionDropdown key="suggestions" {...getSearchDropdownMotion(shouldReduceMotion)} className="autocomplete-box">
+                            {autoSearch.map((streamer, index) => (
+                                <MotionResult
+                                    {...getSearchResultMotion(index, shouldReduceMotion)}
                                     key={streamer.streamerNo}
                                     className="autocomplete-item"
                                     onClick={() => {
@@ -174,10 +182,11 @@ export default function StreamerList() {
                                     }}
                                 >
                                     {streamer.streamerName}
-                                </div>
+                                </MotionResult>
                             ))}
-                        </div>
+                        </MotionDropdown>
                     )}
+                    </AnimatePresence>
                 </div>
                 {/* 피드백 모달 트리거 */}
                 <div className="streamer-admin-action">
