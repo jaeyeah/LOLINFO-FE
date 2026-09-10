@@ -18,11 +18,40 @@ function ProfileImage({ soopId }) {
         }} />;
 }
 
+function getWinRateColor(rate) {
+    if (rate >= 60) return "#76c1ff";
+    if (rate >= 55) return "#69db7c";
+    if (rate >= 50) return "#adb5bd";
+    if (rate >= 45) return "#bdb088";
+    if (rate >= 40) return "#ffba79";
+    return "#ff6b6b";
+}
+
+function normalizeRate(value) {
+    const rate = Number(value);
+    return Number.isFinite(rate) ? Math.max(0, Math.min(100, rate)) : 0;
+}
+
 function MatchRow({ row, onClick, active = false }) {
-    const content = <>
-        <span className="balance-person"><ProfileImage soopId={row.opponentSoopId} /><strong>{row.opponentName}</strong></span>
-        <span className="balance-meta">{Number(row.matchCount).toLocaleString("ko-KR")}경기 · 최근 {row.lastMatchDate?.slice(0, 10) || "날짜 없음"}</span>
-    </>;
+    const winCount = Number(row.winCount || 0);
+    const loseCount = Number(row.loseCount || 0);
+    const winRate = normalizeRate(row.winRate);
+    const rateColor = getWinRateColor(winRate);
+    const content = <span className="balance-match-content">
+        <span className="balance-match-left">
+            <span className="balance-person"><ProfileImage soopId={row.opponentSoopId} /><strong>{row.opponentName}</strong></span>
+            <span className="balance-meta">{Number(row.matchCount).toLocaleString("ko-KR")}경기 · 최근 {row.lastMatchDate?.slice(0, 10) || "날짜 없음"}</span>
+        </span>
+        <span className="balance-match-right">
+            <span className="balance-record-row">
+                <span className="balance-record-score">{winCount}승 {loseCount}패</span>
+                <span className="balance-record-rate" style={{ color: rateColor }}>{winRate}%</span>
+            </span>
+            <span className="balance-progress" aria-label={`승률 ${winRate}%`}>
+                <span className="balance-progress-bar" style={{ width: `${winRate}%`, background: `linear-gradient(90deg, #4dabf7, ${rateColor})` }} />
+            </span>
+        </span>
+    </span>;
     return onClick
         ? <button type="button" className={`balance-match ${active ? "is-active" : ""}`} onClick={onClick} aria-pressed={active}>{content}</button>
         : <div className="balance-match">{content}</div>;
@@ -58,6 +87,8 @@ function BalanceResults({ baseNo, knownName }) {
     const [selected, setSelected] = useState(null);
     const [selectionVersion, setSelectionVersion] = useState(0);
     const [retry, setRetry] = useState(0);
+    const [expandedPositions, setExpandedPositions] = useState({});
+    const [positionFilter, setPositionFilter] = useState("ALL");
     useEffect(() => {
         if (!baseNo) return;
         const controller = new AbortController();
@@ -70,22 +101,34 @@ function BalanceResults({ baseNo, knownName }) {
             });
         return () => controller.abort();
     }, [baseNo, knownName, retry]);
+    const visiblePositions = positionFilter === "ALL" ? POSITIONS : [positionFilter];
     return <>
         <section className="balance-panel" aria-labelledby="balance-opponents">
             <h2 id="balance-opponents"><span>2</span> 맞라인 상대</h2>
-            {baseNo && <p className="balance-selected">기준: {knownName || `스트리머 #${baseNo}`}</p>}
+            {baseNo && <div className="balance-selected-wrap">
+                <p className="balance-selected">기준: {knownName || `스트리머 #${baseNo}`}</p>
+                <div className="balance-position-filter" aria-label="맞라인 포지션 필터">
+                    <button type="button" className={`balance-filter-button ${positionFilter === "ALL" ? "is-active" : ""}`} onClick={() => setPositionFilter("ALL")}>전체</button>
+                    {POSITIONS.map(position => <button key={position} type="button" className={`balance-filter-button ${positionFilter === position ? "is-active" : ""}`} onClick={() => setPositionFilter(position)}>{LABELS[position]}</button>)}
+                </div>
+            </div>}
             {!baseNo ? <p className="balance-muted">기준 스트리머를 선택해주세요.</p>
                 : result.status === "loading" ? <p role="status">맞라인 기록을 불러오는 중입니다.</p>
                 : result.status === "error" ? <div role="alert"><p className="text-danger">기록을 불러오지 못했습니다.</p><button type="button" className="btn btn-outline-light btn-sm" onClick={() => { setResult(emptyRequest); setRetry(value => value + 1); }}>다시 시도</button></div>
                 : result.rows.length === 0 ? <p className="balance-muted">등록된 맞라인 기록이 없습니다.</p>
-                : POSITIONS.map(position => {
+                : visiblePositions.map(position => {
                     const rows = result.rows.filter(row => row.position === position);
+                    const visibleRows = expandedPositions[position] ? rows : rows.slice(0, 5);
                     return <section className="balance-position" key={position}>
                         <h3>{position} <span>{LABELS[position]}</span></h3>
-                        {rows.length ? rows.map(row => <MatchRow key={`${row.opponentNo}-${position}`} row={row}
-                            active={selected?.opponentNo === row.opponentNo && selected?.position === position}
-                            onClick={() => { setSelected(row); setSelectionVersion(value => value + 1); }} />)
-                            : <p className="balance-muted">맞라인 기록이 없습니다.</p>}
+                        {rows.length ? <>
+                            {visibleRows.map(row => <MatchRow key={`${row.opponentNo}-${position}`} row={row}
+                                active={selected?.opponentNo === row.opponentNo && selected?.position === position}
+                                onClick={() => { setSelected(row); setSelectionVersion(value => value + 1); }} />)}
+                            {rows.length > 5 && <button type="button" className="balance-more-button" onClick={() => {
+                                setExpandedPositions(previous => ({ ...previous, [position]: !previous[position] }));
+                            }}>{expandedPositions[position] ? "접기" : "더보기"}</button>}
+                        </> : <p className="balance-muted">맞라인 기록이 없습니다.</p>}
                     </section>;
                 })}
         </section>
@@ -132,9 +175,13 @@ export default function CkBalance() {
     };
     const knownName = Number(chosen?.streamerNo) === baseNo ? chosen.streamerName : "";
     return <div className="balance-page">
-        <h1 className="page-title mb-4">밸런스 찾기</h1>
+        <section className="balance-hero">
+            <p className="balance-eyebrow">SOOPLOL BALANCE</p>
+            <h1>밸런스 찾기</h1>
+            <p className="balance-context">기준 스트리머와 맞라인 상대의 최근 전적을 비교해보세요.</p>
+        </section>
         <div className="balance-grid">
-            <section className="balance-panel" aria-labelledby="balance-base">
+            <section className="balance-panel balance-base-panel" aria-labelledby="balance-base">
                 <h2 id="balance-base"><span>1</span> 기준 스트리머</h2>
                 <label htmlFor="balance-search" className="form-label">스트리머 이름</label>
                 <div onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setSearchOpen(false); }}>
