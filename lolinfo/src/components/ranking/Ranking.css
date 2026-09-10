@@ -160,6 +160,11 @@
 }
 
 .myeolmang-ranking-page { min-width: 0; }
+.myeolmang-ranking-tabs {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.3rem;
+}
 .myeolmang-ranking-heading { margin-bottom: 1rem; }
 .myeolmang-ranking-heading p { overflow-wrap: anywhere; }
 .myeolmang-ranking-filters {
@@ -271,6 +276,7 @@
 }
 
 @media (max-width: 575.98px) {
+  .myeolmang-ranking-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .myeolmang-ranking-row { grid-template-columns: 24px minmax(0, 1fr); gap: 0.5rem; padding: 0.65rem; }
   .myeolmang-ranking-profile { gap: 0.5rem; }
   .myeolmang-ranking-profile img { width: 36px; height: 36px; }
@@ -278,7 +284,7 @@
     grid-column: 2;
     width: 100%;
     justify-content: flex-start;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 5px;
     font-size: 0.8rem;
   }
