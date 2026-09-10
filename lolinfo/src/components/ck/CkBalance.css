@@ -1,0 +1,20 @@
+.balance-page { color: #f5f7fb; min-width: 0; }
+.balance-grid { display: grid; grid-template-columns: minmax(0, .8fr) repeat(2, minmax(0, 1.2fr)); gap: 1rem; align-items: start; }
+.balance-panel { min-width: 0; padding: 1.25rem; border: 1px solid rgba(255,255,255,.12); border-radius: 1rem; background: rgba(255,255,255,.04); overflow-wrap: anywhere; }
+.balance-panel h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem; line-height: 1.5; }
+.balance-panel h2 > span { color: #75b6ff; margin-right: .5rem; }
+.balance-position { margin-top: 1.5rem; }
+.balance-position h3 { font-size: 1rem; border-bottom: 1px solid #495057; padding-bottom: .6rem; color: #75b6ff; }
+.balance-position h3 span { color: #ced4da; font-weight: 400; margin-left: .4rem; }
+.balance-match { display: flex; flex-direction: column; gap: .4rem; width: 100%; min-width: 0; margin-top: .5rem; padding: .8rem; border: 1px solid rgba(255,255,255,.12); border-radius: .5rem; background: rgba(255,255,255,.035); color: inherit; text-align: left; overflow-wrap: anywhere; }
+button.balance-match:hover, .balance-match.is-active { background: rgba(13,110,253,.18); border-color: #75b6ff; }
+.balance-page button:focus-visible, .balance-page input:focus-visible { outline: 2px solid #75b6ff; outline-offset: 2px; }
+.balance-meta, .balance-muted { color: #adb5bd; font-size: .875rem; }
+.balance-selected { font-weight: 600; display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+.balance-search-results { list-style: none; padding: 0; margin: .4rem 0; max-height: 18rem; overflow-y: auto; }
+.balance-search-results button { display: block; width: 100%; padding: .65rem; color: inherit; text-align: left; background: #202a3b; border: 1px solid #495057; overflow-wrap: anywhere; }
+.balance-search-results button:hover, .balance-search-results .is-active { background: #164d83; }
+.balance-base-selection { display: flex; flex-direction: column; gap: .5rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #495057; }
+.balance-panel .form-control { min-width: 0; width: 100%; }
+@media (max-width: 991.98px) { .balance-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 575.98px) { .balance-panel { padding: 1rem; } }

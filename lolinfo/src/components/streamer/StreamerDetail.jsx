@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { NavLink, useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Link, NavLink, useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
 import "./Streamer.css";
 import { FaEdit, FaHome } from "react-icons/fa";
 import { useAtomValue } from "jotai";
@@ -173,6 +173,7 @@ export default function StreamerDetail() {
         </div>
 
         <StreamerSummary streamer={streamer} />
+        <Link to={`/balance?streamerNo=${streamerId}`} className="btn btn-outline-primary mt-3 mb-2">밸런스 찾기</Link>
 
         {streamer.streamerName !== "SLL" && streamer.streamerName !== "멸망전" && (
             <div className="row mt-2">

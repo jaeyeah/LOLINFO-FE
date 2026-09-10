@@ -19,6 +19,7 @@ import TournamentEdit from "./tournament/TournamentEdit";
 
 import TeamInsert from "./tournament/TeamInsert";
 import TeamEdit from "./tournament/TeamEdit";
+import CkBalance from "./ck/CkBalance";
 import CkList from "./ck/CkList";
 import CkInsert from "./ck/CkInsert";
 import CkMonthRanking from "./ck/CkMonthRanking";
@@ -118,6 +119,7 @@ return (<>
                 <Route path="/team/edit/:teamId" element={<TeamEdit/>}/>
 
                 {/* CK */}
+                <Route path="/balance" element={<CkBalance />} />
                 <Route path="/ck" element={<CkList />}>
                     <Route index element={<CkMonthRanking />} />
                     <Route path="ranking" element={<Navigate to="/ck" replace />} />
