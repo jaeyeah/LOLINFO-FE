@@ -173,7 +173,6 @@ export default function StreamerDetail() {
         </div>
 
         <StreamerSummary streamer={streamer} />
-        <Link to={`/balance?streamerNo=${streamerId}`} className="btn btn-outline-primary mt-3 mb-2">밸런스 찾기</Link>
 
         {streamer.streamerName !== "SLL" && streamer.streamerName !== "멸망전" && (
             <div className="row mt-2">
@@ -191,6 +190,7 @@ export default function StreamerDetail() {
                   <NavLink to="streamerWith" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
                     팀메이트
                   </NavLink>
+                  <Link to={`/balance?streamerNo=${streamerId}`} className="btn btn-outline-primary">밸런스 찾기</Link>
                 </div>
               </div>
             </div>

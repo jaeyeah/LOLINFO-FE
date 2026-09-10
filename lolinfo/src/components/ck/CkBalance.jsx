@@ -2,14 +2,25 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import axios from "../../utils/axios";
 import "./CkBalance.css";
+import { buildProfileUrl } from "../../utils/profileUrl";
 
 const POSITIONS = ["TOP", "JUG", "MID", "AD", "SUP"];
 const LABELS = { TOP: "탑", JUG: "정글", MID: "미드", AD: "원딜", SUP: "서폿" };
 const emptyRequest = { status: "loading", rows: [] };
 
+function ProfileImage({ soopId }) {
+    return <img key={soopId || "default"} className="balance-profile" src={buildProfileUrl(soopId)}
+        alt="" width="40" height="40" loading="lazy" onError={event => {
+            const image = event.currentTarget;
+            if (image.dataset.fallback) return;
+            image.dataset.fallback = "true";
+            image.src = buildProfileUrl(null);
+        }} />;
+}
+
 function MatchRow({ row, onClick, active = false }) {
     const content = <>
-        <strong>{row.opponentName}</strong>
+        <span className="balance-person"><ProfileImage soopId={row.opponentSoopId} /><strong>{row.opponentName}</strong></span>
         <span className="balance-meta">{Number(row.matchCount).toLocaleString("ko-KR")}경기 · 최근 {row.lastMatchDate?.slice(0, 10) || "날짜 없음"}</span>
     </>;
     return onClick
@@ -33,7 +44,7 @@ function ExpandedMatches({ baseNo, selected }) {
         return () => controller.abort();
     }, [baseNo, selected.opponentNo, selected.position]);
     return <>
-        <p className="balance-selected">{selected.opponentName} <span className="badge bg-primary">{LABELS[selected.position]} · {selected.position}</span></p>
+        <p className="balance-selected"><ProfileImage soopId={selected.opponentSoopId} />{selected.opponentName} <span className="badge bg-primary">{LABELS[selected.position]} · {selected.position}</span></p>
         {result.status === "loading" && <p role="status">맞라인 기록을 불러오는 중입니다.</p>}
         {result.status === "error" && <p role="alert" className="text-danger">기록을 불러오지 못했습니다. 상대를 다시 선택해주세요.</p>}
         {result.status === "ready" && (result.rows.length
@@ -150,22 +161,23 @@ export default function CkBalance() {
                     {search.status === "loading" ? "검색 중입니다." : search.status === "error" ? "검색에 실패했습니다. 이름을 다시 입력해주세요." : search.status === "ready" && !search.rows.length ? "검색 결과가 없습니다." : null}
                 </div>}
                 {rawNo && !baseNo && <p className="text-danger" role="alert">스트리머 번호가 올바르지 않습니다. 이름으로 다시 선택해주세요.</p>}
-                {baseNo && <SelectedBase key={`${baseNo}-${knownName}`} baseNo={baseNo} knownName={knownName} />}
+                {baseNo && <SelectedBase key={`${baseNo}-${knownName}`} baseNo={baseNo} knownName={knownName} knownSoopId={chosen?.streamerNo && Number(chosen.streamerNo) === baseNo ? chosen.streamerSoopId : null} />}
             </section>
             <BalanceResults key={`${baseNo}-${knownName}`} baseNo={baseNo} knownName={knownName} />
         </div>
     </div>;
 }
 
-function SelectedBase({ baseNo, knownName }) {
+function SelectedBase({ baseNo, knownName, knownSoopId }) {
     const [name, setName] = useState(knownName);
+    const [soopId, setSoopId] = useState(knownSoopId);
     useEffect(() => {
-        if (knownName) return;
+        if (knownName && knownSoopId) return;
         const controller = new AbortController();
         axios.get(`/streamer/${baseNo}`, { signal: controller.signal }).then(({ data }) => {
-            if (!controller.signal.aborted) setName(data.streamerName || "이름 확인 불가");
+            if (!controller.signal.aborted) { setName(data.streamerName || "이름 확인 불가"); setSoopId(data.streamerSoopId); }
         }).catch(() => { if (!controller.signal.aborted) setName("이름을 불러오지 못했습니다."); });
         return () => controller.abort();
-    }, [baseNo, knownName]);
-    return <div className="balance-base-selection"><span className="balance-muted">선택한 스트리머</span><strong>{name || "이름 확인 중…"}</strong></div>;
+    }, [baseNo, knownName, knownSoopId]);
+    return <div className="balance-base-selection"><span className="balance-muted">선택한 스트리머</span><span className="balance-person"><ProfileImage soopId={soopId} /><strong>{name || "이름 확인 중…"}</strong></span></div>;
 }

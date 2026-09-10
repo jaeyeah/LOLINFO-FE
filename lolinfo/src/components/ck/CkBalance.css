@@ -18,3 +18,7 @@ button.balance-match:hover, .balance-match.is-active { background: rgba(13,110,2
 .balance-panel .form-control { min-width: 0; width: 100%; }
 @media (max-width: 991.98px) { .balance-grid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 575.98px) { .balance-panel { padding: 1rem; } }
+
+.balance-person { display: flex; align-items: center; gap: .65rem; min-width: 0; }
+.balance-person strong { min-width: 0; overflow-wrap: anywhere; }
+.balance-profile { width: 40px; height: 40px; flex: 0 0 40px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,.2); }
