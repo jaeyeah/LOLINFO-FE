@@ -1,6 +1,6 @@
 import "./../Privacy.css";
 
-const LAST_UPDATED = "2026.09.07";
+const LAST_UPDATED = "2026.09.12";
 
 export default function DevHistory() {
     return (
@@ -12,19 +12,21 @@ export default function DevHistory() {
             </header>
 
             <div className="privacy-body">
-                <section><h2 className="fw-bold">26.09.08</h2>
+                <section><h2 className="fw-bold">26.09.12</h2>
                     <p className="privacy-note">
-                         - 신규기능 : <span className="text-info fw-bold">랭킹 - CK</span> 구현<br/>
-                        - 스트리머 상세 : <span className="text-info fw-bold">연승/연패</span> 기능 추가<br/>
-                        - 메인페이지 기능 추가<br/>
-                        <span className="text-secondary ms-4">└ 즐겨찾기 스트리머 목록 및 사이트 기초 통계 화면</span><br/>
+                        - 신규기능 : <span className="text-info fw-bold">랭킹</span> 페이지 구현<br/>
+                        <span className="text-secondary ms-4">└ CK 랭킹 / 멸망전 랭킹 추가</span><br/>
+                        - 신규기능 : <span className="text-info fw-bold">밸런스 찾기</span> 기능 추가<br/>                        
+                        - 스트리머 상세 : <span className="text-info fw-bold">연승/연패</span> 기능 추가<br/>                        
                         - 스트리머 CK전적 : 기간 설정 추가<br/>
+                        - CK전적 / 스트리머 상세 차트적용<br/>
                     </p>
                 </section>
 
                 <section><h2 className="fw-bold">26.09.03</h2>
                     <p className="privacy-note">
                         - <span className="text-info fw-bold">메인페이지</span> 추가<br/>
+                        <span className="text-secondary ms-4">└ 즐겨찾기 스트리머 목록 및 사이트 기초 통계 화면</span><br/>
                         - 신규기능 : <span className="text-info fw-bold">비회원 피드백</span> 구현<br/>
                         - Footer 및 개인정보처리방침 추가<br/>
                         - 검색엔진 노출 개선 (SEO 및 사이트맵 적용)<br/>
