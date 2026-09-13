@@ -13,6 +13,7 @@ const featureColumns = [
     { key: 'ckList', label: 'CK 목록' },
     { key: 'teammate', label: '팀메이트' },
     { key: 'ranking', label: '랭킹' },
+    { key: 'balance', label: '밸런스' },
 ];
 
 const now = new Date();
@@ -173,6 +174,7 @@ export default function AdminVisitUsePage() {
                 ckList: Number(item.ckList ?? 0),
                 teammate: Number(item.teammate ?? 0),
                 ranking: Number(item.ranking ?? 0),
+                balance: Number(item.balance ?? 0),
             }));
 
             setUseData(normalized);
