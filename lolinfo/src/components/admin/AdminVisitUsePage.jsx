@@ -13,6 +13,7 @@ const featureColumns = [
     { key: 'ckList', label: 'CK 목록' },
     { key: 'teammate', label: '팀메이트' },
     { key: 'ranking', label: '랭킹' },
+    { key: 'balance', label: '밸런스' },
 ];
 
 const now = new Date();
