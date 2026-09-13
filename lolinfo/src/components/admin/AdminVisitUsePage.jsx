@@ -174,6 +174,7 @@ export default function AdminVisitUsePage() {
                 ckList: Number(item.ckList ?? 0),
                 teammate: Number(item.teammate ?? 0),
                 ranking: Number(item.ranking ?? 0),
+                balance: Number(item.balance ?? 0),
             }));
 
             setUseData(normalized);
