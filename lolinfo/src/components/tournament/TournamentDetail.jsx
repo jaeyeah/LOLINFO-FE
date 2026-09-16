@@ -101,7 +101,7 @@ export default function TournamentDetail() {
 
   return (
     <>
-      <h2 className="text-center page-title p-3">{tournament.tournamentName} : 대회 상세</h2>
+      <h2 className="text-center page-title tournament-detail-title">{tournament.tournamentName} : 대회 상세</h2>
 
       {loading && (
         <div className="d-flex justify-content-center py-5">
@@ -109,9 +109,9 @@ export default function TournamentDetail() {
         </div>
       )}
 
-      <div className="row mt-3">
+      <div className="row tournament-detail-navigation">
         <div className="col-12">
-          <div className="d-flex gap-2 flex-wrap mb-3">
+          <div className="d-flex gap-2 flex-wrap">
             <NavLink to="" end className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
               정보
             </NavLink>
@@ -126,10 +126,30 @@ export default function TournamentDetail() {
 
       {error && <p className="text-danger">{error}</p>}
 
-      <div className="streamer-card mb-2">
+      <div className="streamer-card tournament-detail-card mb-2">
         <div className="row g-0">
           <div className="col-lg-4 col-12 position-relative">
-            <h3 className="host-box text-center">주최</h3>
+            <div className="tournament-host-header">
+              <h3 className="host-box text-center">주최</h3>
+              <div className="tournament-host-actions">
+                <button
+                  type="button"
+                  className={`btn tournament-bookmark-button ${bookmarked ? "btn-warning" : "btn-outline-warning"}`}
+                  onClick={toggleBookmark}
+                  aria-label={bookmarked ? "대회 북마크 해제" : "대회 북마크"}
+                  title={bookmarked ? "대회 북마크 해제" : "대회 북마크"}
+                >
+                  {bookmarked ? <FaStar /> : <FaRegStar />}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline-light tournament-feedback-button"
+                  onClick={() => setShowFeedback(true)}
+                >
+                  오류·누락 제보
+                </button>
+              </div>
+            </div>
             <div className="d-flex tournment-host justify-content-center align-items-center gap-2">
               {hostList.map((host) => (
                 <div className="text-center" key={host.hostStreamer}>
@@ -145,16 +165,6 @@ export default function TournamentDetail() {
                   )}
                 </div>
               ))}
-              <button type="button" className={`btn position-absolute top-0 end-0 mt-5 ${bookmarked ? "btn-warning" : "btn-outline-warning"}`} onClick={toggleBookmark}>
-                {bookmarked ? <FaStar /> : <FaRegStar />}
-              </button>
-              <button
-                type="button"
-                className="btn btn-sm btn-outline-light position-absolute top-0 end-0 mt-5 me-5"
-                onClick={() => setShowFeedback(true)}
-              >
-                오류·누락 제보
-              </button>
             </div>
           </div>
 

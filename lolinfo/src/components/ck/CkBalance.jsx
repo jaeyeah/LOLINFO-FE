@@ -1,12 +1,65 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import axios from "../../utils/axios";
 import "./CkBalance.css";
 import { buildProfileUrl } from "../../utils/profileUrl";
+import { FaInfoCircle, FaTimes } from "react-icons/fa";
 
 const POSITIONS = ["TOP", "JUG", "MID", "AD", "SUP"];
 const LABELS = { TOP: "탑", JUG: "정글", MID: "미드", AD: "원딜", SUP: "서폿" };
 const emptyRequest = { status: "loading", rows: [] };
+
+function BalanceInfo() {
+    const [open, setOpen] = useState(false);
+    const id = useId();
+    const containerRef = useRef(null);
+    const buttonRef = useRef(null);
+    useEffect(() => {
+        if (!open) return undefined;
+        const dismissOutside = event => {
+            if (!containerRef.current?.contains(event.target)) setOpen(false);
+        };
+        const dismissEscape = event => {
+            if (event.key === "Escape") {
+                setOpen(false);
+                buttonRef.current?.focus();
+            }
+        };
+        document.addEventListener("pointerdown", dismissOutside);
+        document.addEventListener("keydown", dismissEscape);
+        return () => {
+            document.removeEventListener("pointerdown", dismissOutside);
+            document.removeEventListener("keydown", dismissEscape);
+        };
+    }, [open]);
+    return <div className="balance-info" ref={containerRef}>
+        <button ref={buttonRef} type="button" className="balance-info-toggle" aria-label="밸런스 찾기 이용 안내"
+            aria-expanded={open} aria-controls={id} onClick={() => setOpen(value => !value)}>
+            <FaInfoCircle aria-hidden="true" />
+        </button>
+        <section id={id} className="balance-info-note" hidden={!open} aria-labelledby={`${id}-title`}>
+            <div className="balance-info-header">
+                <strong id={`${id}-title`}>밸런스 찾기 안내</strong>
+                <button type="button" className="balance-info-close" aria-label="이용 안내 닫기"
+                    onClick={() => { setOpen(false); buttonRef.current?.focus(); }}>
+                    <FaTimes aria-hidden="true" />
+                </button>
+            </div>
+            <ol>
+                <li>기준 스트리머를 검색하면 SOOPLOL에 등록된 CK 기록을 바탕으로 라인별 맞라인 상대를 확인할 수 있습니다.</li>
+                <li>스트리머 상세에서 이동하면 해당 스트리머가 자동으로 검색된 상태로 시작합니다.</li>
+                <li>라인 버튼을 누르면 원하는 포지션의 상대만 필터링할 수 있습니다.</li>
+                <li>상대를 선택하면 기준 스트리머와 다른 해당 스트리머의 선택 라인 맞라인 전적이 오른쪽에 표시됩니다.</li>
+            </ol>
+            <strong className="balance-info-subtitle">기대되는 점</strong>
+            <ul>
+                <li>라인별 전적을 기준으로 실력과 플레이 성향이 비슷한 상대를 빠르게 비교할 수 있습니다.</li>
+                <li>특정 라인에서 유리하거나 어려운 맞라인 상대를 확인해 대진과 팀 구성을 검토할 수 있습니다.</li>
+                <li>등록된 CK 기록을 활용해 감이 아닌 실제 경기 데이터에 기반한 상대 탐색이 가능합니다.</li>
+            </ul>
+        </section>
+    </div>;
+}
 
 function ProfileImage({ soopId }) {
     return <img key={soopId || "default"} className="balance-profile" src={buildProfileUrl(soopId)}
@@ -177,7 +230,7 @@ export default function CkBalance() {
     return <div className="balance-page">
         <section className="balance-hero">
             <p className="balance-eyebrow">SOOPLOL BALANCE</p>
-            <h1>밸런스 찾기</h1>
+            <div className="balance-title-row"><h1>밸런스 찾기</h1><BalanceInfo /></div>
             <p className="balance-context">기준 스트리머와 맞라인 상대의 최근 전적을 비교해보세요.</p>
         </section>
         <div className="balance-grid">

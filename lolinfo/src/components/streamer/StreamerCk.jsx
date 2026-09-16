@@ -6,6 +6,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import StreamerCkListSection from "./StreamerCkListSection";
 import CkPeriodFilter from "./CkPeriodFilter";
 import { formatCkPeriod } from "../../utils/ckPeriod";
+import CkRecordInfo from "../ck/CkRecordInfo";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -404,7 +405,10 @@ function StreamerCkContent({ streamer, streamerId, period }) {
 
               {/* 왼쪽 제목 영역 */}
               <div className="ck-summary-intro">
-                <h2 className="mb-1">CK 전적</h2>
+                <div className="ck-record-info-heading mb-1">
+                  <h2 className="mb-0">CK 전적</h2>
+                  <CkRecordInfo personal />
+                </div>
 
                 <p className="mb-0 text-secondary">
                   {streamer?.streamerName
