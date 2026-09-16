@@ -124,6 +124,12 @@ export default function FeedbackModal({ show, onClose, targetType, targetId, tar
 									</div>
 								</div>
 
+								<div className="feedback-policy mb-3" role="note">
+									<strong>제보 안내</strong>
+									<span>처리 상태는 게시판의 피드백 목록에서 확인할 수 있습니다.</span>
+									<span>제보 내용은 앞 20자까지 공개되며, 이후 내용은 블라인드 처리됩니다.</span>
+								</div>
+
 								<div className="mb-3">
 									<label className="form-label" htmlFor="feedback-type">제보 유형</label>
 									<select

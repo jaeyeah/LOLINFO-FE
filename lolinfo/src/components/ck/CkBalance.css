@@ -18,6 +18,20 @@
   font-weight: 700;
   line-height: 1.2;
 }
+.balance-title-row { display: flex; align-items: center; justify-content: center; gap: .55rem; }
+.balance-info { position: relative; display: inline-flex; flex-shrink: 0; }
+.balance-info-toggle, .balance-info-close { display: inline-flex; align-items: center; justify-content: center; border: 0; color: #b7c8dc; cursor: pointer; }
+.balance-info-toggle { width: 36px; height: 36px; padding: 0; border-radius: 50%; background: rgba(255,255,255,.08); font-size: 1.05rem; }
+.balance-info-toggle:hover, .balance-info-toggle[aria-expanded="true"], .balance-info-close:hover { color: #fff; background: rgba(117,182,255,.25); }
+.balance-info-toggle:focus-visible, .balance-info-close:focus-visible { outline: 2px solid #75b6ff; outline-offset: 2px; }
+.balance-info-note { position: absolute; z-index: 20; top: calc(100% + .6rem); right: 0; width: min(820px, calc(100vw - 2rem)); max-height: min(500px, 70dvh); overflow-y: auto; padding: .85rem 1rem 1rem; border: 1px solid rgba(117,182,255,.5); border-radius: .75rem; background: #202a3b; color: #e9ecef; box-shadow: 0 .75rem 2rem rgba(0,0,0,.4); text-align: left; font-size: .9rem; line-height: 1.65; }
+.balance-info-header { display: flex; align-items: center; justify-content: space-between; gap: .75rem; color: #fff; }
+.balance-info-close { width: 32px; height: 32px; padding: 0; border-radius: .4rem; background: transparent; }
+.balance-info-note ol { margin: .55rem 0 .75rem; padding-left: 1.35rem; }
+.balance-info-note li + li { margin-top: .35rem; }
+.balance-info-subtitle { display: block; margin-top: .75rem; color: #8bdfff; }
+.balance-info-note ul { margin: .45rem 0 0; padding-left: 1.35rem; color: #bdcadb; }
+.balance-info-note ul li + li { margin-top: .35rem; }
 .balance-context {
   margin: 0.8rem 0 0;
   color: #adb5bd;
@@ -99,5 +113,6 @@ button.balance-match:hover, .balance-match.is-active { background: rgba(13,110,2
   .balance-match-right { align-items: flex-start; min-width: 0; width: 100%; }
   .balance-record-row { justify-content: flex-start; }
   .balance-progress { width: min(180px, 100%); }
+  .balance-info-note { position: fixed; top: 50%; left: 50%; right: auto; transform: translate(-50%, -50%); width: calc(100vw - 2rem); }
 }
 

@@ -12,6 +12,7 @@ import FeedbackModal from "../etc/FeedbackModal";
 import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement, Filler, Tooltip, Legend } from "chart.js";
 import { Line } from "react-chartjs-2";
 import "./CkList.css";
+import CkRecordInfo from "./CkRecordInfo";
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Filler, Tooltip, Legend);
 
@@ -435,11 +436,10 @@ export default function CkList() {
 
             <div className="col-12 col-lg-8 ck-list-main">
                <div className="card bg-dark border-secondary text-white p-3 mb-3">
-                  <h3 className="mb-1 section-title">CK 전체 목록</h3>
-                  <p className="mb-0 text-secondary">
-                     - CK 목록은 최소 데이터(세트X)만 조회하며 팀원 상세 정보는 별도 API로 분리됩니다.<br />
-                     - 세트별 교체인원이 있는 CK의 경우(EX 넛저밧CK), 전적이 등록되지 않습니다
-                  </p>
+                  <div className="ck-record-info-heading">
+                     <h3 className="mb-0 section-title">CK 전체 목록</h3>
+                     <CkRecordInfo />
+                  </div>
                   <button type="button" className="btn btn-sm btn-outline-light mt-3"
                      onClick={() => setShowFeedback(true)} >
                      오류·누락 제보

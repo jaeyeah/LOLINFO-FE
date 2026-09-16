@@ -17,6 +17,23 @@
   color: #ced4da !important;
 }
 
+.feedback-policy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(0, 204, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(0, 204, 255, 0.08);
+  color: #c9d6df;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.feedback-policy strong {
+  color: #8bdfff;
+}
+
 .feedback-modal .form-control,
 .feedback-modal .form-select {
   color: #f8f9fa;
@@ -33,7 +50,8 @@
 }
 
 .feedback-modal .form-control::placeholder {
-  color: #868e96;
+  color: #f8f7f791 !important;
+  opacity: 1;
 }
 
 .feedback-length {

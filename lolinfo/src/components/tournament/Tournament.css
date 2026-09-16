@@ -353,8 +353,39 @@
 }
 
 /* 대회 개최자 영역 */
+.tournament-detail-title {
+  margin: 0;
+  padding: 1.25rem 1rem 0.75rem !important;
+  line-height: 1.35;
+}
+
+.tournament-detail-navigation {
+  margin-top: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.tournament-detail-navigation .btn {
+  min-width: 72px;
+  font-weight: 600;
+}
+
+.tournament-detail-card {
+  padding: 0.75rem;
+  overflow: visible;
+}
+
+.tournament-host-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.25rem 0.25rem 0;
+}
+
 .tournment-host {
-  padding: 10px;
+  min-height: 132px;
+  padding: 0.9rem 0.5rem 0.5rem;
+  flex-wrap: wrap;
 }
 
 .tournment-host .host-profile{
@@ -364,12 +395,72 @@
 }
 
 .host-box{
+  flex: 1 1 auto;
+  margin: 0;
   background: rgba(0, 0, 0, 0.459);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 12px;
   padding: 0.35rem 0.7rem;
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.tournament-host-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  flex: 0 0 auto;
+}
+
+.tournament-bookmark-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 36px;
+  padding: 0;
+  flex: 0 0 40px;
+}
+
+.tournament-feedback-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 0.75rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+  .tournament-detail-title {
+    padding-top: 1rem !important;
+    font-size: 1.35rem;
+  }
+
+  .tournament-detail-navigation {
+    margin-top: 0.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .tournament-detail-card {
+    padding: 0.5rem;
+  }
+
+  .tournament-host-header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.25rem 0.25rem 0;
+  }
+
+  .tournament-host-actions {
+    justify-content: flex-end;
+  }
+
+  .tournament-feedback-button {
+    flex: 1 1 auto;
+  }
 }
 /* ------------------ */
 input::placeholder,

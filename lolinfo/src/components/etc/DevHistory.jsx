@@ -1,6 +1,6 @@
 import "./../Privacy.css";
 
-const LAST_UPDATED = "2026.09.12";
+const LAST_UPDATED = "2026.09.13";
 
 export default function DevHistory() {
     return (
@@ -12,7 +12,7 @@ export default function DevHistory() {
             </header>
 
             <div className="privacy-body">
-                <section><h2 className="fw-bold">26.09.12</h2>
+                <section><h2 className="fw-bold">26.09.13</h2>
                     <p className="privacy-note">
                         - 신규기능 : <span className="text-info fw-bold">랭킹</span> 페이지 구현<br/>
                         <span className="text-secondary ms-4">└ CK 랭킹 / 멸망전 랭킹 추가</span><br/>
