@@ -68,7 +68,7 @@ export default function MonthlyBoardList({ loginId }) {
                         <h3 className="board-item-title">{board.boardTitle}</h3>
                     </div>
                     <div className="col-3 board-item-footer">
-                        <span className="board-writer">{board.memberNickname}</span>
+                        {/* <span className="board-writer">{board.memberNickname}</span> */}
                         <span className="board-date">{new Date(board.boardWtime).toLocaleDateString()}</span>
                     </div>
                 </div>
