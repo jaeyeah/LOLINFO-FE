@@ -161,14 +161,13 @@ export default function Menu() {
                         <li className="nav-item" onClick={closeMenu}>
                             <Link className="nav-link" to="/balance">밸런스찾기</Link>
                         </li>
-                        {isLogin === true ? (<>  {/* 로그인 시 나와야 하는 화면 */}
+                        {/* {isLogin === true ? (<>  로그인 시 나와야 하는 화면 */}
                             <li className="nav-item" onClick={closeMenu}>
                                 <Link className="nav-link" to="/board">
                                     <span>게시판</span>
                                 </Link>
                             </li>
-                            </>
-                        ) : (<> </> )} {/* 비로그인 시 나와야 하는 화면 */}
+                        {/* </>) : (<> </> )} 비로그인 시 나와야 하는 화면 */}
                     </ul>
                     <ul className="navbar-nav ms-auto">
                         {/* 우측 메뉴 */}
