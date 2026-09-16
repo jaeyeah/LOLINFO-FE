@@ -10,6 +10,33 @@
     <loc>https://sooplol.com/ck</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/board</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/board/101</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/board/102</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/board/103</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/board/104</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/board/105</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/board/106</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/board/107</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/board/108</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/tournament</loc>
   </url>
   <url>
@@ -4105,6 +4132,54 @@
     <loc>https://sooplol.com/streamer/1427</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/1428</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1429</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1430</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1432</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1433</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1434</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1435</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1436</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1437</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1438</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1440</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1441</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1442</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1443</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1444</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1445</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/511/tournaments</loc>
   </url>
   <url>
@@ -4438,6 +4513,9 @@
     <loc>https://sooplol.com/streamer/832/tournaments</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/1050/tournaments</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/1/tournaments</loc>
   </url>
   <url>
@@ -4598,6 +4676,9 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/913/tournaments</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1180/tournaments</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/528/tournaments</loc>
@@ -5353,6 +5434,9 @@
     <loc>https://sooplol.com/streamer/933/tournaments</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/824/tournaments</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/557/tournaments</loc>
   </url>
   <url>
@@ -5516,9 +5600,6 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/608/tournaments</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/824/tournaments</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/932/tournaments</loc>
@@ -6169,6 +6250,9 @@
     <loc>https://sooplol.com/streamer/321/tournaments</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/112/tournaments</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/146/tournaments</loc>
   </url>
   <url>
@@ -6212,9 +6296,6 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/440/tournaments</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/112/tournaments</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/26/tournaments</loc>
@@ -6460,6 +6541,9 @@
     <loc>https://sooplol.com/streamer/847/tournaments</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/29/tournaments</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/949/tournaments</loc>
   </url>
   <url>
@@ -6485,9 +6569,6 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/919/tournaments</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/29/tournaments</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/958/tournaments</loc>
@@ -6904,6 +6985,9 @@
     <loc>https://sooplol.com/streamer/308/tournaments</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/780/tournaments</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/80/tournaments</loc>
   </url>
   <url>
@@ -6920,9 +7004,6 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/447/tournaments</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/780/tournaments</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/826/tournaments</loc>
@@ -7201,10 +7282,13 @@
     <loc>https://sooplol.com/streamer/1423/ck-records</loc>
   </url>
   <url>
-    <loc>https://sooplol.com/streamer/1372/ck-records</loc>
+    <loc>https://sooplol.com/streamer/1437/ck-records</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1377/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1372/ck-records</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/40/ck-records</loc>
@@ -7484,6 +7568,9 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1411/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1340/ck-records</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1265/ck-records</loc>
@@ -8032,16 +8119,25 @@
     <loc>https://sooplol.com/streamer/1385/ck-records</loc>
   </url>
   <url>
-    <loc>https://sooplol.com/streamer/216/ck-records</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/1270/ck-records</loc>
+    <loc>https://sooplol.com/streamer/1429/ck-records</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1338/ck-records</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1373/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1435/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1443/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/216/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1270/ck-records</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/600/ck-records</loc>
@@ -8320,10 +8416,22 @@
     <loc>https://sooplol.com/streamer/310/ck-records</loc>
   </url>
   <url>
-    <loc>https://sooplol.com/streamer/1268/ck-records</loc>
+    <loc>https://sooplol.com/streamer/606/ck-records</loc>
   </url>
   <url>
-    <loc>https://sooplol.com/streamer/606/ck-records</loc>
+    <loc>https://sooplol.com/streamer/1430/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1440/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1442/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1444/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1268/ck-records</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/818/ck-records</loc>
@@ -8632,6 +8740,15 @@
     <loc>https://sooplol.com/streamer/1424/ck-records</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/1300/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1434/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1441/ck-records</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/1378/ck-records</loc>
   </url>
   <url>
@@ -8882,6 +8999,24 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1413/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1428/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1365/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/409/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1438/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1357/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1445/ck-records</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1272/ck-records</loc>
@@ -9229,6 +9364,15 @@
     <loc>https://sooplol.com/streamer/1422/ck-records</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/1366/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1292/ck-records</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1367/ck-records</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/473/ck-records</loc>
   </url>
   <url>
@@ -9242,12 +9386,6 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1342/ck-records</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/1366/ck-records</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/1367/ck-records</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1374/ck-records</loc>
@@ -9589,6 +9727,9 @@
     <loc>https://sooplol.com/streamer/832/streamerWith</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/1050/streamerWith</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/1/streamerWith</loc>
   </url>
   <url>
@@ -9749,6 +9890,9 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/913/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1180/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/528/streamerWith</loc>
@@ -10504,6 +10648,9 @@
     <loc>https://sooplol.com/streamer/933/streamerWith</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/824/streamerWith</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/557/streamerWith</loc>
   </url>
   <url>
@@ -10667,9 +10814,6 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/608/streamerWith</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/824/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/932/streamerWith</loc>
@@ -11320,6 +11464,9 @@
     <loc>https://sooplol.com/streamer/321/streamerWith</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/112/streamerWith</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/146/streamerWith</loc>
   </url>
   <url>
@@ -11363,9 +11510,6 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/440/streamerWith</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/112/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/26/streamerWith</loc>
@@ -11611,6 +11755,9 @@
     <loc>https://sooplol.com/streamer/847/streamerWith</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/29/streamerWith</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/949/streamerWith</loc>
   </url>
   <url>
@@ -11636,9 +11783,6 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/919/streamerWith</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/29/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/958/streamerWith</loc>
@@ -12055,6 +12199,9 @@
     <loc>https://sooplol.com/streamer/308/streamerWith</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/780/streamerWith</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/80/streamerWith</loc>
   </url>
   <url>
@@ -12071,9 +12218,6 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/447/streamerWith</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/780/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/826/streamerWith</loc>
@@ -12098,9 +12242,6 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1039/streamerWith</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/1050/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1061/streamerWith</loc>
@@ -12202,10 +12343,13 @@
     <loc>https://sooplol.com/streamer/1423/streamerWith</loc>
   </url>
   <url>
-    <loc>https://sooplol.com/streamer/1372/streamerWith</loc>
+    <loc>https://sooplol.com/streamer/1437/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1377/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1372/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1000/streamerWith</loc>
@@ -12248,9 +12392,6 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1164/streamerWith</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/1180/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1184/streamerWith</loc>
@@ -12299,6 +12440,9 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1411/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1340/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1265/streamerWith</loc>
@@ -12550,13 +12694,22 @@
     <loc>https://sooplol.com/streamer/1385/streamerWith</loc>
   </url>
   <url>
-    <loc>https://sooplol.com/streamer/1270/streamerWith</loc>
+    <loc>https://sooplol.com/streamer/1429/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1338/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1373/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1435/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1443/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1270/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1398/streamerWith</loc>
@@ -12662,6 +12815,18 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1412/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1430/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1440/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1442/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1444/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1268/streamerWith</loc>
@@ -12814,6 +12979,15 @@
     <loc>https://sooplol.com/streamer/1424/streamerWith</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/1300/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1434/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1441/streamerWith</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/1378/streamerWith</loc>
   </url>
   <url>
@@ -12926,6 +13100,21 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1413/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1428/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1365/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1438/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1357/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1445/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1272/streamerWith</loc>
@@ -13075,6 +13264,15 @@
     <loc>https://sooplol.com/streamer/1422/streamerWith</loc>
   </url>
   <url>
+    <loc>https://sooplol.com/streamer/1366/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1292/streamerWith</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/streamer/1367/streamerWith</loc>
+  </url>
+  <url>
     <loc>https://sooplol.com/streamer/1267/streamerWith</loc>
   </url>
   <url>
@@ -13082,12 +13280,6 @@
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1342/streamerWith</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/1366/streamerWith</loc>
-  </url>
-  <url>
-    <loc>https://sooplol.com/streamer/1367/streamerWith</loc>
   </url>
   <url>
     <loc>https://sooplol.com/streamer/1374/streamerWith</loc>
@@ -13421,5 +13613,8 @@
   </url>
   <url>
     <loc>https://sooplol.com/tournament/115</loc>
+  </url>
+  <url>
+    <loc>https://sooplol.com/tournament/116</loc>
   </url>
 </urlset>
