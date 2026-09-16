@@ -28,6 +28,7 @@ const TARGET_TYPE_LABELS = {
 const STATUS_LABELS = {
     WAITING: "대기",
     CHECKING: "확인 중",
+    DUPLICATE: "중복접수",
     DONE: "처리 완료",
 };
 
@@ -154,7 +155,6 @@ export default function AdminFeedback() {
                             <th scope="col">번호</th>
                             <th scope="col">분류</th>
                             <th scope="col">대상</th>
-
                             <th scope="col">등록일</th>
                             <th scope="col">링크</th>
                             <th scope="col">상태</th>
@@ -178,19 +178,17 @@ export default function AdminFeedback() {
                                 <tr key={feedback.feedbackId}>
                                     <td>#{feedback.feedbackId}</td>
                                     <td>
-                                        <span className={`badge ${FEEDBACK_TYPE_CLASSES[feedback.feedbackType] || "bg-secondary"}`}>
-                                            {getFeedbackTypeLabel(feedback.feedbackType)}
+                                        <span className={`badge ${feedback.feedbackStatus === "DUPLICATE"? "bg-secondary" : FEEDBACK_TYPE_CLASSES[feedback.feedbackType] || "bg-secondary"}`}>
+                                            {feedback.feedbackStatus === "DUPLICATE"
+                                                ? "중복접수"
+                                                : getFeedbackTypeLabel(feedback.feedbackType)}
                                         </span>
                                     </td>
                                     <td>{getTargetLabel(feedback)}</td>
                                     <td>{formatDateTime(feedback.feedbackCreated)}</td>
                                     <td>
                                         {feedback.feedbackUrl ? (
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-link text-info p-0"
-                                                onClick={() => navigate(feedback.feedbackUrl)}
-                                            >
+                                            <button type="button" className="btn btn-sm btn-link text-info p-0" onClick={() => navigate(feedback.feedbackUrl)}>
                                                 원본 이동
                                             </button>
                                         ) : "-"}
@@ -198,13 +196,11 @@ export default function AdminFeedback() {
                     
                                     <td>
                                         {editFeedbackId === feedback.feedbackId ? (
-                                            <select
-                                                className="form-select form-select-sm bg-dark text-white"
-                                                value={editStatus}
-                                                onChange={(e) => setEditStatus(e.target.value)}
-                                            >
+                                            <select  className="form-select form-select-sm bg-dark text-white"
+                                                onChange={(e) => setEditStatus(e.target.value)} value={editStatus}>
                                                 <option value="WAITING">대기</option>
                                                 <option value="CHECKING">확인 중</option>
+                                                <option value="DUPLICATE">중복접수</option>
                                                 <option value="DONE">처리 완료</option>
                                             </select>
                                         ) : (
@@ -227,36 +223,21 @@ export default function AdminFeedback() {
                                     <td>
                                         {editFeedbackId === feedback.feedbackId ? (
                                             <div className="d-flex gap-1">
-                                                <button
-                                                    className="btn btn-sm btn-success"
-                                                    onClick={updateStatus}
-                                                >
+                                                <button className="btn btn-sm btn-success" onClick={updateStatus}>
                                                     저장
                                                 </button>
 
-                                                <button
-                                                    className="btn btn-sm btn-secondary"
-                                                    onClick={() => {
-                                                        setEditFeedbackId(null);
-                                                        setEditStatus("");
-                                                    }}
-                                                >
+                                                <button className="btn btn-sm btn-secondary" onClick={() => { setEditFeedbackId(null); setEditStatus("");}} >
                                                     취소
                                                 </button>
                                             </div>
                                         ) : (
                                             <div className="d-flex gap-1">
-                                                <button
-                                                    className="btn btn-sm btn-outline-warning"
-                                                    onClick={() => startEditStatus(feedback)}
-                                                >
+                                                <button className="btn btn-sm btn-outline-warning" onClick={() => startEditStatus(feedback)}>
                                                     상태 변경
                                                 </button>
 
-                                                <button
-                                                    className="btn btn-sm btn-outline-light"
-                                                    onClick={() => setSelectedFeedback(feedback)}
-                                                >
+                                                <button className="btn btn-sm btn-outline-light" onClick={() => setSelectedFeedback(feedback)}>
                                                     보기
                                                 </button>
                                             </div>
@@ -272,12 +253,8 @@ export default function AdminFeedback() {
             <nav className="mt-4" aria-label="피드백 페이지 navigation">
                 <ul className="pagination justify-content-center mb-0">
                     <li className={`page-item ${!pageData.hasPrev ? "disabled" : ""}`}>
-                        <button
-                            type="button"
-                            className="page-link"
-                            disabled={!pageData.hasPrev}
-                            onClick={() => handlePageChange(pageData.blockStart - 1)}
-                        >
+                        <button type="button" className="page-link" disabled={!pageData.hasPrev}
+                            onClick={() => handlePageChange(pageData.blockStart - 1)}>
                             이전
                         </button>
                     </li>
@@ -292,12 +269,8 @@ export default function AdminFeedback() {
                         </li>
                     ))}
                     <li className={`page-item ${!pageData.hasNext ? "disabled" : ""}`}>
-                        <button
-                            type="button"
-                            className="page-link"
-                            disabled={!pageData.hasNext}
-                            onClick={() => handlePageChange(pageData.blockFinish + 1)}
-                        >
+                        <button type="button" className="page-link" disabled={!pageData.hasNext}
+                            onClick={() => handlePageChange(pageData.blockFinish + 1)} >
                             다음
                         </button>
                     </li>
