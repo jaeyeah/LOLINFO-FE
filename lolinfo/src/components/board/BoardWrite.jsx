@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
-import { accessTokenState, loginIdState } from "../../utils/jotai";
-import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { loginState } from "../../utils/jotai";
+import { useCallback, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "./Board.css";
@@ -28,8 +28,7 @@ const isWithinByteLimit = (value, limit) => {
 };
 
 export default function BoardWrite() {
-    const accessToken = useAtomValue(accessTokenState);
-    const loginId = useAtomValue(loginIdState);
+    const isLoggedIn = useAtomValue(loginState);
     const navigate = useNavigate();
 
 
@@ -42,21 +41,6 @@ export default function BoardWrite() {
 
     // Loading state
     const [isLoading, setIsLoading] = useState(false);
-
-    // 로그인 체크
-    useEffect(() => {
-        if (!accessToken || accessToken.length === 0) {
-            Swal.fire({
-                icon: "warning",
-                title: "로그인이 필요합니다",
-                text: "게시글 작성은 로그인한 회원만 가능합니다.",
-                confirmButtonText: "확인",
-                confirmButtonColor: "#ea8685",
-            }).then(() => {
-                navigate("/member/login");
-            });
-        }
-    }, [accessToken, navigate]);
 
     // Form change handler (Byte 기준 검증)
     const handleChangeForm = useCallback((e) => {
@@ -83,6 +67,7 @@ export default function BoardWrite() {
     const handleSubmitForm = useCallback(
         async (e) => {
             e.preventDefault();
+            if (!isLoggedIn) return;
 
             // Validation
             if (!form.boardTitle.trim()) {
@@ -154,15 +139,15 @@ export default function BoardWrite() {
                 setIsLoading(false);
             }
         },
-        [form, loginId, navigate]
+        [form, isLoggedIn, navigate]
     );
 
-    if (!accessToken || accessToken.length === 0) {
-        return null;
+    if (!isLoggedIn) {
+        return <Navigate to="/member/login" replace />;
     }
 
     return (
-        <div className="insert-form d-f">
+        <div className="insert-form d-f board-write-page">
             <div className="row">
                 <div className="col text-center">
                     <h2>게시글 작성</h2>
@@ -241,7 +226,7 @@ export default function BoardWrite() {
                 {/* 버튼 그룹 */}
                 <div className="row mt-3">
                     <div className="col-sm-3"></div>
-                    <div className="col-sm-9">
+                    <div className="col-sm-9 board-write-actions">
                         <button
                             type="submit"
                             className="btn btn-primary"
