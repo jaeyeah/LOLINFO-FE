@@ -222,7 +222,7 @@ export default function BoardDetail() {
                         <span className="board-category-badge">
                             {board.boardCategory}
                         </span>
-                        <span>작성자: {board.boardWriter}</span>
+                        {/* <span>작성자: {board.boardWriter}</span> */}
                         <span>
                             작성일:{" "}
                             {board.boardWtime
