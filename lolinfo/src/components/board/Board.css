@@ -229,29 +229,44 @@
 }
 
 .board-list-card {
-    background-color: rgba(26, 28, 31, 0.8);
-    border-radius: 0.8em;
-    border: 1px solid #454545;
-    padding: 2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    color: #ffffff;
+    max-width: 980px;
+    margin: 0 auto;
 }
 
-.board-list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-    gap: 1rem;
+.board-list-hero {
+    padding: 2rem clamp(1rem, 4vw, 3.5rem) 2.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.board-list-eyebrow {
+    margin: 0 0 0.7rem;
+    color: #00ccff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.6px;
 }
 
 .board-list-title {
-    font-size: 2rem;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: 0.5px;
     margin: 0;
+    color: #f8f9fa;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.board-list-context {
+    margin: 0.8rem 0 0;
+    color: #adb5bd;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    word-break: keep-all;
+}
+
+.board-list-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
 }
 
 .board-write-btn {
@@ -273,32 +288,38 @@
 
 .board-category-filter {
     display: flex;
-    gap: 0.75rem;
-    margin-bottom: 2rem;
     flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
-.category-btn {
-    padding: 0.5rem 1rem;
-    background-color: #454545;
-    color: #e0e0e0;
-    border: 1px solid #554545;
-    border-radius: 0.4em;
+.board-category-filter .category-btn {
+    padding: 0.6rem 1.8rem;
+    background: transparent;
+    color: #adb5bd;
+    border: 1px solid transparent;
+    border-radius: 999px;
     cursor: pointer;
-    transition: all 0.3s;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
 }
 
-.category-btn:hover {
-    background-color: #555555;
-    border-color: #ffd700;
-    color: #ffd700;
+.board-category-filter .category-btn:hover {
+    color: #4de1ff;
 }
 
-.category-btn.active {
-    background-color: #ea8685;
-    border-color: #ea8685;
-    color: #ffffff;
+.board-category-filter .category-btn.active {
+    color: #4de1ff;
+    border-color: rgba(0, 204, 255, 0.25);
+    background: rgba(0, 204, 255, 0.08);
+}
+
+.board-category-filter .category-btn:focus-visible {
+    outline: 2px solid #00ccff;
+    outline-offset: 3px;
 }
 
 .board-access-message,
@@ -336,6 +357,69 @@
 .board-feedback-list-header span:nth-child(3),
 .board-feedback-list-header span:nth-child(4) {
     text-align: center;
+}
+
+.board-monthly-list {
+    border: 1px solid #454545;
+    border-radius: 0.4rem;
+    overflow: hidden;
+}
+
+.board-monthly-list-header,
+.board-monthly-item {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr) 7.5rem;
+    align-items: center;
+    column-gap: 1rem;
+}
+
+.board-monthly-list-header {
+    padding: 0.75rem 1rem;
+    color: #adb5bd;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.board-monthly-list-header span:last-child {
+    text-align: center;
+}
+
+.board-monthly-item {
+    padding: 1rem;
+    background-color: #2b2d3d;
+    border-top: 1px solid #454545;
+    color: #ffffff;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.board-monthly-item:hover,
+.board-monthly-item:focus-visible {
+    background-color: #333647;
+    color: #ffffff;
+}
+
+.board-monthly-date {
+    color: #adb5bd;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.board-monthly-title {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-weight: 600;
+}
+
+.board-monthly-category {
+    justify-self: center;
+    padding: 0.25rem 0.55rem;
+    border-radius: 0.3rem;
+    background: #293f54;
+    color: #abd9ff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
 .board-feedback-item {
@@ -534,22 +618,8 @@
 }
 
 @media (max-width: 768px) {
-    .board-list-card {
-        padding: 1.5rem;
-    }
-
-    .board-list-title {
-        font-size: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .board-list-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .board-list-header h1 {
-        margin: 0;
+    .board-category-filter {
+        padding-top: 1.1rem;
     }
 
     .board-write-btn {
@@ -558,6 +628,32 @@
 
     .board-feedback-list-header {
         display: none;
+    }
+
+    .board-monthly-list-header {
+        display: none;
+    }
+
+    .board-monthly-list {
+        border: 0;
+        display: grid;
+        gap: 0.65rem;
+    }
+
+    .board-monthly-item {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.65rem;
+        padding: 0.85rem;
+        border: 1px solid #454545;
+        border-radius: 0.35rem;
+    }
+
+    .board-monthly-title {
+        grid-row: 1;
+    }
+
+    .board-monthly-category {
+        justify-self: start;
     }
 
     .board-feedback-item {
@@ -605,15 +701,6 @@
         padding: 10px;
     }
 
-    .board-list-card {
-        padding: 1rem;
-    }
-
-    .board-list-title {
-        font-size: 1.25rem;
-        margin-bottom: 1rem;
-    }
-
     .board-item {
         padding: 1rem;
     }
@@ -628,9 +715,13 @@
         align-items: flex-start;
     }
 
-    .category-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.85rem;
+    .board-category-filter {
+        gap: 0.5rem;
+    }
+
+    .board-category-filter .category-btn {
+        min-height: 44px;
+        padding: 0.6rem 1.2rem;
     }
 
     .board-feedback-item {
@@ -688,6 +779,7 @@
     line-height: 1.1;
     letter-spacing: -0.02em;
     flex: 1 1 100%;
+    overflow-wrap: anywhere;
 }
 
 .board-detail-info {
@@ -848,6 +940,29 @@
 }
 
 @media (max-width: 680px) {
+    .board-write-page {
+        min-width: 0;
+        padding: 1rem;
+    }
+
+    .board-write-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .board-write-actions .btn {
+        flex: 1;
+        margin-left: 0 !important;
+    }
+
+    .board-detail-card {
+        padding: 1rem;
+    }
+
+    .board-detail-content {
+        padding: 1rem;
+    }
+
     .board-detail-header,
     .board-detail-footer {
         flex-direction: column;

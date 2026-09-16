@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
-import { loginIdState } from "../../utils/jotai";
+import { loginState } from "../../utils/jotai";
 import "./Board.css";
 import MonthlyBoardList from "./MonthlyBoardList";
 import PublicFeedbackList from "./PublicFeedbackList";
@@ -13,34 +13,39 @@ const TABS = [
 
 export default function BoardList() {
     const navigate = useNavigate();
-    const loginId = useAtomValue(loginIdState);
+    const isLoggedIn = useAtomValue(loginState);
     const [selectedTab, setSelectedTab] = useState("feedback");
 
     return (
         <div className="board-list-container">
             <div className="board-list-card">
-                <div className="board-list-header">
+                <header className="board-list-hero">
+                    <p className="board-list-eyebrow">SOOPLOL BOARD</p>
                     <h1 className="board-list-title">게시판</h1>
-                    {selectedTab === "monthly" && loginId && (
-                        <button className="btn btn-primary board-write-btn" onClick={() => navigate("/board/write")}>
-                            글쓰기
-                        </button>
-                    )}
-                </div>
-
-                <div className="board-category-filter">
+                    <p className="board-list-context">피드백과 월간 소식을 확인해보세요.</p>
+                </header>
+                <nav className="board-category-filter" aria-label="게시판 분류">
                     {TABS.map((tab) => (
                         <button
                             key={tab.key}
+                            type="button"
                             className={`category-btn ${selectedTab === tab.key ? "active" : ""}`}
+                            aria-pressed={selectedTab === tab.key}
                             onClick={() => setSelectedTab(tab.key)}
                         >
                             {tab.label}
                         </button>
                     ))}
-                </div>
+                </nav>
+                {selectedTab === "monthly" && isLoggedIn && (
+                    <div className="board-list-actions">
+                        <button className="btn btn-primary board-write-btn" onClick={() => navigate("/board/write")}>
+                            글쓰기
+                        </button>
+                    </div>
+                )}
 
-                {selectedTab === "monthly" ? <MonthlyBoardList loginId={loginId} /> : <PublicFeedbackList />}
+                {selectedTab === "monthly" ? <MonthlyBoardList /> : <PublicFeedbackList />}
             </div>
         </div>
     );
