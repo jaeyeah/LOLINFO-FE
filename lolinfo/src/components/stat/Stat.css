@@ -1,0 +1,210 @@
+.stat-page {
+    min-width: 0;
+    padding: clamp(1.25rem, 3vw, 2.5rem) 0 3rem;
+    color: #f8f9fa;
+}
+
+.stat-hero {
+    padding: 2rem clamp(1rem, 4vw, 3.5rem) 2.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.stat-hero h1 {
+    margin: 0;
+    color: #f8f9fa;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.stat-page-eyebrow {
+    margin: 0 0 0.7rem;
+    color: #00ccff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+}
+
+.stat-context {
+    margin: 0.8rem 0 0;
+    color: #adb5bd;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    word-break: keep-all;
+}
+
+.stat-description {
+    margin: 1.5rem 0 1.25rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid rgba(0, 204, 255, 0.2);
+    border-left: 3px solid #00ccff;
+    border-radius: 0.65rem;
+    background: rgba(0, 204, 255, 0.055);
+}
+
+.stat-description h2 {
+    margin: 0 0 0.45rem;
+    color: #4de1ff;
+    font-size: 1rem;
+}
+
+.stat-description p {
+    margin: 0;
+    color: #ced4da;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    word-break: keep-all;
+}
+
+.stat-description-note {
+    margin-top: 0.6rem !important;
+    color: #fcd34d !important;
+}
+
+.stat-year-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #adb5bd;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.stat-year-control input {
+    width: 6.5rem;
+    color: #f8f9fa;
+    background-color: #212529;
+    border-color: #495057;
+}
+
+.stat-year-control input:focus {
+    color: #f8f9fa;
+    background-color: #212529;
+    border-color: #86efac;
+    box-shadow: 0 0 0 0.2rem rgba(134, 239, 172, 0.16);
+}
+
+.stat-status {
+    padding: 1.25rem 0;
+    color: #adb5bd;
+}
+
+.stat-status-error {
+    color: #fca5a5;
+}
+
+.stat-chart-panel {
+    min-width: 0;
+    padding: clamp(1rem, 2vw, 1.5rem);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.stat-chart-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.stat-chart-heading {
+    min-width: 0;
+}
+
+.stat-chart-heading h2 {
+    margin: 0 0 0.25rem;
+    font-size: 1.1rem;
+}
+
+.stat-chart-heading p {
+    margin: 0;
+    color: #adb5bd;
+    font-size: 0.875rem;
+}
+
+.stat-chart-body {
+    position: relative;
+    width: 100%;
+    height: clamp(300px, 42vw, 420px);
+}
+
+.monthly-activity-tooltip {
+    position: absolute;
+    z-index: 2;
+    width: min(320px, calc(100% - 1rem));
+    max-width: calc(100% - 1rem);
+    padding: 0.9rem 1rem;
+    color: #f8f9fa;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    pointer-events: auto;
+    border: 1px solid rgba(251, 191, 36, 0.45);
+    border-radius: 6px;
+    background: rgba(25, 29, 33, 0.97);
+    box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.32);
+    opacity: 0;
+    overflow-wrap: anywhere;
+    transition: opacity 0.12s ease;
+}
+
+.monthly-activity-tooltip-link {
+    color: #f8f9fa;
+    text-decoration: none;
+}
+
+.monthly-activity-tooltip-link:hover,
+.monthly-activity-tooltip-link:focus {
+    color: #fcd34d;
+    text-decoration: underline;
+}
+
+.monthly-activity-tooltip strong {
+    display: block;
+    color: #fcd34d;
+    font-size: 1rem;
+    white-space: normal;
+}
+
+.monthly-activity-tooltip ul {
+    max-height: 12rem;
+    margin: 0.5rem 0 0;
+    padding-left: 1.1rem;
+    overflow-y: auto;
+}
+
+.monthly-activity-tooltip li + li {
+    margin-top: 0.2rem;
+}
+
+@media (max-width: 768px) {
+    .stat-hero {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .stat-chart-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .stat-year-control {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .stat-year-control input {
+        flex: 1;
+        max-width: 8rem;
+    }
+
+    .stat-chart-body {
+        height: 320px;
+    }
+
+    .stat-chart-panel {
+        padding: 0.85rem;
+    }
+}

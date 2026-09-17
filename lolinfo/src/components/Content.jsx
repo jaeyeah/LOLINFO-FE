@@ -50,6 +50,7 @@ import About from "./About";
 import Ranking from "./ranking/Ranking";
 import CkRanking from "./ranking/ck/CkRanking";
 import MyeolmangRanking from "./ranking/myeolmang/MyeolmangRanking";
+import Stat from "./stat/Stat";
 
 export default function Content(){
 
@@ -67,6 +68,7 @@ return (<>
                 <Route path="/devhistory" element={<DevHistory />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/data-criteria" element={<About />} />
+                <Route path="/stat" element={<Stat />} />
 
                 {/* 회원 */}
                 <Route path="/member/join" element={<MemberJoin/>} />
