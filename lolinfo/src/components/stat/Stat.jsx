@@ -77,42 +77,57 @@ export default function Stat() {
 
 	return (
 		<main className="stat-page" aria-labelledby="stat-page-title">
-			<header className="stat-page-header">
-				<div>
-					<p className="stat-page-eyebrow">SOOPLOL DATA</p>
-					<h1 id="stat-page-title">월별 활동 통계</h1>
-				</div>
-				<label className="stat-year-control">
-					<span>조회 연도</span>
-					<input
-						className="form-control form-control-sm"
-						type="number"
-						min="1"
-						max="9999"
-						value={selectedYear}
-						onChange={(event) => setSelectedYear(event.target.value)}
-						aria-label="조회 연도"
-					/>
-				</label>
+			<header className="stat-hero">
+				<p className="stat-page-eyebrow">SOOPLOL DATA</p>
+				<h1 id="stat-page-title">월별 활동 통계</h1>
+				<p className="stat-context">
+					SOOP 리그 오브 레전드 스트리머들의 CK 및 대회 활동을 월별로 살펴보세요.
+				</p>
 			</header>
 
-			{loading ? (
-				<p className="stat-status" role="status">월별 활동 통계를 불러오는 중입니다...</p>
-			) : error ? (
-				<p className="stat-status stat-status-error" role="alert">{error}</p>
-			) : months.length === 0 ? (
-				<p className="stat-status">조회할 월별 활동 데이터가 없습니다.</p>
-			) : (
-				<section className="stat-chart-panel" aria-labelledby="monthly-activity-title">
+			<section className="stat-description" aria-labelledby="stat-description-title">
+				<h2 id="stat-description-title">SOOPLOL 월별 활동 통계 안내</h2>
+				<p>
+					월별 CK 경기 수, 참여 스트리머 수, 대회 개최 수와 참가 인원 변화를 차트로 제공합니다.
+					멸망전이 포함된 월의 경우 다른 색상이 적용됩니다.
+				</p>
+				<p className="stat-description-note">
+					모든 통계는 SOOPLOL에 등록된 기록을 기준으로 집계되며, 실제 전체 활동 내역과 차이가 있을 수 있습니다.
+				</p>
+			</section>
+
+			<section className="stat-chart-panel" aria-labelledby="monthly-activity-title">
+				<div className="stat-chart-header">
 					<div className="stat-chart-heading">
 						<h2 id="monthly-activity-title">{selectedYear}년 월별 활동 추이</h2>
 						<p>CK 경기 수, 참여 스트리머 수, 대회 수를 월별로 비교합니다.</p>
 					</div>
+					<label className="stat-year-control">
+						<span>조회 연도</span>
+						<input
+							className="form-control form-control-sm"
+							type="number"
+							min="1"
+							max="9999"
+							value={selectedYear}
+							onChange={(event) => setSelectedYear(event.target.value)}
+							aria-label="조회 연도"
+						/>
+					</label>
+				</div>
+
+				{loading ? (
+					<p className="stat-status" role="status">월별 활동 통계를 불러오는 중입니다...</p>
+				) : error ? (
+					<p className="stat-status stat-status-error" role="alert">{error}</p>
+				) : months.length === 0 ? (
+					<p className="stat-status">조회할 월별 활동 데이터가 없습니다.</p>
+				) : (
 					<div className="stat-chart-body">
 						<MonthlyActivityChart months={months} />
 					</div>
-				</section>
-			)}
+				)}
+			</section>
 		</main>
 	);
 }
