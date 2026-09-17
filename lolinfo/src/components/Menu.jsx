@@ -159,6 +159,9 @@ export default function Menu() {
                             <Link className="nav-link" to="/ranking">랭킹</Link>
                         </li>
                         <li className="nav-item" onClick={closeMenu}>
+                            <Link className="nav-link" to="/stat">통계</Link>
+                        </li>
+                        <li className="nav-item" onClick={closeMenu}>
                             <Link className="nav-link" to="/balance">밸런스찾기</Link>
                         </li>
                         {/* {isLogin === true ? (<>  로그인 시 나와야 하는 화면 */}
