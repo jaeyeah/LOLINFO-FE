@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom";
 import "./Terms.css";
 
-const EFFECTIVE_DATE = "2026년 9월 4일";
+const EFFECTIVE_DATE = "2026년 9월 17일";
 
 export default function Terms() {
     return (
@@ -65,8 +66,15 @@ export default function Terms() {
                         완전성 또는 정확성을 보장하지 않습니다.
                     </p>
                     <p>
-                        서비스 내 제3자의 상표, 로고, 이미지 및 기타 콘텐츠에 대한 권리는 해당
-                        권리자에게 있습니다.
+                        SoopLOL은 스트리머 식별과 정보 제공을 위해 공개된 SOOP 프로필 정보를 기반으로
+                        SOOP의 프로필 이미지 제공 주소에서 이미지를 불러와 표시합니다. 프로필 이미지를 포함한
+                        제3자의 상표, 로고, 이미지 및 기타 콘텐츠에 대한 권리는 각 원 권리자에게 있으며,
+                        SoopLOL은 해당 이미지의 소유권을 주장하지 않습니다.
+                    </p>
+                    <p>
+                        이미지 사용 및 권리 관련 문의는 푸터의 운영자 이메일(<a href="mailto:limjh819@naver.com">limjh819@naver.com</a>)
+                        또는 각 화면의 피드백 기능으로 접수할 수 있으며, 확인 후 필요한 조치를 진행합니다.
+                        접수 방법은 <Link to="/about#feedback">수정 및 문의 안내</Link>에서 확인할 수 있습니다.
                     </p>
                 </section>
 

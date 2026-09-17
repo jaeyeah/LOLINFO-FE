@@ -20,7 +20,7 @@ export default function About() {
                 <p className="about-lead">SOOP 롤 스트리머의 경기와 대회 기록을 한곳에서.</p>
                 <p>
                     SoopLOL은 SOOP에서 활동하는 리그 오브 레전드 스트리머의 CK 경기와 대회 기록을
-                    모아 보여주는 개인 운영 통계 서비스입니다. 스트리머별 기록과 대회 정보를 같은
+                    모아 보여주는 기록 및 통계 서비스입니다. 스트리머별 기록과 대회 정보를 같은
                     기준으로 살펴볼 수 있도록 정리하고 있습니다.
                 </p>
             </header>
@@ -121,9 +121,15 @@ export default function About() {
                 <section id="feedback" aria-labelledby="feedback-title">
                     <h2 id="feedback-title">데이터 수정 및 문의</h2>
                     <p>
-                        기록 누락이나 잘못된 정보는 각 스트리머, CK, 대회 상세 화면에 있는 오류·누락 제보 기능으로
-                        알려주세요. 서비스 이용 관련 문의와 기능 개선 의견은 <Link to="/board/write?category=문의">문의 게시판</Link>에서
-                        접수할 수 있습니다.
+                        이미지 사용이나 권리 관련 문의, 기록 누락 및 정보 오류는 푸터의 운영자 이메일
+                        (<a href="mailto:limjh819@naver.com">limjh819@naver.com</a>) 또는
+                        <Link to="/streamer">스트리머</Link>, <Link to="/ck">CK</Link>, <Link to="/tournament">대회</Link>
+                        화면의 오류·누락 제보(피드백) 기능으로 알려주세요. 비회원도 접수할 수 있습니다.
+                    </p>
+                    <p>
+                        피드백은 공개 목록에 내용 일부와 처리 상태가 표시되며, 전체 내용의 비공개가 보장되지 않습니다.
+                        개인정보가 포함되거나 비공개 처리가 필요한 문의는 운영자 이메일을 이용해 주세요.
+                        일반적인 서비스 문의와 기능 개선 의견은 로그인 후 <Link to="/board/write?category=문의">문의 게시판</Link>에서도 접수할 수 있습니다.
                     </p>
                     <p>
                         제보 내용은 운영자가 확인한 뒤 필요한 경우 기록에 반영합니다. 별도의 처리 기한은 안내하지 않습니다.
@@ -133,8 +139,13 @@ export default function About() {
                 <section aria-labelledby="operation-title">
                     <h2 id="operation-title">운영 안내</h2>
                     <p>
-                        SoopLOL은 개인이 개발·운영하는 비공식 서비스이며, SOOP 또는 Riot Games의 공식 서비스가 아닙니다.
-                        이 페이지에서 확인되지 않은 데이터 출처, 수집 방식 또는 이용 허락 여부는 별도로 단정하지 않습니다.
+                        SoopLOL은 개인이 개발·운영하는 비공식 기록 및 통계 서비스이며, SOOP의 공식 서비스가 아닙니다.
+                        경기 기록과 통계는 운영자가 수집·정리한 정보를 기반으로 하며, 누락이나 집계 범위에 따라 실제 전체 기록과 차이가 있을 수 있습니다.
+                    </p>
+                    <p>
+                        스트리머 식별과 정보 제공에 사용하는 프로필 이미지는 공개된 SOOP 프로필 정보를 기반으로
+                        SOOP의 프로필 이미지 제공 주소에서 불러옵니다. 이미지의 권리는 각 원 권리자에게 있으며,
+                        SoopLOL은 해당 이미지의 소유권을 주장하지 않습니다. 이미지 관련 문의는 위의 수정 및 문의 방법으로 접수해 주세요.
                     </p>
                 </section>
             </div>

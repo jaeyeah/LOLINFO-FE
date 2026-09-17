@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom";
 import "./Privacy.css";
 
-const EFFECTIVE_DATE = "2026.09.03";
+const EFFECTIVE_DATE = "2026.09.17";
 
 export default function Privacy() {
     return (
@@ -22,7 +23,7 @@ export default function Privacy() {
                     <h3>비회원 의견 제출 시 수집하는 정보</h3><ul><li>비회원 의견 제출 시 방문자 식별자(UUID), 의견 유형, 의견 내용, 대상 콘텐츠 정보 및 페이지 URL이 처리될 수 있습니다.</li></ul>
                 </section>
 
-                <section><h2>제3조 개인정보의 처리 및 보유기간</h2><p>회원정보는 회원 탈퇴 처리 시까지 보유하는 것을 원칙으로 합니다. </p><p>방문자 UUID 및 방문기록은 통계 목적 달성 후 일정 기간 보관 후 파기합니다 </p></section>
+                <section><h2>제3조 개인정보의 처리 및 보유기간</h2><p>회원정보는 회원 탈퇴 처리 시까지 보유하는 것을 원칙으로 합니다. </p><p>방문 통계를 위해 보관하는 방문자 UUID 및 서버 방문기록에는 현재 별도의 보존기간이나 자동 파기 기한이 설정되어 있지 않습니다.</p><p>브라우저에 저장된 방문자 UUID에도 별도의 만료기간을 설정하지 않습니다. 과거 일일 방문 여부 표시값을 브라우저에서 정리하는 것은 UUID 또는 서버 방문기록을 삭제하는 것과는 다릅니다.</p></section>
 
                 <section>
                     <h2>제4조 개인정보의 제3자 제공</h2>
@@ -68,9 +69,17 @@ export default function Privacy() {
                 </section>
                 <section><h2>제11조 개인정보 보호 관련 문의</h2>
                     <p>
-                        SoopLOL은 별도의 개인정보 관련 문의 창구를 운영하고 있지 않습니다.
-                        개인정보의 열람, 정정, 삭제 등은 서비스에서 제공하는 회원정보 관리 및
-                        회원탈퇴 기능을 통해 처리할 수 있습니다.
+                        개인정보의 열람, 정정, 삭제 등과 관련된 문의는 사이트 푸터에 기재된
+                        운영자 이메일(<a href="mailto:limjh819@naver.com">limjh819@naver.com</a>) 또는
+                        <Link to="/streamer">스트리머</Link>, <Link to="/ck">CK</Link>, <Link to="/tournament">대회</Link>
+                        화면의 오류·누락 제보(피드백) 기능을 통해 접수할 수 있습니다. 비회원도 이용할 수 있습니다.
+                    </p>
+                    <p>
+                        피드백은 게시판의 공개 목록에 내용 일부와 처리 상태가 표시되며, 전체 내용의 비공개가
+                        보장되지 않습니다. 개인정보가 포함되거나 비공개 처리가 필요한 문의는 운영자 이메일을 이용해 주세요.
+                    </p>
+                    <p>
+                        회원정보 수정 및 회원탈퇴는 서비스에서 제공하는 회원정보 관리 및 회원탈퇴 기능을 이용할 수 있습니다.
                     </p>
                 </section>
                 
@@ -84,7 +93,7 @@ export default function Privacy() {
 
                 <section>
                     <h2>부칙</h2>
-                    <p>본 개인정보처리방침은 2026년 9월 3일부터 시행됩니다.</p>
+                    <p>본 개인정보처리방침은 2026년 9월 17일부터 시행됩니다.</p>
                 </section>
             </div>
         </main>
