@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 import { useParams, useOutletContext } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -10,8 +10,13 @@ export default function StreamerTournaments() {
   const { streamer, streamerId } = useOutletContext();
   const [streamerTeam, setStreamerTeam] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [visibleTeamCount, setVisibleTeamCount] = useState(6);
+  const loadMoreRef = useRef(null);
   const officialTeams = streamerTeam.filter(team => team.tournamentIsOfficial === "Y");
   const streamerHostTeams = streamerTeam.filter(team => team.tournamentIsOfficial === "N");
+  const visibleOfficialTeams = officialTeams.slice(0, visibleTeamCount);
+  const visibleStreamerHostTeams = streamerHostTeams.slice(0, visibleTeamCount);
+  const hasMoreTeams = visibleTeamCount < Math.max(officialTeams.length, streamerHostTeams.length);
 
   // 스트리머의 참여 대회 정보 불러오기
   const loadData = useCallback(async () => {
@@ -20,6 +25,7 @@ export default function StreamerTournaments() {
 
       const { data } = await axios.get(`/team/streamer/${streamerId}`);
       setStreamerTeam(data);
+      setVisibleTeamCount(6);
     }
     catch(err){
       console.error(err);
@@ -32,6 +38,20 @@ export default function StreamerTournaments() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  useEffect(() => {
+    const loadMoreElement = loadMoreRef.current;
+    if (!loadMoreElement || loading || !hasMoreTeams) return undefined;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setVisibleTeamCount((count) => count + 6);
+      }
+    }, { rootMargin: "240px" });
+
+    observer.observe(loadMoreElement);
+    return () => observer.disconnect();
+  }, [loading, hasMoreTeams]);
 
   // 로딩 중일 때 화면출력
   if (loading) {
@@ -57,7 +77,7 @@ export default function StreamerTournaments() {
       <div className="streamer-tournaments-section">
         <span className="section-title-isofficial text-center mt-2"> 공식 </span>
         {officialTeams.length > 0 ? (
-          officialTeams.map((team) => (
+          visibleOfficialTeams.map((team) => (
             <div
               className={`card team-card streamer-tournaments-card
                           ${team.teamRanking === "우승" ? "is-champion" : ""}
@@ -100,7 +120,7 @@ export default function StreamerTournaments() {
                     <div className="period-box-body team-member">
                       <Link to={`/streamer/${team.teamTop}`} className="streamer-link">
                         <div className="player">
-                          <img className="player-profile mb-1" src={buildProfileUrl(team.topId)} alt={team.topName} />
+                          <img className="player-profile mb-1" src={buildProfileUrl(team.topId)} alt={team.topName} loading="lazy" />
                           <span className={`player-name ${team.topName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.topName}
                           </span>
@@ -108,7 +128,7 @@ export default function StreamerTournaments() {
                       </Link>
                       <Link to={`/streamer/${team.teamJug}`} className="streamer-link">
                         <div className="player">
-                          <img className="player-profile mb-1" src={buildProfileUrl(team.jugId)} alt={team.jugName} />
+                          <img className="player-profile mb-1" src={buildProfileUrl(team.jugId)} alt={team.jugName} loading="lazy" />
                           <span className={`player-name ${team.jugName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.jugName}
                           </span>
@@ -116,7 +136,7 @@ export default function StreamerTournaments() {
                       </Link>
                       <Link to={`/streamer/${team.teamMid}`} className="streamer-link">
                         <div className="player">
-                          <img className="player-profile mb-1" src={buildProfileUrl(team.midId)} alt={team.midName} />
+                          <img className="player-profile mb-1" src={buildProfileUrl(team.midId)} alt={team.midName} loading="lazy" />
                           <span className={`player-name ${team.midName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.midName}
                           </span>
@@ -124,7 +144,7 @@ export default function StreamerTournaments() {
                       </Link>
                       <Link to={`/streamer/${team.teamAd}`} className="streamer-link">
                         <div className="player">
-                          <img className="player-profile mb-1" src={buildProfileUrl(team.adId)} alt={team.adName} />
+                          <img className="player-profile mb-1" src={buildProfileUrl(team.adId)} alt={team.adName} loading="lazy" />
                           <span className={`player-name ${team.adName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.adName}
                           </span>
@@ -132,7 +152,7 @@ export default function StreamerTournaments() {
                       </Link>
                       <Link to={`/streamer/${team.teamSup}`} className="streamer-link">
                         <div className="player">
-                          <img className="player-profile mb-1" src={buildProfileUrl(team.supId)} alt={team.supName} />
+                          <img className="player-profile mb-1" src={buildProfileUrl(team.supId)} alt={team.supName} loading="lazy" />
                           <span className={`player-name ${team.supName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.supName}
                           </span>
@@ -153,7 +173,7 @@ export default function StreamerTournaments() {
       <div className="streamer-tournaments-section">
         <span className="section-title-isofficial text-center mt-2"> 스트리머 개최 </span>
         {streamerHostTeams.length > 0 ? (
-          streamerHostTeams.map((team) => (
+          visibleStreamerHostTeams.map((team) => (
             <div
               className={`card team-card streamer-tournaments-card
                           ${team.teamRanking === "우승" ? "is-champion" : ""}
@@ -196,7 +216,7 @@ export default function StreamerTournaments() {
                     <div className="period-box-body team-member">
                       <Link to={`/streamer/${team.teamTop}`} className="streamer-link">
                         <div className="player">
-                          <img className="player-profile mb-1" src={buildProfileUrl(team.topId)} alt={team.topName} />
+                          <img className="player-profile mb-1" src={buildProfileUrl(team.topId)} alt={team.topName} loading="lazy" />
                           <span className={`player-name ${team.topName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.topName}
                           </span>
@@ -204,7 +224,7 @@ export default function StreamerTournaments() {
                       </Link>
                       <Link to={`/streamer/${team.teamJug}`} className="streamer-link">
                         <div className="player">
-                          <img className="player-profile mb-1" src={buildProfileUrl(team.jugId)} alt={team.jugName} />
+                          <img className="player-profile mb-1" src={buildProfileUrl(team.jugId)} alt={team.jugName} loading="lazy" />
                           <span className={`player-name ${team.jugName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.jugName}
                           </span>
@@ -212,7 +232,7 @@ export default function StreamerTournaments() {
                       </Link>
                       <Link to={`/streamer/${team.teamMid}`} className="streamer-link">
                         <div className="player">
-                          <img className="player-profile mb-1" src={buildProfileUrl(team.midId)} alt={team.midName} />
+                          <img className="player-profile mb-1" src={buildProfileUrl(team.midId)} alt={team.midName} loading="lazy" />
                           <span className={`player-name ${team.midName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.midName}
                           </span>
@@ -220,7 +240,7 @@ export default function StreamerTournaments() {
                       </Link>
                       <Link to={`/streamer/${team.teamAd}`} className="streamer-link">
                         <div className="player">
-                          <img className="player-profile mb-1" src={buildProfileUrl(team.adId)} alt={team.adName} />
+                          <img className="player-profile mb-1" src={buildProfileUrl(team.adId)} alt={team.adName} loading="lazy" />
                           <span className={`player-name ${team.adName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.adName}
                           </span>
@@ -228,7 +248,7 @@ export default function StreamerTournaments() {
                       </Link>
                       <Link to={`/streamer/${team.teamSup}`} className="streamer-link">
                         <div className="player">
-                          <img className="player-profile mb-1" src={buildProfileUrl(team.supId)} alt={team.supName} />
+                          <img className="player-profile mb-1" src={buildProfileUrl(team.supId)} alt={team.supName} loading="lazy" />
                           <span className={`player-name ${team.supName === streamer.streamerName ? "highlighted" : ""}`}>
                             {team.supName}
                           </span>
@@ -244,6 +264,11 @@ export default function StreamerTournaments() {
           <div className="alert alert-secondary mt-2">참여한 비공식 대회가 없습니다.</div>
         )}
       </div>
+      {hasMoreTeams && (
+        <div ref={loadMoreRef} className="text-center py-3" aria-live="polite">
+          <div className="spinner-border spinner-border-sm" aria-label="대회 기록 불러오는 중" />
+        </div>
+      )}
     </div>
   );
 }
