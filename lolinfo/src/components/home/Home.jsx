@@ -44,12 +44,12 @@ const sideAdHtml = `<!doctype html>
 function HomeSideAd({ position }) {
     return (
         <aside className="home-side-ad" aria-label={`${position} 광고`}>
-            <span className="home-side-ad-label">광고 · 쿠팡 파트너스</span>
+            {/* <span className="home-side-ad-label">광고 · 쿠팡 파트너스</span> */}
             <iframe srcDoc={sideAdHtml} width="160" height="600" title={`${position} 광고`}
                 scrolling="no" loading="lazy" sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox" />
-            <p className="home-side-ad-disclosure">
+            {/* <p className="home-side-ad-disclosure">
                 이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
-            </p>
+            </p> */}
         </aside>
     );
 }
