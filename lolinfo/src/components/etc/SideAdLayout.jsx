@@ -1,12 +1,15 @@
 import "./SideAdLayout.css";
 
 const SIDE_AD_SRC = "https://ads-partners.coupang.com/widgets.html?id=1031071&template=carousel&trackingCode=AF6484702&subId=&width=160&height=900&tsource=";
+const RIGHT_SIDE_AD_SRC = "https://ads-partners.coupang.com/widgets.html?id=1031124&template=carousel&trackingCode=AF6484702&subId=&width=160&height=900&tsource=";
 
 function SideAd({ position }) {
+    const adSrc = position === "오른쪽" ? RIGHT_SIDE_AD_SRC : SIDE_AD_SRC;
+
     return (
         <aside className="side-ad-layout-ad" aria-label={`${position} 광고`}>
             <iframe
-                src={SIDE_AD_SRC}
+                src={adSrc}
                 width="160"
                 height="900"
                 frameBorder="0"
