@@ -34,6 +34,26 @@ const features = [
     },
 ];
 
+const sideAdHtml = `<!doctype html>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="margin:0;overflow:hidden">
+<script src="https://ads-partners.coupang.com/g.js"></script>
+<script>new PartnersCoupang.G({"id":1031060,"template":"carousel","trackingCode":"AF6484702","width":"160","height":"600","tsource":""});</script>
+</body></html>`;
+
+function HomeSideAd({ position }) {
+    return (
+        <aside className="home-side-ad" aria-label={`${position} 광고`}>
+            <span className="home-side-ad-label">광고 · 쿠팡 파트너스</span>
+            <iframe srcDoc={sideAdHtml} width="160" height="600" title={`${position} 광고`}
+                scrolling="no" loading="lazy" sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox" />
+            <p className="home-side-ad-disclosure">
+                이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+            </p>
+        </aside>
+    );
+}
+
 function HomeHero() {
     return (
         <section className="home-hero">
@@ -99,12 +119,16 @@ export default function Home() {
     const isLogin = useAtomValue(loginState);
 
     return (
-        <main className="home-page">
-            <HomeHero />
-            <HomeStats />
-            <HomeNavigation />
-            <HomeBookmark isLogin={isLogin} />
-            <HomeFeatures />
-        </main>
+        <div className="home-layout">
+            <HomeSideAd position="왼쪽" />
+            <main className="home-page">
+                <HomeHero />
+                <HomeStats />
+                <HomeNavigation />
+                <HomeBookmark isLogin={isLogin} />
+                <HomeFeatures />
+            </main>
+            <HomeSideAd position="오른쪽" />
+        </div>
     );
 }

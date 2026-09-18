@@ -16,6 +16,7 @@ const urls = [
     "https://sooplol.com/ck",
     "https://sooplol.com/tournament",
     "https://sooplol.com/about",
+    "https://sooplol.com/board",
 ];
 
 // 스트리머 기본 상세: 등록된 전체 스트리머

@@ -18,8 +18,4 @@
 .ck-calendar-level-3 { background: #20743e; color: #fff; }
 .ck-calendar-level-4 { background: #104425; color: #fff; }
 .ck-calendar-is-today { outline: 2px solid #fff; outline-offset: -2px; }
-.ck-calendar-summary { color: #aaa; font-size: .82rem; margin: 10px 0; }
 .ck-calendar-status { min-height: 234px; display: flex; flex-direction: column; gap: 12px; align-items: center; justify-content: center; color: #aaa; font-size: .8rem; }
-.ck-calendar-legend { display: flex; flex-wrap: wrap; gap: 5px 9px; color: #bbb; font-size: .65rem; }
-.ck-calendar-legend span { display: inline-flex; align-items: center; gap: 3px; }
-.ck-calendar-legend i { width: 10px; height: 10px; border: 1px solid #414742; border-radius: 2px; }

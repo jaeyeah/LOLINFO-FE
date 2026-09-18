@@ -4,7 +4,6 @@ import { getKoreaToday } from "../../utils/ckPeriod";
 import "./CkCalendar.css";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
-const LEVELS = ["0건", "1건", "2~3건", "4~6건", "7건 이상"];
 const levelFor = (count) => count >= 7 ? 4 : count >= 4 ? 3 : count >= 2 ? 2 : count > 0 ? 1 : 0;
 
 export default function CkCalendar({ refreshKey = 0 }) {
@@ -19,7 +18,6 @@ export default function CkCalendar({ refreshKey = 0 }) {
    const days = lastDate.getUTCDate();
    const loading = result.loading || result.month !== month;
    const counts = result.month === month ? result.counts : {};
-   const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
 
    useEffect(() => {
       const controller = new AbortController();
@@ -88,11 +86,7 @@ export default function CkCalendar({ refreshKey = 0 }) {
                      </div>;
                   })}
                </div>
-               <p className="ck-calendar-summary">{total > 0 ? `이번 달 ${total.toLocaleString()}건 · ${Object.keys(counts).filter((date) => counts[date] > 0).length}일 활동` : "해당 월에 등록된 CK가 없습니다."}</p>
             </>}
-         <div className="ck-calendar-legend" aria-label="경기 수별 색상 범례">
-            {LEVELS.map((label, level) => <span key={label}><i className={`ck-calendar-level-${level}`} />{label}</span>)}
-         </div>
       </section>
    );
 }

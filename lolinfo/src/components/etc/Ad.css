@@ -15,9 +15,17 @@
 
 .ad-area--default {
   max-width: 970px;
-  min-height: 10px;
+  min-height: 90px;
   margin-top: 10px;
   margin-bottom: 10px;
+  justify-content: flex-start;
+  overflow-x: auto;
+}
+
+.ad-area--default iframe {
+  display: block;
+  flex: 0 0 970px;
+  border: 0;
 }
 
 
@@ -31,7 +39,7 @@
 
 /* 콘텐츠 중간 광고 */
 .ad-area--content {
-  max-width: 970px;
+  max-width: 1520px;
   min-height: 90px;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -39,6 +47,8 @@
 }
 
 .ad-area--content iframe {
+  display: block;
   max-width: 100%;
+  border: 0;
 }
 
