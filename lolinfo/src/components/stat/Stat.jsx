@@ -85,17 +85,6 @@ export default function Stat() {
 				</p>
 			</header>
 
-			<section className="stat-description" aria-labelledby="stat-description-title">
-				<h2 id="stat-description-title">SOOPLOL 월별 활동 통계 안내</h2>
-				<p>
-					월별 CK 경기 수, 참여 스트리머 수, 대회 개최 수와 참가 인원 변화를 차트로 제공합니다.
-					멸망전이 포함된 월의 경우 다른 색상이 적용됩니다.
-				</p>
-				<p className="stat-description-note">
-					모든 통계는 SOOPLOL에 등록된 기록을 기준으로 집계되며, 실제 전체 활동 내역과 차이가 있을 수 있습니다.
-				</p>
-			</section>
-
 			<section className="stat-chart-panel" aria-labelledby="monthly-activity-title">
 				<div className="stat-chart-header">
 					<div className="stat-chart-heading">
@@ -127,6 +116,17 @@ export default function Stat() {
 						<MonthlyActivityChart months={months} />
 					</div>
 				)}
+			</section>
+
+			<section className="stat-description" aria-labelledby="stat-description-title">
+				<h2 id="stat-description-title">SOOPLOL 월별 활동 통계 안내</h2>
+				<p>
+					월별 CK 경기 수, 참여 스트리머 수, 대회 개최 수와 참가 인원 변화를 차트로 제공합니다.
+					멸망전이 포함된 월의 경우 다른 색상이 적용됩니다.
+				</p>
+				<p className="stat-description-note">
+					모든 통계는 SOOPLOL에 등록된 기록을 기준으로 집계되며, 실제 전체 활동 내역과 차이가 있을 수 있습니다.
+				</p>
 			</section>
 		</main>
 	);
