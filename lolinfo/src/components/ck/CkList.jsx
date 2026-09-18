@@ -13,6 +13,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement
 import { Line } from "react-chartjs-2";
 import "./CkList.css";
 import CkRecordInfo from "./CkRecordInfo";
+import CkCalendar from "./CkCalendar";
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Filler, Tooltip, Legend);
 
@@ -49,6 +50,7 @@ export default function CkList() {
    const isAdmin = useAtomValue(adminState);
    const isLogin = useAtomValue(loginState);
    const [showFeedback, setShowFeedback] = useState(false);
+   const [calendarRefreshKey, setCalendarRefreshKey] = useState(0);
 
    const [monthlyCount, setMonthlyCount] = useState([]);
    const [monthlyLoading, setMonthlyLoading] = useState(true);
@@ -229,6 +231,7 @@ export default function CkList() {
       try {
          setIsUpdating(true);
          const { data } = await axios.patch(`/ck/${ckId}`, { ckDate: editDateValue });
+         setCalendarRefreshKey((value) => value + 1);
          setCkList((prev) =>
             prev.map((ck) => (ck.ckId === ckId ? { ...ck, ckDate: data.ckDate ?? editDateValue } : ck))
          );
@@ -381,6 +384,7 @@ export default function CkList() {
    const deleteCk = useCallback(async (ckId) => {
       try {
          await axios.delete(`/ck/${ckId}`);
+         setCalendarRefreshKey((value) => value + 1);
          loadCkList();
          console.log("CK 삭제 실행");
       } catch (err) {
@@ -428,6 +432,8 @@ export default function CkList() {
                      <p className="ck-monthly-chart-total mt-2 mb-0">해당 기간에 등록된 CK가 없습니다.</p>
                   )}
                </section>
+
+               <CkCalendar refreshKey={calendarRefreshKey} />
 
                <div className="sticky-top" style={{ top: "90px" }}>
                   <Outlet />
