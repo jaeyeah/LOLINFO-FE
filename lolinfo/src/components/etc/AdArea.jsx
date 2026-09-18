@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./Ad.css";
 
 const AD_HEIGHT = 90;
-const DISCLOSURE = "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.";
+const DISCLOSURE = "쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.";
 
 const createCoupangAdHtml = (width) => `<!doctype html>
 <html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head>
