@@ -31,9 +31,14 @@
 
 /* 콘텐츠 중간 광고 */
 .ad-area--content {
-  max-width: 728px;
-  min-height: 10px;
+  max-width: 970px;
+  min-height: 90px;
   margin-top: 10px;
   margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.ad-area--content iframe {
+  max-width: 100%;
 }
 
