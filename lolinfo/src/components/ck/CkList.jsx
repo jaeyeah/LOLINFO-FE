@@ -44,6 +44,7 @@ const MONTHLY_CHART_OPTIONS = {
 };
 
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
+const EMPTY_PARTICIPANTS = [];
 
 function MobonBanner() {
    const bannerRef = useRef(null);
@@ -195,11 +196,12 @@ export default function CkList() {
    const [editWinnerValue, setEditWinnerValue] = useState("");
    const [isUpdating, setIsUpdating] = useState(false);
 
-   const loadCkList = useCallback(async () => {
+   const loadCkList = useCallback(async (signal) => {
       try {
          setLoading(true);
          setError(null);
-         const { data } = await axios.get("/ck/", { params: { page } });
+         const { data } = await axios.get("/ck/", { params: { page }, signal });
+         if (signal?.aborted) return;
          setCkList(data.list ?? []);
          setPageData(data.pageVO ?? {
             page,
@@ -213,50 +215,49 @@ export default function CkList() {
          });
          // console.log("CK 목록 로드 성공", data.list);
       } catch (err) {
+         if (signal?.aborted || axios.isCancel(err)) return;
          console.error("CK 목록 로드 실패", err);
          setError("CK 목록을 불러오지 못했습니다.");
       } finally {
-         setLoading(false);
+         if (!signal?.aborted) setLoading(false);
       }
    }, [page]);
 
-   const fetchParticipants = useCallback(
-      async (ckId) => {
-         if (!ckId) return;
-         if (participantCache[ckId]) return;
-
-         try {
-            setParticipantLoading(true);
-            setParticipantError(null);
-            const { data } = await axios.get(`/ck/${ckId}/participant`);
-            const winner = data[0]?.ckWinner ?? null;
-            //console.log("참가자 정보 로드 성공", { ckId, data, winner });
-            setParticipantCache((prev) => ({
-               ...prev,
-               [ckId]: {
-                  participants: data,
-                  winner,
-               },
-            }));
-         } catch (err) {
-            console.error("CK 참가자 정보 로드 실패", err);
-            setParticipantError("팀원 정보를 불러올 수 없습니다.");
-         } finally {
-            setParticipantLoading(false);
-         }
-      },
-      [participantCache]
-   );
-
    useEffect(() => {
-      loadCkList();
+      const controller = new AbortController();
+      loadCkList(controller.signal);
+      return () => controller.abort();
    }, [loadCkList]);
 
    useEffect(() => {
-      if (selectedCkId !== null) {
-         fetchParticipants(selectedCkId);
-      }
-   }, [selectedCkId, fetchParticipants]);
+      if (selectedCkId === null || participantCache[selectedCkId]) return;
+
+      const controller = new AbortController();
+      const fetchParticipants = async () => {
+         try {
+            setParticipantLoading(true);
+            setParticipantError(null);
+            const { data } = await axios.get(`/ck/${selectedCkId}/participant`, { signal: controller.signal });
+            if (controller.signal.aborted) return;
+            setParticipantCache((prev) => ({
+               ...prev,
+               [selectedCkId]: {
+                  participants: data,
+                  winner: data[0]?.ckWinner ?? null,
+               },
+            }));
+         } catch (err) {
+            if (controller.signal.aborted || axios.isCancel(err)) return;
+            console.error("CK 참가자 정보 로드 실패", err);
+            setParticipantError("팀원 정보를 불러올 수 없습니다.");
+         } finally {
+            if (!controller.signal.aborted) setParticipantLoading(false);
+         }
+      };
+
+      fetchParticipants();
+      return () => controller.abort();
+   }, [selectedCkId, participantCache]);
 
    // 날짜 수정
    const handleEditDate = useCallback((ck) => {
@@ -388,6 +389,7 @@ export default function CkList() {
 
    const closeModal = useCallback(() => {
       setSelectedCkId(null);
+      setParticipantLoading(false);
       setParticipantError(null);
    }, []);
 
@@ -396,7 +398,7 @@ export default function CkList() {
       [ckList, selectedCkId]
    );
 
-   const selectedParticipantData = selectedCkId ? participantCache[selectedCkId]?.participants ?? [] : [];
+   const selectedParticipantData = selectedCkId ? participantCache[selectedCkId]?.participants ?? EMPTY_PARTICIPANTS : EMPTY_PARTICIPANTS;
    const selectedWinner = selectedCkId ? participantCache[selectedCkId]?.winner : null;
 
    const redTeam = useMemo(
