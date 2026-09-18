@@ -1,5 +1,5 @@
 import axios from "../../utils/axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import Pagination from "../Pagination";
 import { buildProfileUrl } from "../../utils/profileUrl";
@@ -44,6 +44,53 @@ const MONTHLY_CHART_OPTIONS = {
 };
 
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
+
+function MobonBanner() {
+   const bannerRef = useRef(null);
+
+   useEffect(() => {
+      let disposed = false;
+      let scriptElement;
+
+      const initializeBanner = () => {
+         if (disposed || !bannerRef.current || typeof window.HawkEyes !== "function") return;
+         if (bannerRef.current.dataset.initialized === "true") return;
+
+         new window.HawkEyes({
+            type: "banner",
+            responsive: "Y",
+            platform: "W",
+            scriptCode: "1069955",
+            frameCode: "60",
+            width: "728",
+            height: "90",
+            settings: { cntad: "1", cntsr: "1" },
+         });
+         bannerRef.current.dataset.initialized = "true";
+      };
+
+      const existingScript = document.querySelector("script[data-mobon-hawk-eyes]");
+      if (existingScript) {
+         existingScript.addEventListener("load", initializeBanner);
+         initializeBanner();
+      } else {
+         scriptElement = document.createElement("script");
+         scriptElement.src = "//img.mobon.net/js/common/HawkEyesMaker.js";
+         scriptElement.async = true;
+         scriptElement.dataset.mobonHawkEyes = "true";
+         scriptElement.addEventListener("load", initializeBanner);
+         document.body.appendChild(scriptElement);
+      }
+
+      return () => {
+         disposed = true;
+         existingScript?.removeEventListener("load", initializeBanner);
+         scriptElement?.removeEventListener("load", initializeBanner);
+      };
+   }, []);
+
+   return <div ref={bannerRef} className="ck-mobon-banner" aria-label="광고" />;
+}
 
 export default function CkList() {
    const loginId = useAtomValue(loginIdState);
@@ -408,9 +455,22 @@ export default function CkList() {
          </Helmet>
 
 
-         <div className="row g-4 justify-content-center">
-            <div className="col-12 col-lg-4">
-               <section className="ck-monthly-chart card bg-dark border-secondary text-white mb-3"
+         <div className="ck-list-page">
+            <header className="ck-list-page-heading">
+               <h1>CK 전체 목록</h1>
+               <CkRecordInfo />
+            </header>
+
+            <div className="ck-list-layout">
+               <aside className="ck-side-column">
+                  <CkCalendar refreshKey={calendarRefreshKey} />
+                  <div className="ck-ranking-column">
+                  <Outlet />
+                  </div>
+               </aside>
+
+               <section className="ck-list-main">
+               <section className="ck-monthly-chart card bg-dark border-secondary text-white"
                   aria-labelledby="ck-monthly-chart-title" aria-busy={monthlyLoading}>
                   <div className="ck-monthly-chart-header">
                      <h5 id="ck-monthly-chart-title" className="ck-monthly-chart-title">{currentYear} 월별 CK 추이</h5>
@@ -433,29 +493,9 @@ export default function CkList() {
                   )}
                </section>
 
-               <CkCalendar refreshKey={calendarRefreshKey} />
+               <MobonBanner />
 
-               <div className="sticky-top" style={{ top: "90px" }}>
-                  <Outlet />
-               </div>
-            </div>
-
-            <div className="col-12 col-lg-8 ck-list-main">
-               <div className="card bg-dark border-secondary text-white p-3 mb-3">
-                  <div className="ck-record-info-heading">
-                     <h3 className="mb-0 section-title">CK 전체 목록</h3>
-                     <CkRecordInfo />
-                  </div>
-                  <button type="button" className="btn btn-sm btn-outline-light mt-3"
-                     onClick={() => setShowFeedback(true)} >
-                     오류·누락 제보
-                  </button>
-                  {isLogin && (
-                     <Link className="btn btn-dark border-secondary mt-1" to="/ck/insert">
-                        CK 등록
-                     </Link>
-                  )}
-               </div>
+               <section className="ck-list-section">
                {loading && (
                   <div className="d-flex justify-content-center py-5">
                      <div className="spinner-border text-light" role="status" />
@@ -641,6 +681,18 @@ export default function CkList() {
                   </div>
                )}
 
+               <div className="ck-list-toolbar">
+                  <button type="button" className="btn btn-sm btn-outline-light"
+                     onClick={() => setShowFeedback(true)} >
+                     오류·누락 제보
+                  </button>
+                  {isLogin && (
+                     <Link className="btn btn-sm btn-dark border-secondary" to="/ck/insert">
+                        CK 등록
+                     </Link>
+                  )}
+               </div>
+
                {/* 콘텐츠 중간광고 */}
                <AdArea className="mt-1" variant="default" />
 
@@ -758,6 +810,8 @@ export default function CkList() {
                      </div>
                   </div>
                )}
+               </section>
+               </section>
             </div>
          </div>
 

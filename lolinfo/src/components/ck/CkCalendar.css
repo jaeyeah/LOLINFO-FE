@@ -10,15 +10,15 @@
 .ck-calendar-navigation button { min-width: 36px; font-size: 1.2rem; }
 .ck-calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
 .ck-calendar-weekday { color: #aaa; font-size: .72rem; text-align: center; padding-bottom: 3px; }
-.ck-calendar-day { border: 1px solid #303732; border-radius: 5px; min-height: 40px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: .78rem; line-height: 1.25; }
-.ck-calendar-day small { min-height: 12px; font-size: .62rem; }
+.ck-calendar-day { border: 1px solid #303732; border-radius: 5px; min-height: 40px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: .9rem; line-height: 1.25; }
+.ck-calendar-day small { min-height: 14px; font-size: .72rem; font-weight: 600; }
 .ck-calendar-level-0 { background: #080a09; color: #aaa; }
 .ck-calendar-level-1 { background: #a7e8b8; color: #143c22; }
 .ck-calendar-level-2 { background: #57bd78; color: #092e16; }
 .ck-calendar-level-3 { background: #20743e; color: #fff; }
 .ck-calendar-level-4 { background: #104425; color: #fff; }
 .ck-calendar-is-today { outline: 2px solid #fff; outline-offset: -2px; }
-.ck-calendar-summary { color: #aaa; font-size: .75rem; margin: 10px 0; }
+.ck-calendar-summary { color: #aaa; font-size: .82rem; margin: 10px 0; }
 .ck-calendar-status { min-height: 234px; display: flex; flex-direction: column; gap: 12px; align-items: center; justify-content: center; color: #aaa; font-size: .8rem; }
 .ck-calendar-legend { display: flex; flex-wrap: wrap; gap: 5px 9px; color: #bbb; font-size: .65rem; }
 .ck-calendar-legend span { display: inline-flex; align-items: center; gap: 3px; }
