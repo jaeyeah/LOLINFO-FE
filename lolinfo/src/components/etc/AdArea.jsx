@@ -2,43 +2,30 @@ import { useEffect, useRef, useState } from "react";
 import "./Ad.css";
 
 const AD_HEIGHT = 90;
-const DISPLAYED_MESSAGE = "sooplol-coupang-displayed";
 const DISCLOSURE = "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.";
 
 const createCoupangAdHtml = (width) => `<!doctype html>
 <html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head>
 <body style="margin:0;overflow:hidden">
 <script src="https://ads-partners.coupang.com/g.js"></script>
-<script>new PartnersCoupang.G({"id":1031060,"template":"carousel","trackingCode":"AF6484702","width":"${width}","height":"90","tsource":"","onDisplayed":function(){parent.postMessage({type:"${DISPLAYED_MESSAGE}"},"*");}});</script>
+<script>new PartnersCoupang.G({"id":1031060,"template":"carousel","trackingCode":"AF6484702","width":"${width}","height":"90","tsource":""});</script>
 </body></html>`;
 
 function CoupangBanner({ width, title }) {
-  const iframeRef = useRef(null);
-  const [displayed, setDisplayed] = useState(false);
   const src = `data:text/html;charset=utf-8,${encodeURIComponent(createCoupangAdHtml(width))}`;
 
-  useEffect(() => {
-    const onMessage = (event) => {
-      if (event.source === iframeRef.current?.contentWindow && event.data?.type === DISPLAYED_MESSAGE) {
-        setDisplayed(true);
-      }
-    };
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
-  }, []);
-
   return <div className="ad-area-coupang">
-    <iframe ref={iframeRef} src={src} width={width} height={AD_HEIGHT} title={title}
+    <iframe src={src} width={width} height={AD_HEIGHT} title={title}
       scrolling="no" loading="lazy"
       sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" />
-    {displayed && <p className="ad-area-disclosure">{DISCLOSURE}</p>}
+    <p className="ad-area-disclosure">{DISCLOSURE}</p>
   </div>;
 }
 
 export default function AdArea({ variant = "default", className = "" }) {
   const bannerRef = useRef(null);
   const [width, setWidth] = useState(0);
-  const maxWidth = variant === "content" ? 1520 : 970;
+  const maxWidth = variant === "content" ? 1520 : 1100;
 
   useEffect(() => {
     if (variant !== "default" && variant !== "content") return;

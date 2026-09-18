@@ -1,6 +1,6 @@
 import "./../Privacy.css";
 
-const LAST_UPDATED = "2026.09.13";
+const LAST_UPDATED = "2026.09.18";
 
 export default function DevHistory() {
     return (
@@ -12,6 +12,13 @@ export default function DevHistory() {
             </header>
 
             <div className="privacy-body">
+                <section><h2 className="fw-bold">26.09.18</h2>
+                    <p className="privacy-note">
+                        - 통계 : 월별활동통계 추가<br/>
+                        - CK목록 : CK캘린더 추가<br/>
+                        - 쿠팡 파트너스 광고페이지 구현<br/>
+                    </p>
+                </section>
                 <section><h2 className="fw-bold">26.09.13</h2>
                     <p className="privacy-note">
                         - 신규기능 : <span className="text-info fw-bold">랭킹</span> 페이지 구현<br/>

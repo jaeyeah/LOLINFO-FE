@@ -34,30 +34,20 @@ const features = [
     },
 ];
 
-const sideAdHtml = `<!doctype html>
-<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head>
-<body style="margin:0;overflow:hidden">
-<script src="https://ads-partners.coupang.com/g.js"></script>
-<script>new PartnersCoupang.G({"id":1031060,"template":"carousel","trackingCode":"AF6484702","width":"160","height":"600","tsource":""});</script>
-</body></html>`;
-
 function HomeSideAd({ position }) {
-    const src = `data:text/html;charset=utf-8,${encodeURIComponent(sideAdHtml)}`;
-
     return (
         <aside className="home-side-ad" aria-label={`${position} 광고`}>
             <iframe
-                src={src}
+                src="https://ads-partners.coupang.com/widgets.html?id=1031071&template=carousel&trackingCode=AF6484702&subId=&width=160&height=900&tsource="
                 width="160"
-                height="600"
-                title={`${position} 쿠팡 파트너스 광고`}
+                height="900"
+                frameBorder="0"
                 scrolling="no"
-                loading="lazy"
-                sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-                style={{ border: 0, display: "block" }}
+                referrerPolicy="unsafe-url"
+                title={`${position} 쿠팡 파트너스 광고`}
             />
             <p className="home-side-ad-disclosure">
-                이 포스팅은 쿠팡 파트너스 활동의 일환으로,
+                쿠팡 파트너스 활동의 일환으로,
                 이에 따른 일정액의 수수료를 제공받습니다.
             </p>
         </aside>

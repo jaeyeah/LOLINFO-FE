@@ -495,7 +495,10 @@ export default function CkList() {
                   )}
                </section>
 
-               <MobonBanner />
+            
+               {/* 콘텐츠 중간광고 */}
+               <AdArea className="mt-1" variant="default" />
+               {/* 콘텐츠 중간광고 */}
 
                <section className="ck-list-section">
                {loading && (
@@ -695,8 +698,6 @@ export default function CkList() {
                   )}
                </div>
 
-               {/* 콘텐츠 중간광고 */}
-               <AdArea className="mt-1" variant="default" />
 
                {selectedCkId !== null && (
                   <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
@@ -812,6 +813,8 @@ export default function CkList() {
                      </div>
                   </div>
                )}
+               {/* 배너광고 */}
+               <MobonBanner />
                </section>
                </section>
             </div>
