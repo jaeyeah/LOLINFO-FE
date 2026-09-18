@@ -4,6 +4,7 @@ import { loginState } from "../../utils/jotai";
 import HomeStreamerSearch from "./HomeStreamerSearch";
 import HomeBookmark from "./HomeBookmark";
 import HomeStats from "./HomeStats";
+import SideAdLayout from "../etc/SideAdLayout";
 import "./Home.css";
 
 const features = [
@@ -34,23 +35,17 @@ const features = [
     },
 ];
 
-function HomeSideAd({ position }) {
+function HomeInlineAd() {
     return (
-        <aside className="home-side-ad" aria-label={`${position} 광고`}>
+        <div className="home-inline-ad" aria-label="쿠팡 파트너스 광고">
             <iframe
-                src="https://ads-partners.coupang.com/widgets.html?id=1031071&template=carousel&trackingCode=AF6484702&subId=&width=160&height=900&tsource="
-                width="160"
-                height="900"
-                frameBorder="0"
-                scrolling="no"
+                src="https://ads-partners.coupang.com/widgets.html?id=1031123&template=carousel&trackingCode=AF6484702&subId=&width=1000&height=150&tsource="
+                width="1000" height="150"
+                frameBorder="0"scrolling="no"
                 referrerPolicy="unsafe-url"
-                title={`${position} 쿠팡 파트너스 광고`}
+                title="쿠팡 파트너스 carousel 광고"
             />
-            <p className="home-side-ad-disclosure">
-                쿠팡 파트너스 활동의 일환으로,
-                이에 따른 일정액의 수수료를 제공받습니다.
-            </p>
-        </aside>
+        </div>
     );
 }
 
@@ -119,16 +114,17 @@ export default function Home() {
     const isLogin = useAtomValue(loginState);
 
     return (
-        <div className="home-layout">
-            <HomeSideAd position="왼쪽" />
-            <main className="home-page">
-                <HomeHero />
-                <HomeStats />
-                <HomeNavigation />
-                <HomeBookmark isLogin={isLogin} />
-                <HomeFeatures />
-            </main>
-            <HomeSideAd position="오른쪽" />
-        </div>
+        <SideAdLayout>
+            <div className="home-layout">
+                <main className="home-page">
+                    <HomeHero />
+                    <HomeStats />
+                    <HomeNavigation />
+                    <HomeInlineAd />
+                    <HomeBookmark isLogin={isLogin} />
+                    <HomeFeatures />
+                </main>
+            </div>
+        </SideAdLayout>
     );
 }
