@@ -3,7 +3,7 @@
   grid-template-columns: 160px minmax(0, 1080px) 160px;
   justify-content: center;
   align-items: start;
-  gap: 16px;
+  gap: 24px;
 }
 
 .home-side-ad {
@@ -35,6 +35,7 @@
 .home-side-ad iframe {
   display: block;
   border: 0;
+  filter: brightness(0.72) saturate(0.9);
 }
 
 .home-page {
