@@ -173,6 +173,7 @@ function StreamerCkContent({ streamer, streamerId, period }) {
   const [vsLoading, setVsLoading] = useState(true);
   const [vsError, setVsError] = useState(null);
   const [expandedVsStreamerNo, setExpandedVsStreamerNo] = useState(null);
+  const [showAllVs, setShowAllVs] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
 
   // 기간 전환 시 이전 요청을 취소해 다른 기간의 응답이 섞이지 않도록 한다.
@@ -330,6 +331,10 @@ function StreamerCkContent({ streamer, streamerId, period }) {
       .sort((a, b) => b.totalCount - a.totalCount);
   }, [vsPositionStats]);
 
+  const visibleVsSummaryStats = showAllVs
+    ? vsSummaryStats
+    : vsSummaryStats.slice(0, 10);
+
   // 포지션별 vs 전적
   const expandedVsPositionStats = useMemo(
     () =>
@@ -360,7 +365,7 @@ function StreamerCkContent({ streamer, streamerId, period }) {
     };
     
     loadStreak();
-    console.log(streak);
+    // console.log(streak);
     return () => controller.abort();
   }, [streamerId]);
 
@@ -619,7 +624,7 @@ function StreamerCkContent({ streamer, streamerId, period }) {
 
               {!vsLoading && !vsError && vsSummaryStats.length > 0 && (
                 <div className="list-group list-group-flush">
-                  {vsSummaryStats.map((vs) => (
+                  {visibleVsSummaryStats.map((vs) => (
                     <div key={vs.vsStreamerNo} className="list-group-item bg-dark border-secondary text-white py-3 vs-item">
                       <div className="d-flex justify-content-between align-items-center gap-3">
                         <div className="min-w-0">
@@ -690,6 +695,16 @@ function StreamerCkContent({ streamer, streamerId, period }) {
                       )}
                     </div>
                   ))}
+                  {vsSummaryStats.length > 10 && (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-light w-100 mt-3"
+                      aria-expanded={showAllVs}
+                      onClick={() => setShowAllVs((current) => !current)}
+                    >
+                      {showAllVs ? "접기" : `더보기 (${vsSummaryStats.length - 10})`}
+                    </button>
+                  )}
                 </div>
               )}
             </div>
