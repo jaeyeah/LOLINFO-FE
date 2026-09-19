@@ -190,13 +190,19 @@ export default function StreamerDetail() {
                   <NavLink to="streamerWith" className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}>
                     팀메이트
                   </NavLink>
-                  <NavLink
-                    to={`/stat?tab=streamer&streamerNo=${encodeURIComponent(streamerId)}`}
-                    className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}
-                  >
-                    월간 통계
-                  </NavLink>
-                  <Link to={`/balance?streamerNo=${streamerId}`} className="btn btn-outline-primary">밸런스 찾기</Link>
+                  <span className="streamer-new-feature">
+                    <span className="streamer-new-badge">New</span>
+                    <NavLink
+                      to={`/stat?tab=streamer&streamerNo=${encodeURIComponent(streamerId)}`}
+                      className={({ isActive }) => (isActive ? "btn btn-primary" : "btn btn-outline-primary")}
+                    >
+                      월간 통계
+                    </NavLink>
+                  </span>
+                  <span className="streamer-new-feature">
+                    <span className="streamer-new-badge">New</span>
+                    <Link to={`/balance?streamerNo=${streamerId}`} className="btn btn-outline-primary">밸런스 찾기</Link>
+                  </span>
                 </div>
               </div>
             </div>

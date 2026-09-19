@@ -244,6 +244,7 @@ const ParticipantTeam = memo(({ ckId, selectedCk, selectedParticipants, selected
                   to={`/streamer/${redParticipant.ckStreamer}`}
                   className={`ck-participant-card red ${redWin ? "win" : ""} text-white text-decoration-none justify-content-end`}
                 >
+                  {redWin && <span className="badge bg-danger">승</span>}
                   <div className="ck-participant-info text-end">
                     <div className="ck-participant-name">{redParticipant.streamerName || "-"}</div>
                     <div className="ck-participant-meta">{redParticipant.ckPosition || position}</div>
@@ -275,6 +276,7 @@ const ParticipantTeam = memo(({ ckId, selectedCk, selectedParticipants, selected
                     <div className="ck-participant-name">{blueParticipant.streamerName || "-"}</div>
                     <div className="ck-participant-meta">{blueParticipant.ckPosition || position}</div>
                   </div>
+                  {blueWin && <span className="badge bg-primary">승</span>}
                 </Link>
               ) : (
                 <div className="ck-participant-card none justify-content-center">참가 없음</div>
@@ -517,7 +519,7 @@ const StreamerCkListSection = memo(({ streamerId, streamerName, startDate = "", 
             <>
               <div className="streamer-ck-list-toolbar">
                 <p className="streamer-ck-list-period">{periodLabel} · 총 {pageVO?.totalCount ?? 0}건</p>
-                <span className="streamer-ck-list-notice">| ※ 세트별 교체인원이 있는 CK의 경우, 전적이 등록되지 않습니다</span>
+                <span className="streamer-ck-list-notice">| ※ 세트별 교체인원이 있는 경우, 전적이 등록되지 않습니다</span>
                 <button type="button" className="btn streamer-ck-list-save"
                   onClick={handleSaveImage} disabled={isCapturing}
                   aria-busy={isCapturing}
