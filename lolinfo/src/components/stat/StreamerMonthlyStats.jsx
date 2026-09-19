@@ -55,15 +55,9 @@ export default function StreamerMonthlyStats() {
     const valid = /^\d+$/.test(year) && Number(year) >= 1 && Number(year) <= 9998 &&
         /^\d+$/.test(streamerNo ?? "") && Number(streamerNo) >= 1;
     const data = state.key === requestKey && valid ? state.data : null;
-    return <main className="stat-page streamer-monthly-page">
-        <header className="stat-hero">
-            <p className="stat-page-eyebrow">SOOPLOL DATA</p>
-            <h1>스트리머 월간 통계</h1>
-            <p className="stat-context">선택한 연도의 CK 활동과 연초부터의 누적 승률을 확인하세요.</p>
-        </header>
+    return <div className="streamer-monthly-page">
         <section className="stat-chart-panel streamer-monthly-controls" aria-label="통계 조회 조건">
             <div className="streamer-monthly-search">
-                <label htmlFor="stat-streamer-search">스트리머 검색</label>
                 <input id="stat-streamer-search" className="form-control" type="search" placeholder="스트리머 이름"
                     value={keyword} onChange={(event) => { setKeyword(event.target.value); setSearch({ items: [], status: "idle" }); }} />
                 {keyword.trim() && <div className="streamer-monthly-results" aria-live="polite">
@@ -76,7 +70,7 @@ export default function StreamerMonthlyStats() {
                     </button>)}
                 </div>}
             </div>
-            <label className="stat-year-control">조회 연도
+            <label className="stat-year-control">
                 <input className="form-control" type="number" min="1" max="9998" value={year}
                     onChange={(event) => updateParams({ year: event.target.value })} />
             </label>
@@ -123,7 +117,10 @@ export default function StreamerMonthlyStats() {
                 </section>
             </>}
         </>}
-        <p className="stat-description-note">SOOPLOL 등록 기록 기준입니다. 결과 미확정 경기는 참여·포지션 수에만 포함합니다.
-            누적 승률은 연초부터 계산하며, 최초 유효 승률의 전월 대비 값은 표시하지 않습니다. 미래 월의 누적 승률은 표시하지 않습니다.</p>
-    </main>;
+        <section className="stat-description" aria-labelledby="streamer-stat-criteria-title">
+            <h2 id="streamer-stat-criteria-title">통계 집계 기준</h2>
+            <p>SOOPLOL 등록 기록 기준입니다. 결과 미확정 경기는 참여·포지션 수에만 포함합니다.
+                누적 승률은 연초부터 계산하며, 최초 유효 승률의 전월 대비 값은 표시하지 않습니다. 미래 월의 누적 승률은 표시하지 않습니다.</p>
+        </section>
+    </div>;
 }

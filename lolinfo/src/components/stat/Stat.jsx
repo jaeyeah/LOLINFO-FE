@@ -4,7 +4,8 @@ import { getKoreaToday } from "../../utils/ckPeriod";
 import MonthlyActivityChart from "./MonthlyActivityChart";
 import "./Stat.css";
 import { useSearchParams } from "react-router-dom";
-import StreamerMonthlyStats from "../streamer/StreamerMonthlyStats";
+import StreamerMonthlyStats from "./StreamerMonthlyStats";
+import SideAdLayout from "../etc/SideAdLayout";
 
 const MONTH_COUNT = 12;
 
@@ -41,13 +42,24 @@ export default function Stat() {
         else { next.delete("tab"); next.delete("streamerNo"); }
         setParams(next);
     };
-    return <>
-        <nav className="stat-tabs" aria-label="통계 유형">
-            <button className={`btn ${personal ? "btn-outline-primary" : "btn-primary"}`} aria-pressed={!personal} onClick={() => selectTab("all")}>전체 통계</button>
-            <button className={`btn ${personal ? "btn-primary" : "btn-outline-primary"}`} aria-pressed={personal} onClick={() => selectTab("streamer")}>스트리머 통계</button>
-        </nav>
-        {personal ? <StreamerMonthlyStats /> : <OverallStat />}
-    </>;
+	return <SideAdLayout>
+		<main className="stat-page" aria-labelledby="stat-page-title">
+			<header className="stat-hero">
+				<p className="stat-page-eyebrow">SOOPLOL DATA</p>
+				<h1 id="stat-page-title">{personal ? "스트리머 월간 통계" : "월별 활동 통계"}</h1>
+				<p className="stat-context">
+					{personal
+						? "선택한 연도의 CK 활동과 연초부터의 누적 승률을 확인하세요."
+						: "SOOP 리그 오브 레전드 스트리머들의 CK 및 대회 활동을 월별로 살펴보세요."}
+				</p>
+			</header>
+			<nav className="stat-tabs" aria-label="통계 유형">
+				<button className={`stat-tab ${personal ? "" : "active"}`} aria-pressed={!personal} onClick={() => selectTab("all")}>전체 통계</button>
+				<button className={`stat-tab ${personal ? "active" : ""}`} aria-pressed={personal} onClick={() => selectTab("streamer")}>스트리머 통계</button>
+			</nav>
+			{personal ? <StreamerMonthlyStats /> : <OverallStat />}
+		</main>
+	</SideAdLayout>;
 }
 
 function OverallStat() {
@@ -96,15 +108,7 @@ function OverallStat() {
 	}, [selectedYear]);
 
 	return (
-		<main className="stat-page" aria-labelledby="stat-page-title">
-			<header className="stat-hero">
-				<p className="stat-page-eyebrow">SOOPLOL DATA</p>
-				<h1 id="stat-page-title">월별 활동 통계</h1>
-				<p className="stat-context">
-					SOOP 리그 오브 레전드 스트리머들의 CK 및 대회 활동을 월별로 살펴보세요.
-				</p>
-			</header>
-
+		<>
 			<section className="stat-chart-panel" aria-labelledby="monthly-activity-title">
 				<div className="stat-chart-header">
 					<div className="stat-chart-heading">
@@ -148,6 +152,6 @@ function OverallStat() {
 					모든 통계는 SOOPLOL에 등록된 기록을 기준으로 집계되며, 실제 전체 활동 내역과 차이가 있을 수 있습니다.
 				</p>
 			</section>
-		</main>
+		</>
 	);
 }

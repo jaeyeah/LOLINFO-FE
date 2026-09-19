@@ -14,6 +14,7 @@ const featureColumns = [
     { key: 'teammate', label: '팀메이트' },
     { key: 'ranking', label: '랭킹' },
     { key: 'balance', label: '밸런스' },
+    { key: 'monthlyStat', label: '월간통계' },
 ];
 
 const now = new Date();
@@ -175,6 +176,7 @@ export default function AdminVisitUsePage() {
                 teammate: Number(item.teammate ?? 0),
                 ranking: Number(item.ranking ?? 0),
                 balance: Number(item.balance ?? 0),
+                monthlyStat: Number(item.balance ?? 0),
             }));
 
             setUseData(normalized);
