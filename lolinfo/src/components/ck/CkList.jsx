@@ -497,7 +497,7 @@ export default function CkList() {
 
             
                {/* 콘텐츠 중간광고 */}
-               <AdArea className="mt-1" variant="default" />
+               <AdArea className="ck-list-ad mt-1" variant="default" />
                {/* 콘텐츠 중간광고 */}
 
                <section className="ck-list-section">

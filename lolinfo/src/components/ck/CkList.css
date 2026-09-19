@@ -150,8 +150,9 @@
   .ck-list-main { display: contents; }
   .ck-monthly-chart { grid-row: 1; }
   .ck-side-column > .ck-calendar { grid-row: 2; }
-  .ck-list-section { grid-row: 3; }
-  .ck-ranking-column { grid-row: 4; }
+  .ck-list-ad { grid-row: 3; }
+  .ck-list-section { grid-row: 4; }
+  .ck-ranking-column { grid-row: 5; }
 }
 
 @media (max-width: 768px) {
