@@ -79,6 +79,16 @@
   flex-shrink: 0;
 }
 
+@media (max-width: 576px) {
+  .streamer-registration-action {
+    display: none;
+  }
+
+  .tournament-feedback-action {
+    display: none;
+  }
+}
+
 .streamer-list-wrapper {
   padding-bottom: 1rem;
 }
