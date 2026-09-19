@@ -23,6 +23,8 @@ export default function Menu() {
     const [open, setOpen] = useState(false);
     const [homeOpen, setHomeOpen] = useState(false);
     const [tournamentOpen, setTournamentOpen] = useState(false);
+    const [statOpen, setStatOpen] = useState(false);
+    const [boardOpen, setBoardOpen] = useState(false);
     const toggleMenu = useCallback(() => { setOpen(prev => !prev); }, []);
 
     //메뉴 및 외부 영역 클릭 시 메뉴가 닫히도록 처리하는 코드
@@ -30,6 +32,8 @@ export default function Menu() {
         setOpen(false);
         setHomeOpen(false);
         setTournamentOpen(false);
+        setStatOpen(false);
+        setBoardOpen(false);
     }, []);
     const menuRef = useRef();
     useEffect(() => {
@@ -158,17 +162,68 @@ export default function Menu() {
                         <li className="nav-item" onClick={closeMenu}>
                             <Link className="nav-link" to="/ranking">랭킹</Link>
                         </li>
-                        <li className="nav-item" onClick={closeMenu}>
-                            <Link className="nav-link" to="/stat">통계</Link>
+                        <li className={`nav-item dropdown ${statOpen ? 'show' : ''}`}>
+                            <div className="dropdown-nav">
+                                <Link className="nav-link dropdown-parent-link" to="/stat" onClick={closeMenu}>
+                                    통계
+                                </Link>
+                                <button type="button" className="dropdown-toggle dropdown-trigger"
+                                    aria-label="통계 하위 메뉴 열기" aria-haspopup="true" aria-expanded={statOpen}
+                                    onClick={() => {
+                                        if (window.innerWidth < 992) {
+                                            setStatOpen(prev => !prev);
+                                            setHomeOpen(false);
+                                            setTournamentOpen(false);
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <ul className={`dropdown-menu dropdown-menu-dark ${statOpen ? 'show' : ''}`}>
+                                <li>
+                                    <Link className="dropdown-item sub-item" to="/stat" onClick={closeMenu}>
+                                        - 전체 통계
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item sub-item" to="/stat?tab=streamer" onClick={closeMenu}>
+                                        - 스트리머 통계
+                                    </Link>
+                                </li>
+                            </ul>
                         </li>
                         <li className="nav-item" onClick={closeMenu}>
                             <Link className="nav-link" to="/balance">밸런스찾기</Link>
                         </li>
                         {/* {isLogin === true ? (<>  로그인 시 나와야 하는 화면 */}
-                            <li className="nav-item" onClick={closeMenu}>
-                                <Link className="nav-link" to="/board">
-                                    <span>게시판</span>
-                                </Link>
+                            <li className={`nav-item dropdown ${boardOpen ? 'show' : ''}`}>
+                                <div className="dropdown-nav">
+                                    <Link className="nav-link dropdown-parent-link" to="/board" onClick={closeMenu}>
+                                        <span>게시판</span>
+                                    </Link>
+                                    <button type="button" className="dropdown-toggle dropdown-trigger"
+                                        aria-label="게시판 하위 메뉴 열기" aria-haspopup="true" aria-expanded={boardOpen}
+                                        onClick={() => {
+                                            if (window.innerWidth < 992) {
+                                                setBoardOpen(prev => !prev);
+                                                setHomeOpen(false);
+                                                setTournamentOpen(false);
+                                                setStatOpen(false);
+                                            }
+                                        }}
+                                    />
+                                </div>
+                                <ul className={`dropdown-menu dropdown-menu-dark ${boardOpen ? 'show' : ''}`}>
+                                    <li>
+                                        <Link className="dropdown-item sub-item" to="/board" onClick={closeMenu}>
+                                            - 월간 소식
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link className="dropdown-item sub-item" to="/board?tab=feedback" onClick={closeMenu}>
+                                            - 피드백 게시판
+                                        </Link>
+                                    </li>
+                                </ul>
                             </li>
                         {/* </>) : (<> </> )} 비로그인 시 나와야 하는 화면 */}
                     </ul>

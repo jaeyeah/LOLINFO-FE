@@ -115,7 +115,7 @@ export default function StreamerTotalList() {
     return (<SideAdLayout><>
     <h2 className="section-title text-center">Soop : 전체 스트리머 목록</h2>
     <div className="row mt-3 justify-content-center">
-        <div className="col-10">
+        <div className="col-12 col-md-10">
             <div className="streamer-control-panel">
                 <div className="streamer-toggle-group">
                     <Link to="/streamer" className="streamer-btn btn btn-nonClick">공식</Link>
@@ -156,7 +156,7 @@ export default function StreamerTotalList() {
                     </AnimatePresence>
                 </div>
                 {/* 피드백 모달 트리거 */}
-                <div className="streamer-admin-action">
+                <div className="streamer-admin-action streamer-registration-action">
                   <button type="button" className="btn btn-outline-light"
                       onClick={() => setShowFeedback(true)} >
                         등록요청
@@ -178,7 +178,7 @@ export default function StreamerTotalList() {
 
     {/* 스트리머 목록 */}
     <div className="row mt-3 justify-content-center">
-        <div className="col-10 streamer-list-wrapper">
+        <div className="col-12 col-md-10 streamer-list-wrapper">
             {streamerList.map((streamer)=>(
                 <div key={streamer.streamerNo} className="card tournament-card mb-3 streamer-tournament-card">
                     <Link to={`/streamer/${streamer.streamerNo}`} className="streamer-card-link">

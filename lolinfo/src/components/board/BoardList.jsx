@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import { loginState } from "../../utils/jotai";
 import "./Board.css";
@@ -14,7 +13,12 @@ const TABS = [
 export default function BoardList() {
     const navigate = useNavigate();
     const isLoggedIn = useAtomValue(loginState);
-    const [selectedTab, setSelectedTab] = useState("feedback");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const selectedTab = searchParams.get("tab") === "feedback" ? "feedback" : "monthly";
+    const selectTab = (tab) => {
+        if (tab === "feedback") setSearchParams({ tab: "feedback" });
+        else setSearchParams({});
+    };
 
     return (
         <div className="board-list-container">
@@ -31,7 +35,7 @@ export default function BoardList() {
                             type="button"
                             className={`category-btn ${selectedTab === tab.key ? "active" : ""}`}
                             aria-pressed={selectedTab === tab.key}
-                            onClick={() => setSelectedTab(tab.key)}
+                            onClick={() => selectTab(tab.key)}
                         >
                             {tab.label}
                         </button>
