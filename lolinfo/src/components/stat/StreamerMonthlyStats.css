@@ -1,0 +1,36 @@
+.streamer-monthly-controls { display:flex; align-items:flex-end; gap:24px; margin-bottom:1rem; }
+.streamer-monthly-search { position:relative; flex:1 1 0; min-width:0; }
+.streamer-monthly-search > label, .streamer-monthly-controls > .stat-year-control { display:flex; flex-direction:column; gap:0.45rem; color:#adb5bd; font-size:0.85rem; }
+.streamer-monthly-controls > .stat-year-control { flex:0 0 auto; }
+.streamer-monthly-search input, .streamer-monthly-controls input { color:#f8f9fa; background-color:#212529; border-color:#495057; }
+.streamer-monthly-search input::placeholder { color:#fff !important; }
+.streamer-monthly-search input:focus, .streamer-monthly-controls input:focus { color:#f8f9fa; background-color:#212529; border-color:#86efac; box-shadow:0 0 0 0.2rem rgba(134,239,172,0.16); }
+.streamer-monthly-results { position:absolute; z-index:3; top:100%; right:0; left:0; max-height:260px; overflow:auto; background:#171d28; border:1px solid #495057; border-radius:0 0 8px 8px; box-shadow:0 8px 20px rgba(0,0,0,.3); }
+.streamer-monthly-results p { margin:0; padding:0.75rem; color:#adb5bd; font-size:0.85rem; }
+.streamer-monthly-results button { display:flex; align-items:center; gap:10px; width:100%; padding:10px; border:0; background:transparent; color:#eee; text-align:left; }
+.streamer-monthly-results button:hover, .streamer-monthly-results button:focus-visible { background:#303d50; }
+.streamer-monthly-page img { width:32px; height:32px; border-radius:50%; object-fit:cover; margin-right:8px; }
+.streamer-monthly-title { display:flex; align-items:center; gap:0.4rem; margin:24px 0; color:#f8f9fa; font-size:1.25rem; font-weight:600; }
+.streamer-monthly-title img { margin-right:0; }
+.streamer-monthly-title a { display:inline-flex; align-items:center; gap:0.6rem; padding:0.35rem 0.65rem 0.35rem 0.35rem; color:#d7f9ff; text-decoration:none; border:1px solid rgba(0,204,255,.28); border-radius:999px; background:rgba(0,204,255,.08); transition:color .15s ease, border-color .15s ease, background-color .15s ease; }
+.streamer-monthly-title a:hover, .streamer-monthly-title a:focus-visible { color:#fff; text-decoration:none; border-color:rgba(0,204,255,.65); background:rgba(0,204,255,.16); }
+.streamer-monthly-page a { color:#93c5fd; text-decoration:none; }
+.streamer-monthly-page a:hover, .streamer-monthly-page a:focus-visible { text-decoration:none; }
+.streamer-monthly-opponents a { display:inline-flex; align-items:center; color:#b9dcff; }
+.streamer-monthly-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
+.streamer-monthly-summary strong { display:block; font-size:1.6rem; margin-top:8px; }
+.streamer-monthly-charts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.streamer-monthly-charts .stat-chart-panel { min-width:0; }
+.streamer-monthly-page .stat-chart-panel { margin-bottom:20px; }
+.streamer-monthly-page > .stat-description { margin-top:1rem; }
+.streamer-monthly-page h2 { font-size:1.2rem; }
+.streamer-monthly-canvas { height:300px; position:relative; }
+.streamer-monthly-page td, .streamer-monthly-page th { white-space:nowrap; vertical-align:middle; }
+.streamer-monthly-page details summary { cursor:pointer; margin-bottom:12px; }
+@media(max-width:768px) {
+    .streamer-monthly-charts { grid-template-columns:minmax(0,1fr); }
+    .streamer-monthly-summary { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .streamer-monthly-controls { align-items:stretch; flex-direction:column; gap:12px; }
+    .streamer-monthly-search { width:100%; flex:1 1 auto; }
+    .streamer-monthly-canvas { height:280px; }
+}

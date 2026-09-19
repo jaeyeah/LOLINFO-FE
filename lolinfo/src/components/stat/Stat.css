@@ -1,11 +1,14 @@
 .stat-page {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
     min-width: 0;
-    padding: clamp(1.25rem, 3vw, 2.5rem) 0 3rem;
+    padding: 0 0 3rem;
     color: #f8f9fa;
 }
 
 .stat-hero {
-    padding: 2rem clamp(1rem, 4vw, 3.5rem) 2.5rem;
+    padding: 2rem clamp(1rem, 4vw, 3.5rem) 1.75rem;
     text-align: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
@@ -34,6 +37,45 @@
     word-break: keep-all;
 }
 
+.stat-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1.5rem 0 1.25rem;
+}
+
+.stat-tab {
+    padding: 0.6rem 1.8rem;
+    color: #adb5bd;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: transparent;
+}
+
+.stat-tab:hover,
+.stat-tab:focus-visible {
+    color: #f8f9fa;
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.stat-tab.active {
+    color: #4de1ff;
+    border-color: rgba(0, 204, 255, 0.25);
+    background: rgba(0, 204, 255, 0.08);
+}
+
+.stat-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
 .stat-description {
     margin: 1.5rem 0 1.25rem;
     padding: 1rem 1.15rem;
@@ -59,7 +101,9 @@
 
 .stat-description-note {
     margin-top: 0.6rem !important;
-    color: #fcd34d !important;
+    color: #adb5bd !important;
+    font-size: 0.82rem;
+    line-height: 1.65;
 }
 
 .stat-year-control {
@@ -100,6 +144,12 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.025);
+}
+
+.stat-page button:focus-visible,
+.stat-page a:focus-visible {
+    outline: 2px solid #00ccff;
+    outline-offset: 3px;
 }
 
 .stat-chart-header {
@@ -211,5 +261,18 @@
 
     .stat-chart-panel {
         padding: 0.85rem;
+    }
+
+    .stat-tabs {
+        gap: 0.5rem;
+    }
+
+    .stat-tab {
+        flex: 1 1 140px;
+        padding-inline: 0.75rem;
+    }
+
+    .stat-controls {
+        justify-content: flex-start;
     }
 }
