@@ -38,7 +38,7 @@ export default function StreamerWith() {
 return (<>
 {/* 검색창 */}
 <div className="row mt-3 justify-content-center">
-    <div className="col-12 col-xl-8">
+    <div className="col-12 col-md-10">
         <div className="streamer-control-panel">
             <div className="search-wrapper flex-grow-1">
                 <div className="input-group streamer-search-group">
