@@ -3,6 +3,8 @@ import axios from "../../utils/axios";
 import { getKoreaToday } from "../../utils/ckPeriod";
 import MonthlyActivityChart from "./MonthlyActivityChart";
 import "./Stat.css";
+import { useSearchParams } from "react-router-dom";
+import StreamerMonthlyStats from "../streamer/StreamerMonthlyStats";
 
 const MONTH_COUNT = 12;
 
@@ -31,6 +33,24 @@ function normalizeMonthlyStats(payload) {
 }
 
 export default function Stat() {
+    const [params, setParams] = useSearchParams();
+    const personal = params.get("tab") === "streamer" || params.has("streamerNo");
+    const selectTab = (tab) => {
+        const next = new URLSearchParams(params);
+        if (tab === "streamer") next.set("tab", "streamer");
+        else { next.delete("tab"); next.delete("streamerNo"); }
+        setParams(next);
+    };
+    return <>
+        <nav className="stat-tabs" aria-label="통계 유형">
+            <button className={`btn ${personal ? "btn-outline-primary" : "btn-primary"}`} aria-pressed={!personal} onClick={() => selectTab("all")}>전체 통계</button>
+            <button className={`btn ${personal ? "btn-primary" : "btn-outline-primary"}`} aria-pressed={personal} onClick={() => selectTab("streamer")}>스트리머 통계</button>
+        </nav>
+        {personal ? <StreamerMonthlyStats /> : <OverallStat />}
+    </>;
+}
+
+function OverallStat() {
 	const currentYear = Number(getKoreaToday().slice(0, 4));
 	const [selectedYear, setSelectedYear] = useState(String(currentYear));
 	const [months, setMonths] = useState(null);
