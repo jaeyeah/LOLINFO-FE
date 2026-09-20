@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "../../utils/axios";
 import Swal from "sweetalert2";
 import "./Board.css";
@@ -13,6 +13,8 @@ const getByteLength = (value) => new TextEncoder().encode(value).length;
 export default function BoardDetail() {
     const { boardId } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const returnPath = location.state?.from === "/blog" ? "/blog" : "/board";
     const loginId = useAtomValue(loginIdState);
     const isAdmin = useAtomValue(adminState);
     const isLoggedIn = useAtomValue(loginState);
@@ -48,7 +50,7 @@ export default function BoardDetail() {
                 confirmButtonColor: "#ea8685",
             });
 
-            if (!signal.aborted) navigate("/board");
+            if (!signal.aborted) navigate(returnPath);
         } finally {
             if (!signal.aborted) setIsLoading(false);
         }
@@ -78,7 +80,7 @@ export default function BoardDetail() {
             confirmButtonText: "확인",
             confirmButtonColor: "#ea8685",
         });
-        if (status === 404 && !signal.aborted) navigate("/board");
+        if (status === 404 && !signal.aborted) navigate(returnPath);
     };
 
     const startEdit = () => {
@@ -152,7 +154,7 @@ export default function BoardDetail() {
                 icon: "success", title: "삭제 완료", text: "게시글이 삭제되었습니다.",
                 confirmButtonText: "확인",
             });
-            if (!signal.aborted) navigate("/board");
+            if (!signal.aborted) navigate(returnPath);
         } catch (error) {
             await showRequestError(error, signal);
         } finally {
@@ -243,7 +245,7 @@ export default function BoardDetail() {
                             <button type="button" className="btn btn-danger" onClick={handleDelete} disabled={isSubmitting}>삭제</button>
                         </>
                     )}
-                    <button type="button" className="btn btn-secondary" disabled={isSubmitting} onClick={() => navigate("/board")}>목록</button>
+                    <button type="button" className="btn btn-secondary" disabled={isSubmitting} onClick={() => navigate(returnPath)}>목록</button>
                 </div>
                     </>
                 )}

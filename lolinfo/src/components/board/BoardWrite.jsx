@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { loginState } from "../../utils/jotai";
+import { adminState, loginState } from "../../utils/jotai";
 import { useCallback, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -29,6 +29,10 @@ const isWithinByteLimit = (value, limit) => {
 
 export default function BoardWrite() {
     const isLoggedIn = useAtomValue(loginState);
+    const isAdmin = useAtomValue(adminState);
+    const categories = isAdmin
+        ? [...CATEGORIES, { value: "blog", label: "blog" }]
+        : CATEGORIES;
     const navigate = useNavigate();
 
 
@@ -166,7 +170,7 @@ export default function BoardWrite() {
                             onChange={handleChangeForm}
                             className="form-control"
                         >
-                            {CATEGORIES.map((category) => (
+                            {categories.map((category) => (
                                 <option key={category.value} value={category.value}>
                                     {category.label}
                                 </option>

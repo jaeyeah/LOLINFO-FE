@@ -28,6 +28,7 @@ import MemberLogin from "./member/MemberLogin";
 import BoardWrite from "./board/BoardWrite";
 import BoardList from "./board/BoardList";
 import BoardDetail from "./board/BoardDetail";
+import BlogBoardList from "./board/BlogBoardList";
 
 import AdminMain from "./admin/AdminMain";
 import AdminMemberPage from "./admin/AdminMemberPage";
@@ -135,6 +136,7 @@ return (<>
                 </Route>
 
                 {/* 게시판 */}
+                <Route path="/blog" element={<BlogBoardList/>}/>
                 <Route path="/board" element={<BoardList/>}/>
                 <Route path="/board/write" element={<BoardWrite/>}/>
                 <Route path="/board/:boardId" element={<BoardDetail/>}/>
