@@ -102,22 +102,22 @@ export default function Menu() {
                             <ul className={`dropdown-menu dropdown-menu-dark ${homeOpen ? 'show' : ''}`}>
                                 <li>
                                     <Link className="dropdown-item sub-item" to="/" onClick={closeMenu}>
-                                       - 홈
+                                       └ 홈
                                     </Link>
                                 </li>
                                 <li>
                                     <Link className="dropdown-item sub-item" to="/about" onClick={closeMenu}>
-                                       - 서비스 소개
+                                       └ 서비스 소개
                                     </Link>
                                 </li>
                                 <li>
                                     <Link className="dropdown-item sub-item" to="/data-criteria" onClick={closeMenu}>
-                                       - 데이터 집계 기준
+                                       └ 데이터 집계 기준
                                     </Link>
                                 </li>
                                 <li>
                                     <Link className="dropdown-item sub-item" to="/devhistory" onClick={closeMenu}>
-                                       - 패치노트
+                                       └ 패치노트
                                     </Link>
                                 </li>
                             </ul>
@@ -139,17 +139,17 @@ export default function Menu() {
                             <ul className={`dropdown-menu dropdown-menu-dark ${tournamentOpen ? 'show' : ''}`}>
                                 <li>
                                     <Link className="dropdown-item sub-item" to="/tournament" onClick={closeMenu}>
-                                       - 대회 목록
+                                       └ 대회 목록
                                     </Link>
                                 </li>
                                 <li>
                                     <Link className="dropdown-item sub-item" to="/streamer/654" onClick={closeMenu}>
-                                       - 멸망전
+                                       └ 멸망전
                                     </Link>
                                 </li>
                                 <li>
                                     <Link className="dropdown-item sub-item" to="/streamer/655" onClick={closeMenu}>
-                                       - SLL
+                                       └ SLL
                                     </Link>
                                 </li>
                             </ul>
@@ -181,12 +181,12 @@ export default function Menu() {
                             <ul className={`dropdown-menu dropdown-menu-dark ${statOpen ? 'show' : ''}`}>
                                 <li>
                                     <Link className="dropdown-item sub-item" to="/stat" onClick={closeMenu}>
-                                        - 전체 통계
+                                        └ 전체 통계
                                     </Link>
                                 </li>
                                 <li>
                                     <Link className="dropdown-item sub-item" to="/stat?tab=streamer" onClick={closeMenu}>
-                                        - 스트리머 통계
+                                        └ 스트리머 통계
                                     </Link>
                                 </li>
                             </ul>
@@ -215,12 +215,12 @@ export default function Menu() {
                                 <ul className={`dropdown-menu dropdown-menu-dark ${boardOpen ? 'show' : ''}`}>
                                     <li>
                                         <Link className="dropdown-item sub-item" to="/board" onClick={closeMenu}>
-                                            - 월간 소식
+                                            └ 월간 소식
                                         </Link>
                                     </li>
                                     <li>
                                         <Link className="dropdown-item sub-item" to="/board?tab=feedback" onClick={closeMenu}>
-                                            - 피드백 게시판
+                                            └ 피드백 게시판
                                         </Link>
                                     </li>
                                 </ul>

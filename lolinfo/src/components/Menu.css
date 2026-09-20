@@ -180,7 +180,7 @@
 
 .cinema-navbar .sub-item {
   color: #ffffff;
-  background: rgba(26, 31, 59, 0.315) ;
+  background: rgb(14, 16, 27) ;
 } 
 
 
@@ -188,7 +188,7 @@
 .cinema-navbar .dropdown-item:hover,
 .cinema-navbar .dropdown-item:focus {
   color: #ffffff;
-  background: rgba(0, 204, 255, 0.25);
+  background: rgba(29, 54, 167, 0.534);
 }
 
 /* PC: hover로 열고, 메뉴와 하위 메뉴 사이에 끊기는 공간이 없도록 한다. */

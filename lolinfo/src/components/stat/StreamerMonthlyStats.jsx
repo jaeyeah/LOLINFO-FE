@@ -7,6 +7,16 @@ import StreamerMonthlyCharts from "./StreamerMonthlyCharts";
 import { formatRate, formatChange } from "./streamerStatFormat";
 import "./StreamerMonthlyStats.css";
 
+function getWinRateColor(rate) {
+    if (rate >= 70) return "#3bc9db";
+    if (rate >= 60) return "#4dabf7";
+    if (rate >= 55) return "#69db7c";
+    if (rate >= 50) return "#adb5bd";
+    if (rate >= 45) return "#fcc419";
+    if (rate >= 40) return "#ff922b";
+    return "#ff6b6b";
+}
+
 export default function StreamerMonthlyStats() {
     const [params, setParams] = useSearchParams();
     const streamerNo = params.get("streamerNo");
@@ -89,29 +99,55 @@ export default function StreamerMonthlyStats() {
                     <div className="stat-chart-panel" key={label}><span>{label}</span><strong>{value}</strong></div>)}
             </div>
             {data.summary.participationCount === 0 ? <p className="stat-status">선택한 연도에 등록된 CK 참여 기록이 없습니다.</p> : <>
+                {/* 스트리머 통계차트 */}
                 <StreamerMonthlyCharts data={data} />
+                {/* 스트리머 통계차트 */}
                 <details className="stat-chart-panel">
-                    <summary>월별 전적 및 누적 승률 자세히 보기</summary>
+                    <summary className="fw-bold">월별 전적 및 누적 승률 자세히 보기</summary>
                     <div className="table-responsive"><table className="table table-dark">
                         <thead><tr>{["월", "참여", "월간 전적", "누적 전적", "누적 승률", "전월 대비"].map((label) => <th key={label}>{label}</th>)}</tr></thead>
                         <tbody>{data.months.map((month) => <tr key={month.month}>
                             <th>{month.month}월</th><td>{month.participationCount}</td><td>{month.winCount}승 {month.loseCount}패</td>
                             <td>{month.cumulativeWinCount}승 {month.cumulativeLoseCount}패</td>
-                            <td>{formatRate(month.cumulativeWinRate)}</td><td>{formatChange(month.winRateChange)}</td>
+                            <td>
+                                <div className="streamer-opponent-win-rate" style={{ color: getWinRateColor(month.cumulativeWinRate) }}>
+                                    {formatRate(month.cumulativeWinRate)}
+                                </div>
+                                {month.cumulativeWinRate != null && <div className="progress bookmark-progress streamer-opponent-progress" aria-label={`누적 승률 ${formatRate(month.cumulativeWinRate)}`}>
+                                    <div className="progress-bar" style={{ width: `${Math.max(0, Math.min(100, month.cumulativeWinRate))}%`, backgroundColor: getWinRateColor(month.cumulativeWinRate) }} />
+                                </div>}
+                            </td>
+                            <td>{formatChange(month.winRateChange)}</td>
                         </tr>)}</tbody>
                     </table></div>
                 </details>
                 <section className="stat-chart-panel">
-                    <h2>연간 자주 만난 상대 TOP 5</h2>
-                    <p>반대 진영에서 같은 포지션으로 만난 상대입니다. 전적은 {data.streamer.streamerName} 기준입니다.</p>
+                    <h2 className="streamer-chart-title">연간 자주 만난 상대 TOP 5</h2>
+                    <p className="text-secondary">반대 진영에서 같은 포지션으로 만난 상대입니다. 전적은 <span className="text-info">{data.streamer.streamerName} </span>기준입니다.</p>
                     {!data.opponents.length ? <p>동일 포지션 맞대결 기록이 없습니다.</p> :
                         <div className="table-responsive"><table className="table table-dark streamer-monthly-opponents">
-                            <thead><tr>{["순위", "상대", "맞대결", "전적", "승률", "마지막 맞대결"].map((label) => <th key={label}>{label}</th>)}</tr></thead>
+                            <thead><tr>
+                                <th className="opponent-rank-column">순위</th>
+                                <th className="text-center">상대</th>
+                                <th>맞대결</th>
+                                <th className="opponent-record-column">전적</th>
+                                <th className="opponent-win-rate-column">승률</th>
+                                <th className="opponent-last-match-column">마지막 맞대결</th>
+                            </tr></thead>
                             <tbody>{data.opponents.map((opponent) => <tr key={opponent.streamerNo}>
-                                <td>{opponent.rank}</td><td><Link to={`/streamer/${opponent.streamerNo}`}>
+                                <td className="opponent-rank-column">{opponent.rank}</td><td className="fw-bold"><Link to={`/streamer/${opponent.streamerNo}`}>
                                     <img src={buildProfileUrl(opponent.streamerSoopId)} alt="" />{opponent.streamerName}</Link></td>
-                                <td>{opponent.matchCount}경기</td><td>{opponent.winCount}승 {opponent.loseCount}패</td>
-                                <td>{formatRate(opponent.winRate)}</td><td>{opponent.lastMatchDate?.slice(0, 10)}</td>
+                                <td>{opponent.matchCount}경기</td>
+                                <td className="opponent-record-column">{opponent.winCount}승 {opponent.loseCount}패</td>
+                                <td className="opponent-win-rate-column">
+                                    <div className="streamer-opponent-win-rate" style={{ color: getWinRateColor(opponent.winRate) }}>
+                                        {formatRate(opponent.winRate)}
+                                    </div>
+                                    <div className="progress bookmark-progress streamer-opponent-progress" aria-label={`승률 ${formatRate(opponent.winRate)}`}>
+                                        <div className="progress-bar" style={{ width: `${Math.max(0, Math.min(100, opponent.winRate ?? 0))}%`, backgroundColor: getWinRateColor(opponent.winRate) }} />
+                                    </div>
+                                </td>
+                                <td>{opponent.lastMatchDate?.slice(0, 10)}</td>
                             </tr>)}</tbody>
                         </table></div>}
                 </section>

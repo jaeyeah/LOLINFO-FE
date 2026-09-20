@@ -12,11 +12,18 @@
 .streamer-monthly-page img { width:32px; height:32px; border-radius:50%; object-fit:cover; margin-right:8px; }
 .streamer-monthly-title { display:flex; align-items:center; gap:0.4rem; margin:24px 0; color:#f8f9fa; font-size:1.25rem; font-weight:600; }
 .streamer-monthly-title img { margin-right:0; }
-.streamer-monthly-title a { display:inline-flex; align-items:center; gap:0.6rem; padding:0.35rem 0.65rem 0.35rem 0.35rem; color:#d7f9ff; text-decoration:none; border:1px solid rgba(0,204,255,.28); border-radius:999px; background:rgba(0,204,255,.08); transition:color .15s ease, border-color .15s ease, background-color .15s ease; }
-.streamer-monthly-title a:hover, .streamer-monthly-title a:focus-visible { color:#fff; text-decoration:none; border-color:rgba(0,204,255,.65); background:rgba(0,204,255,.16); }
+.streamer-monthly-title a { display:inline-flex; align-items:center; gap:0.6rem; padding:0.35rem 0.65rem 0.35rem 0.35rem; color:#b9caff !important; text-decoration:none; border:1px solid rgba(0,204,255,.28); border-radius:7px; background:rgba(0,204,255,.08); transition:color .15s ease, border-color .15s ease, background-color .15s ease; }
+.streamer-monthly-title a:hover, .streamer-monthly-title a:focus-visible { color:#fff; text-decoration:none; border-color:rgba(7, 190, 236, 0.65); background:rgba(0,204,255,.16); }
 .streamer-monthly-page a { color:#93c5fd; text-decoration:none; }
 .streamer-monthly-page a:hover, .streamer-monthly-page a:focus-visible { text-decoration:none; }
 .streamer-monthly-opponents a { display:inline-flex; align-items:center; color:#b9dcff; }
+.streamer-monthly-opponents { width:100%; }
+.streamer-monthly-opponents .opponent-rank-column { width:7%; text-align:center; }
+.streamer-monthly-opponents .opponent-record-column { width:15%; }
+.streamer-monthly-opponents .opponent-win-rate-column { width:20%; }
+.streamer-opponent-win-rate { display:inline-block; margin-right:0.5rem; font-weight:700; line-height:1.25; }
+.streamer-opponent-progress { display:inline-block; width:5.5rem; height:6px; margin-top:0; vertical-align:middle; background:#2b3038; }
+.streamer-opponent-progress .progress-bar { background-image:none; }
 .streamer-monthly-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
 .streamer-monthly-summary strong { display:block; font-size:1.6rem; margin-top:8px; }
 .streamer-monthly-charts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
@@ -24,6 +31,9 @@
 .streamer-monthly-page .stat-chart-panel { margin-bottom:20px; }
 .streamer-monthly-page > .stat-description { margin-top:1rem; }
 .streamer-monthly-page h2 { font-size:1.2rem; }
+.streamer-chart-title { position:relative; display:flex; align-items:center; min-height:2.5rem; margin:0 0 1.15rem !important; padding:0.7rem 0.85rem 0.7rem 1rem; color:#fcd97a; font-size:1.05rem !important; font-weight:700; letter-spacing:-0.01em; border-bottom:1px solid rgba(255,255,255,.12); background:linear-gradient(90deg,rgba(155, 235, 255, 0.1),transparent 72%); }
+.streamer-chart-title::before { content:""; position:absolute; top:0; bottom:0; left:0; width:3px; border-radius:3px; background:linear-gradient(180deg,#4de1ff,#34d399); box-shadow:0 0 12px rgba(77,225,255,.3); }
+.streamer-chart-title::after { content:""; position:absolute; right:0; bottom:-1px; width:4rem; height:1px; background:#4de1ff; }
 .streamer-monthly-canvas { height:300px; position:relative; }
 .streamer-monthly-page td, .streamer-monthly-page th { white-space:nowrap; vertical-align:middle; }
 .streamer-monthly-page details summary { cursor:pointer; margin-bottom:12px; }

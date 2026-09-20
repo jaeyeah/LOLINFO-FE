@@ -21,14 +21,14 @@
     z-index: 10;
     overflow: hidden;
     border-radius: 10px;
-    background: linear-gradient(145deg, rgba(52, 58, 64, 0.92), rgba(28, 32, 36, 0.96));
+    background: linear-gradient(145deg, rgba(2, 2, 2, 0.92), rgba(28, 32, 36, 0.96));
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.03);
     transition: width 180ms ease;
 }
 
 .side-ad-layout-ad.is-collapsed {
     width: 44px;
-    background: linear-gradient(145deg, rgba(19, 1, 68, 0.7), rgba(0, 102, 204, 0.96));
+    background: linear-gradient(145deg, rgba(17, 0, 63, 0.623), rgba(0, 128, 255, 0.178));
 }
 
 .side-ad-layout-ad.is-collapsed iframe,
@@ -50,7 +50,7 @@
     transform: translateY(-50%);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 6px 0 0 6px;
-    background: linear-gradient(145deg, rgba(0, 34, 126, 0.9), rgba(121, 31, 180, 0.96));
+    background: linear-gradient(145deg, rgba(19, 12, 43, 0.973), rgba(60, 22, 85, 0.96));
     color: #fcfcfc;
     cursor: pointer;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
