@@ -17,6 +17,7 @@ export default function BoardDetail() {
     const returnPath = location.state?.from === "/blog" ? "/blog" : "/board";
     const loginId = useAtomValue(loginIdState);
     const isAdmin = useAtomValue(adminState);
+    const categories = isAdmin ? [...CATEGORIES, "blog"] : CATEGORIES;
     const isLoggedIn = useAtomValue(loginState);
     const [board, setBoard] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -183,10 +184,10 @@ export default function BoardDetail() {
                             <select id="board-edit-category" name="boardCategory" className="form-select board-select"
                                 value={editForm.boardCategory} onChange={handleEditChange} disabled={isSubmitting}>
                                 <option value="" disabled>카테고리를 선택해주세요</option>
-                                {editForm.boardCategory && !CATEGORIES.includes(editForm.boardCategory) && (
+                                {editForm.boardCategory && !categories.includes(editForm.boardCategory) && (
                                     <option value={editForm.boardCategory}>{editForm.boardCategory}</option>
                                 )}
-                                {CATEGORIES.map((category) => <option key={category} value={category}>{category}</option>)}
+                                {categories.map((category) => <option key={category} value={category}>{category}</option>)}
                             </select>
                         </div>
                         <div>
