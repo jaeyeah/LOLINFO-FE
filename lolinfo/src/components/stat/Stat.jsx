@@ -5,7 +5,6 @@ import MonthlyActivityChart from "./MonthlyActivityChart";
 import "./Stat.css";
 import { useSearchParams } from "react-router-dom";
 import StreamerMonthlyStats from "./StreamerMonthlyStats";
-import SideAdLayout from "../etc/SideAdLayout";
 
 const MONTH_COUNT = 12;
 
@@ -42,7 +41,7 @@ export default function Stat() {
         else { next.delete("tab"); next.delete("streamerNo"); }
         setParams(next);
     };
-	return <SideAdLayout>
+	return <>
 		<main className="stat-page" aria-labelledby="stat-page-title">
 			<header className="stat-hero">
 				<p className="stat-page-eyebrow">SOOPLOL DATA</p>
@@ -59,7 +58,7 @@ export default function Stat() {
 			</nav>
 			{personal ? <StreamerMonthlyStats /> : <OverallStat />}
 		</main>
-	</SideAdLayout>;
+	</>;
 }
 
 function OverallStat() {

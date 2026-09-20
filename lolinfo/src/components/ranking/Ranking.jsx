@@ -1,10 +1,8 @@
 import { NavLink, Outlet } from "react-router-dom";
 import "./Ranking.css";
-import SideAdLayout from "../etc/SideAdLayout";
 
 export default function Ranking() {
   return (
-    <SideAdLayout>
       <section className="ranking-page text-white">
       <header className="ranking-hero">
         <p className="ranking-eyebrow">SOOPLOL RANKINGS</p>
@@ -17,6 +15,5 @@ export default function Ranking() {
       </nav>
       <Outlet />
       </section>
-    </SideAdLayout>
   );
 }

@@ -4,7 +4,6 @@ import { loginState } from "../../utils/jotai";
 import HomeStreamerSearch from "./HomeStreamerSearch";
 import HomeBookmark from "./HomeBookmark";
 import HomeStats from "./HomeStats";
-import SideAdLayout from "../etc/SideAdLayout";
 import "./Home.css";
 
 const features = [
@@ -114,17 +113,15 @@ export default function Home() {
     const isLogin = useAtomValue(loginState);
 
     return (
-        <SideAdLayout>
-            <div className="home-layout">
-                <main className="home-page">
-                    <HomeHero />
-                    <HomeStats />
-                    <HomeNavigation />
-                    <HomeInlineAd />
-                    <HomeBookmark isLogin={isLogin} />
-                    <HomeFeatures />
-                </main>
-            </div>
-        </SideAdLayout>
+        <div className="home-layout">
+            <main className="home-page">
+                <HomeHero />
+                <HomeStats />
+                <HomeNavigation />
+                <HomeInlineAd />
+                <HomeBookmark isLogin={isLogin} />
+                <HomeFeatures />
+            </main>
+        </div>
     );
 }

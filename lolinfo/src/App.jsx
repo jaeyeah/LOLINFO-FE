@@ -6,6 +6,7 @@ import './App.css'
 import Menu from './components/Menu.jsx'
 import Footer from './components/Footer.jsx'
 import AdArea from './components/etc/AdArea.jsx'
+import SideAdLayout from './components/etc/SideAdLayout.jsx'
 import { trackDailyVisit } from './utils/visitTracker'
 import ReactGA from "react-ga4";
 
@@ -28,9 +29,11 @@ function App() {
           <Menu/>
 
           <main className="app-content">
-            <div className="container-fluid my-5 pt-5">
-              <Content/>
-            </div>
+            <SideAdLayout>
+              <div className="container-fluid my-5 pt-5">
+                <Content/>
+              </div>
+            </SideAdLayout>
           </main>
           
           <AdArea variant="bottom" />
