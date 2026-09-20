@@ -5,6 +5,10 @@ const POSITIONS = ["TOP", "JUG", "MID", "AD", "SUP"];
 const COLORS = ["#60a5fa", "#34d399", "#fbbf24", "#f87171", "#c084fc"];
 import { formatRate, formatChange } from "./streamerStatFormat";
 const legend = { position: "bottom", labels: { color: "#ddd" } };
+const positionLegend = {
+    position: "bottom",
+    labels: { color: "#ddd", boxWidth: 10, padding: 4, font: { size: 13 } },
+};
 function options(stacked = false, percentage = false, tooltip) {
     return {
         responsive: true, maintainAspectRatio: false,
@@ -32,27 +36,27 @@ export default function StreamerMonthlyCharts({ data }) {
             `누적 승률: ${formatRate(m.cumulativeWinRate)}`, `전월 대비: ${formatChange(m.winRateChange)}`];
     };
     return <div className="streamer-monthly-charts">
-        <section className="stat-chart-panel"><h2>월별 CK 참여 및 승리</h2>
+        <section className="stat-chart-panel"><h2 className="streamer-chart-title">월별 CK 참여 및 승리</h2>
             <div className="streamer-monthly-canvas"><Bar aria-label="월별 CK 참여 및 승리 차트" role="img" data={{ labels, datasets: [
                 { label: "참여 건수", data: months.map((m) => m.participationCount), backgroundColor: "#60a5fa" },
                 { label: "승리 수", data: months.map((m) => m.winCount), backgroundColor: "#34d399" },
             ] }} options={options(false, false, monthlyTooltip)} /></div>
         </section>
-        <section className="stat-chart-panel"><h2>월별 누적 승률 추이</h2><p>1월 1일부터 각 월 말까지 · 현재 월은 조회 시점까지</p>
+        <section className="stat-chart-panel"><h2 className="streamer-chart-title">월별 누적 승률 추이</h2><p className="text-secondary">1월 1일부터 각 월 말까지 · 현재 월은 조회 시점까지</p>
             {months.every((m) => m.cumulativeWinRate == null) ? <p className="stat-status">승패가 확정된 경기가 없습니다.</p> :
                 <div className="streamer-monthly-canvas"><Line aria-label="연초부터의 월별 누적 승률" role="img" data={{ labels, datasets: [
                     { label: "누적 승률", data: months.map((m) => m.cumulativeWinRate), borderColor: "#34d399", backgroundColor: "#34d399", spanGaps: false, tension: 0, pointRadius: 4 },
                 ] }} options={options(false, true, cumulativeTooltip)} /></div>}
         </section>
-        <section className="stat-chart-panel"><h2>월별 포지션 참여도</h2>
+        <section className="stat-chart-panel"><h2 className="streamer-chart-title">월별 포지션 참여도</h2>
             <div className="streamer-monthly-canvas"><Bar aria-label="월별 포지션 참여도" role="img" data={{ labels, datasets: POSITIONS.map((position, i) => ({
                 label: position, data: months.map((m) => m.positions[position]), backgroundColor: COLORS[i],
-            })) }} options={options(true)} /></div>
+            })) }} options={{ ...options(true), plugins: { ...options(true).plugins, legend: positionLegend } }} /></div>
         </section>
-        <section className="stat-chart-panel"><h2>연간 포지션 참여 비중</h2>
+        <section className="stat-chart-panel"><h2 className="streamer-chart-title">연간 포지션 참여 비중</h2>
             <div className="streamer-monthly-canvas"><Doughnut aria-label="연간 포지션 참여 비중" role="img"
                 data={{ labels: POSITIONS, datasets: [{ data: POSITIONS.map((position) => positions[position]), backgroundColor: COLORS, borderWidth: 0 }] }}
-                options={{ responsive: true, maintainAspectRatio: false, plugins: { legend, tooltip: { callbacks: {
+                options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: positionLegend, tooltip: { callbacks: {
                     label: (context) => `${context.label}: ${context.raw}경기 (${(100 * context.raw / summary.participationCount).toFixed(1)}%)`,
                 } } } }} /></div>
         </section>
