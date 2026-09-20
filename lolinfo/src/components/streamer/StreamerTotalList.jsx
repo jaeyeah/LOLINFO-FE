@@ -9,7 +9,6 @@ import Pagination from "../Pagination";
 import { adminState, loginState } from "../../utils/jotai";
 import { useAtomValue } from "jotai";
 import FeedbackModal from "../etc/FeedbackModal";
-import SideAdLayout from "../etc/SideAdLayout";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { getSearchDropdownMotion, getSearchResultMotion } from "./searchMotion";
 
@@ -112,7 +111,7 @@ export default function StreamerTotalList() {
     };
 
     //render
-    return (<SideAdLayout><>
+    return (<>
     <h2 className="section-title text-center">Soop : 전체 스트리머 목록</h2>
     <div className="row mt-3 justify-content-center">
         <div className="col-12 col-md-10">
@@ -233,6 +232,6 @@ export default function StreamerTotalList() {
             targetType="Streamer" targetId="" targetName="스트리머"
         />
     
-    </></SideAdLayout>)
+    </>)
 
 }

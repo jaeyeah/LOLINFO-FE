@@ -8,7 +8,6 @@ import { adminState, loginState } from "../../utils/jotai";
 import Pagination from "../Pagination";
 import { FaSearch } from "react-icons/fa";
 import FeedbackModal from "../etc/FeedbackModal";
-import SideAdLayout from "../etc/SideAdLayout";
 
 export default function TournamentList(){
 
@@ -78,7 +77,7 @@ export default function TournamentList(){
 
 
 //render
-return(<SideAdLayout><>
+return(<>
   <h2 className="section-title text-center ">Soop : LoL 대회 목록</h2>
   <div className="row mt-3 justify-content-center">
         <div className="col-12 col-md-10">
@@ -211,5 +210,5 @@ return(<SideAdLayout><>
           onClose={() => setShowFeedback(false)}
           targetType="Tournament" targetId="" targetName="대회"
         />
-      </></SideAdLayout>)
+      </>)
   }

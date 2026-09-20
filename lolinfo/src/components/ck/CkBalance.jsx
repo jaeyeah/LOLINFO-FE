@@ -4,7 +4,6 @@ import axios from "../../utils/axios";
 import "./CkBalance.css";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import { FaInfoCircle, FaTimes } from "react-icons/fa";
-import SideAdLayout from "../etc/SideAdLayout";
 
 const POSITIONS = ["TOP", "JUG", "MID", "AD", "SUP"];
 const LABELS = { TOP: "탑", JUG: "정글", MID: "미드", AD: "원딜", SUP: "서폿" };
@@ -228,7 +227,7 @@ export default function CkBalance() {
         setParams(previous => { const next = new URLSearchParams(previous); next.set("streamerNo", streamer.streamerNo); return next; }, { replace: true });
     };
     const knownName = Number(chosen?.streamerNo) === baseNo ? chosen.streamerName : "";
-    return <SideAdLayout><div className="balance-page">
+    return <div className="balance-page">
         <section className="balance-hero">
             <p className="balance-eyebrow">SOOPLOL BALANCE</p>
             <div className="balance-title-row"><h1>밸런스 찾기</h1><BalanceInfo /></div>
@@ -266,7 +265,7 @@ export default function CkBalance() {
             </section>
             <BalanceResults key={`${baseNo}-${knownName}`} baseNo={baseNo} knownName={knownName} />
         </div>
-    </div></SideAdLayout>;
+    </div>;
 }
 
 function SelectedBase({ baseNo, knownName, knownSoopId }) {

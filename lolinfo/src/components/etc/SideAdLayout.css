@@ -20,10 +20,60 @@
     min-width: 0;
     z-index: 10;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 10px;
     background: linear-gradient(145deg, rgba(52, 58, 64, 0.92), rgba(28, 32, 36, 0.96));
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: width 180ms ease;
+}
+
+.side-ad-layout-ad.is-collapsed {
+    width: 44px;
+    background: linear-gradient(145deg, rgba(19, 1, 68, 0.7), rgba(0, 102, 204, 0.96));
+}
+
+.side-ad-layout-ad.is-collapsed iframe,
+.side-ad-layout-ad.is-collapsed .side-ad-layout-disclosure {
+    display: none;
+}
+
+.side-ad-layout-toggle {
+    position: absolute;
+    top: 50%;
+    right: -1px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 100px;
+    padding: 0;
+    transform: translateY(-50%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px 0 0 6px;
+    background: linear-gradient(145deg, rgba(0, 34, 126, 0.9), rgba(121, 31, 180, 0.96));
+    color: #fcfcfc;
+    cursor: pointer;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.side-ad-layout-ad.is-left .side-ad-layout-toggle {
+    right: -1px;
+}
+
+.side-ad-layout-ad.is-right .side-ad-layout-toggle {
+    right: auto;
+    left: -1px;
+    border-radius: 0 6px 6px 0;
+}
+
+.side-ad-layout-toggle:hover,
+.side-ad-layout-toggle:focus-visible {
+    background: rgba(66, 72, 78, 0.98);
+    outline: 2px solid #8ab4f8;
+    outline-offset: 2px;
 }
 
 .side-ad-layout-ad iframe {
