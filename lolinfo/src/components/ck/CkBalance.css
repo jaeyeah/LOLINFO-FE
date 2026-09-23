@@ -197,8 +197,6 @@ button.balance-match:hover, .balance-match.is-active { background: rgba(13,110,2
 .balance-lane-count { flex: 0 0 auto; color: #cbd5e1; font-size: .58rem; font-variant-numeric: tabular-nums; }
 .balance-lane-progress { display: block; width: 100%; height: 3px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.12); }
 .balance-lane-progress > span { display: block; height: 100%; border-radius: inherit; }
-.balance-lane-progress { display: block; width: 100%; height: 3px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.12); }
-.balance-lane-progress > span { display: block; height: 100%; border-radius: inherit; }
 .balance-lane-date { overflow: hidden; color: #9ca9b8; font-size: .52rem; text-overflow: ellipsis; white-space: nowrap; }
 .balance-lane-empty { margin: auto 0; overflow: hidden; color: #aeb8c5; font-size: .62rem; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
 .balance-flow .react-flow__handle { width: 8px; height: 8px; border: 0; background: transparent; opacity: 0; pointer-events: none; }
