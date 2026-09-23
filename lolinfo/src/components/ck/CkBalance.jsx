@@ -146,11 +146,11 @@ const BalanceGraphNode = memo(function BalanceGraphNode({ data }) {
 });
 
 const BalanceLaneNode = memo(function BalanceLaneNode({ data }) {
-    const { position, rows, loading, onSelect, nodeWidth } = data;
+    const { position, rows, loading, onSelect, nodeWidth, active } = data;
     const targetSide = { TOP: "bottom", JUG: "left", MID: "left", AD: "top", SUP: "right" }[position];
     const targetPosition = { top: Position.Top, right: Position.Right, bottom: Position.Bottom, left: Position.Left }[targetSide];
     return <>
-        <section className="balance-lane-node" style={{ width: nodeWidth }} role="group" aria-label={`${LABELS[position]} 맞라인 상대`}>
+        <section className={`balance-lane-node ${active ? "" : "is-inactive"}`} style={{ width: nodeWidth }} role="group" aria-label={`${LABELS[position]} 맞라인 상대`} aria-disabled={!active}>
         <div className="balance-lane-heading" style={{ "--balance-position-color": POSITION_COLORS[position] }}>
             <strong>{position} <span>{LABELS[position]}</span></strong><span>{rows.length}명</span>
         </div>
@@ -214,7 +214,7 @@ function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
                 id: `balance-lane-${position}`,
                 type: "balanceLane",
                 position: laneLayout[position],
-                data: { position, rows: rowsByPosition[position], loading, onSelect, nodeWidth: laneWidth },
+                data: { position, rows: rowsByPosition[position], loading, onSelect, nodeWidth: laneWidth, active: positionFilter === "ALL" || positionFilter === position },
             }));
             return mobileItems;
         }
@@ -240,7 +240,7 @@ function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
             items.push({ id: balanceNodeId(row), type: "balanceStreamer", position: { x: x - 78, y: y - 56 }, data: { streamer: row, root: false, loading, onSelect } });
         });
         return items;
-    }, [center, isMobileLayout, loading, onSelect, rows, rowsByPosition, size]);
+    }, [center, isMobileLayout, loading, onSelect, positionFilter, rows, rowsByPosition, size]);
 
     const maxCount = useMemo(() => Math.max(1, ...rows.map(row => Number(row.matchCount || 0))), [rows]);
     const edges = useMemo(() => {
@@ -319,6 +319,7 @@ function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
     return <div className="balance-flow" ref={flowRef} aria-label="맞라인 상대 네트워크 그래프">
         <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView fitViewOptions={{ padding: 0.12, minZoom: 0.35, maxZoom: 1 }}
             nodesDraggable={false} nodesConnectable={false} elementsSelectable={false} panOnDrag zoomOnScroll zoomOnPinch
+            preventScrolling={false}
             proOptions={{ hideAttribution: true }}>
         </ReactFlow>
         {loading && <div className="balance-flow-loading" role="status">맞라인 기록을 불러오는 중입니다.</div>}

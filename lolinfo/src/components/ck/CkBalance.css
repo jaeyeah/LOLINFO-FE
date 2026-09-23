@@ -179,7 +179,9 @@ button.balance-match:hover, .balance-match.is-active { background: rgba(13,110,2
 .balance-lane-heading { display: flex; min-height: 16px; align-items: center; justify-content: space-between; gap: .2rem; color: var(--balance-position-color); font-size: .66rem; line-height: 1; }
 .balance-lane-heading strong span { color: #d8dee8; font-weight: 600; }
 .balance-lane-heading > span { color: #ced4da; font-variant-numeric: tabular-nums; }
-.balance-lane-list { display: flex; min-height: 0; flex: 1; flex-direction: column; gap: 1px; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; }
+.balance-lane-list { display: flex; min-height: 0; flex: 1; flex-direction: column; gap: 1px; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: rgba(190,205,222,.55) transparent; touch-action: pan-y pinch-zoom; }
+.balance-lane-node.is-inactive { border-color: rgba(148,163,184,.22); background: rgba(23,28,36,.88); box-shadow: none; filter: grayscale(.72); opacity: .48; }
+.balance-lane-node.is-inactive .balance-lane-heading { color: #8792a0 !important; }
 .balance-lane-list button { display: flex; width: 100%; min-height: 28px; flex: 0 0 28px; align-items: center; gap: .2rem; overflow: hidden; padding: 0 .08rem; border: 0; border-radius: .25rem; background: transparent; color: #f1f3f5; text-align: left; cursor: pointer; }
 .balance-lane-list button:hover:not(:disabled) { background: rgba(117,182,255,.18); }
 .balance-lane-list button:disabled { cursor: wait; opacity: .6; }
