@@ -1,5 +1,7 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { ReactFlow, ReactFlowProvider, useReactFlow } from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 import axios from "../../utils/axios";
 import "./CkBalance.css";
 import { buildProfileUrl } from "../../utils/profileUrl";
@@ -7,7 +9,11 @@ import { FaInfoCircle, FaTimes } from "react-icons/fa";
 
 const POSITIONS = ["TOP", "JUG", "MID", "AD", "SUP"];
 const LABELS = { TOP: "탑", JUG: "정글", MID: "미드", AD: "원딜", SUP: "서폿" };
-const emptyRequest = { status: "loading", rows: [] };
+const POSITION_COLORS = { TOP: "#ff6b6b", JUG: "#69db7c", MID: "#4dabf7", AD: "#ffa94d", SUP: "#da77f2" };
+
+function getBalanceRequestKey(streamerNo, position, baseNo) {
+    return `${streamerNo}:${position || "ALL"}:${baseNo}`;
+}
 
 function BalanceInfo() {
     const [open, setOpen] = useState(false);
@@ -49,7 +55,7 @@ function BalanceInfo() {
                 <li>기준 스트리머를 검색하면 SOOPLOL에 등록된 CK 기록을 바탕으로 라인별 맞라인 상대를 확인할 수 있습니다.</li>
                 <li>스트리머 상세에서 이동하면 해당 스트리머가 자동으로 검색된 상태로 시작합니다.</li>
                 <li>라인 버튼을 누르면 원하는 포지션의 상대만 필터링할 수 있습니다.</li>
-                <li>상대를 선택하면 기준 스트리머와 다른 해당 스트리머의 선택 라인 맞라인 전적이 오른쪽에 표시됩니다.</li>
+                <li>상대를 선택하면 해당 스트리머를 그래프 중심으로 옮겨 다음 맞라인 상대를 탐색할 수 있습니다.</li>
             </ol>
             <strong className="balance-info-subtitle">기대되는 점</strong>
             <ul>
@@ -92,7 +98,7 @@ function MatchRow({ row, onClick, active = false }) {
     const rateColor = getWinRateColor(winRate);
     const content = <span className="balance-match-content">
         <span className="balance-match-left">
-            <span className="balance-person"><ProfileImage soopId={row.opponentSoopId} /><strong>{row.opponentName}</strong></span>
+            <span className="balance-person"><ProfileImage soopId={row.opponentSoopId} /><strong>{row.opponentName}</strong><span className="balance-match-position">{LABELS[row.position] || row.position}</span></span>
             <span className="balance-meta">{Number(row.matchCount).toLocaleString("ko-KR")}경기 · 최근 {row.lastMatchDate?.slice(0, 10) || "날짜 없음"}</span>
         </span>
         <span className="balance-match-right">
@@ -110,85 +116,205 @@ function MatchRow({ row, onClick, active = false }) {
         : <div className="balance-match">{content}</div>;
 }
 
-function ExpandedMatches({ baseNo, selected }) {
-    const [result, setResult] = useState(emptyRequest);
-    useEffect(() => {
-        const controller = new AbortController();
-        axios.get("/ck/balance", {
-            params: { streamerNo: selected.opponentNo, position: selected.position, baseStreamerNo: baseNo },
-            signal: controller.signal,
-        }).then(({ data }) => {
-            if (!Array.isArray(data)) throw new Error("Invalid response");
-            if (!controller.signal.aborted) setResult({ status: "ready", rows: data });
-        }).catch(() => {
-            if (!controller.signal.aborted) setResult({ status: "error", rows: [] });
-        });
-        return () => controller.abort();
-    }, [baseNo, selected.opponentNo, selected.position]);
-    return <>
-        <p className="balance-selected"><ProfileImage soopId={selected.opponentSoopId} />{selected.opponentName} <span className="badge bg-primary">{LABELS[selected.position]} · {selected.position}</span></p>
-        {result.status === "loading" && <p role="status">맞라인 기록을 불러오는 중입니다.</p>}
-        {result.status === "error" && <p role="alert" className="text-danger">기록을 불러오지 못했습니다. 상대를 다시 선택해주세요.</p>}
-        {result.status === "ready" && (result.rows.length
-            ? result.rows.map(row => <MatchRow key={`${row.opponentNo}-${row.position}`} row={row} />)
-            : <p className="balance-muted">기준 스트리머를 제외한 맞라인 기록이 없습니다.</p>)}
+const BalanceGraphNode = memo(function BalanceGraphNode({ data }) {
+    const { streamer, root, loading, onSelect } = data;
+    const name = root ? streamer.streamerName : streamer.opponentName;
+    const soopId = root ? streamer.streamerSoopId : streamer.opponentSoopId;
+    const label = root ? "기준 스트리머" : `${name}, ${LABELS[streamer.position] || streamer.position}, ${Number(streamer.matchCount || 0)}경기`;
+    const content = <>
+        <ProfileImage soopId={soopId} />
+        <strong className="balance-node-name" title={name}>{name || `스트리머 #${streamer.streamerNo || streamer.opponentNo}`}</strong>
+        {root ? <span className="balance-node-tag">기준 스트리머</span> : <>
+            <span className="balance-node-tag" style={{ "--balance-position-color": POSITION_COLORS[streamer.position] || "#adb5bd" }}>{LABELS[streamer.position] || streamer.position} · {streamer.position}</span>
+            <span className="balance-node-meta">{Number(streamer.matchCount || 0).toLocaleString("ko-KR")}전 · {streamer.lastMatchDate?.toString().slice(0, 10) || "날짜 없음"}</span>
+        </>}
     </>;
+    return root
+        ? <div className="balance-node balance-node-root" role="img" aria-label={label}>{content}</div>
+        : <button type="button" className="balance-node balance-node-opponent" aria-label={label} disabled={loading}
+            onClick={event => { event.stopPropagation(); onSelect(streamer); }}>{content}</button>;
+});
+
+const nodeTypes = { balanceStreamer: BalanceGraphNode };
+
+function balanceNodeId(row) {
+    return `${row.opponentNo}-${row.position}`;
 }
 
-function BalanceResults({ baseNo, knownName }) {
-    const [result, setResult] = useState(emptyRequest);
-    const [selected, setSelected] = useState(null);
-    const [selectionVersion, setSelectionVersion] = useState(0);
-    const [retry, setRetry] = useState(0);
-    const [expandedPositions, setExpandedPositions] = useState({});
-    const [positionFilter, setPositionFilter] = useState("ALL");
+function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
+    const flowRef = useRef(null);
+    const { fitView } = useReactFlow();
+    const [size, setSize] = useState({ width: 900, height: 560 });
     useEffect(() => {
+        const element = flowRef.current;
+        if (!element) return undefined;
+        const observer = new ResizeObserver(([entry]) => {
+            const { width, height } = entry.contentRect;
+            if (width && height) setSize({ width, height });
+        });
+        observer.observe(element);
+        return () => observer.disconnect();
+    }, []);
+
+    const nodes = useMemo(() => {
+        const { width, height } = size;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const outer = Math.max(1, rows.length);
+        const xRadius = Math.max(170, Math.min(width * 0.36, 320));
+        const yRadius = Math.max(145, Math.min(height * 0.35, 230));
+        const items = [{ id: "balance-center", type: "balanceStreamer", position: { x: centerX - 96, y: centerY - 76 }, data: { streamer: center, root: true, loading, onSelect } }];
+        rows.forEach((row, index) => {
+            let angle;
+            let ring = 0;
+            if (outer === 1) angle = 0;
+            else if (outer === 2) angle = index === 0 ? Math.PI : 0;
+            else if (outer <= 8) angle = (2 * Math.PI * index) / outer - Math.PI / 2;
+            else {
+                const innerCount = Math.ceil(outer / 2);
+                ring = index >= innerCount ? 1 : 0;
+                const count = ring ? outer - innerCount : innerCount;
+                const ringIndex = ring ? index - innerCount : index;
+                angle = (2 * Math.PI * ringIndex) / count - Math.PI / 2 + (ring ? Math.PI / count : 0);
+            }
+            const multiplier = ring ? 1.55 : 1;
+            const x = centerX + Math.cos(angle) * xRadius * multiplier;
+            const y = centerY + Math.sin(angle) * yRadius * multiplier;
+            items.push({ id: balanceNodeId(row), type: "balanceStreamer", position: { x: x - 78, y: y - 56 }, data: { streamer: row, root: false, loading, onSelect } });
+        });
+        return items;
+    }, [center, loading, onSelect, rows, size]);
+
+    const maxCount = useMemo(() => Math.max(1, ...rows.map(row => Number(row.matchCount || 0))), [rows]);
+    const edges = useMemo(() => rows.map(row => {
+        const matchCount = Number(row.matchCount || 0);
+        const width = 1.5 + (Math.log1p(matchCount) / Math.log1p(maxCount)) * 3.5;
+        const color = POSITION_COLORS[row.position] || "#adb5bd";
+        return {
+            id: `edge-${balanceNodeId(row)}`,
+            source: "balance-center",
+            target: balanceNodeId(row),
+            type: "straight",
+            label: `${matchCount}전`,
+            style: { stroke: color, strokeWidth: width, opacity: 0.8 },
+            labelStyle: { fill: "#f8f9fa", fontWeight: 700, fontSize: 12 },
+            labelBgStyle: { fill: "#15191f", fillOpacity: 0.94 },
+            labelBgPadding: [5, 3],
+            labelBgBorderRadius: 4,
+            selectable: false,
+        };
+    }), [maxCount, rows]);
+
+    useEffect(() => {
+        const frame = requestAnimationFrame(() => fitView({ padding: 0.12, duration: 180, minZoom: 0.35, maxZoom: 1 }));
+        return () => cancelAnimationFrame(frame);
+    }, [fitView, nodes, edges, positionFilter]);
+
+    return <div className="balance-flow" ref={flowRef} aria-label="맞라인 상대 네트워크 그래프">
+        <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView fitViewOptions={{ padding: 0.12, minZoom: 0.35, maxZoom: 1 }}
+            nodesDraggable={false} nodesConnectable={false} elementsSelectable={false} panOnDrag zoomOnScroll zoomOnPinch
+            proOptions={{ hideAttribution: true }}>
+        </ReactFlow>
+        {loading && <div className="balance-flow-loading" role="status">맞라인 기록을 불러오는 중입니다.</div>}
+    </div>;
+}
+
+function BalanceResults({ baseNo, knownName, knownSoopId }) {
+    const [rows, setRows] = useState([]);
+    const [status, setStatus] = useState("loading");
+    const [center, setCenter] = useState({ streamerNo: baseNo, streamerName: knownName, streamerSoopId: knownSoopId });
+    const [view, setView] = useState("graph");
+    const [positionFilter, setPositionFilter] = useState("ALL");
+    const [requestTarget, setRequestTarget] = useState({ target: { streamerNo: baseNo, streamerName: knownName, streamerSoopId: knownSoopId }, position: null });
+    const requestRef = useRef(null);
+    const requestIdRef = useRef(0);
+    const cacheRef = useRef(new Map());
+    const root = useMemo(() => ({ streamerNo: baseNo, streamerName: knownName || `스트리머 #${baseNo}`, streamerSoopId: knownSoopId }), [baseNo, knownName, knownSoopId]);
+    const rootRef = useRef(root);
+    rootRef.current = root;
+    const load = useCallback(async (target, position) => {
         if (!baseNo) return;
+        const streamerNo = Number(target.streamerNo || target.opponentNo);
+        const key = getBalanceRequestKey(streamerNo, position, baseNo);
+        const nextCenter = { streamerNo, streamerName: target.streamerName || target.opponentName, streamerSoopId: target.streamerSoopId || target.opponentSoopId, position };
+        setRequestTarget({ target: nextCenter, position });
+        requestRef.current?.abort();
+        const requestId = ++requestIdRef.current;
+        if (cacheRef.current.has(key)) {
+            setCenter(nextCenter);
+            setRows(cacheRef.current.get(key));
+            setStatus("ready");
+            return;
+        }
         const controller = new AbortController();
-        axios.get("/ck/balance", { params: { streamerNo: baseNo }, signal: controller.signal })
-            .then(({ data }) => {
-                if (!Array.isArray(data)) throw new Error("Invalid response");
-                if (!controller.signal.aborted) setResult({ status: "ready", rows: data });
-            }).catch(() => {
-                if (!controller.signal.aborted) setResult({ status: "error", rows: [] });
-            });
-        return () => controller.abort();
-    }, [baseNo, knownName, retry]);
-    const visiblePositions = positionFilter === "ALL" ? POSITIONS : [positionFilter];
+        requestRef.current = controller;
+        setStatus("loading");
+        try {
+            const params = { streamerNo };
+            if (position) params.position = position;
+            if (streamerNo !== baseNo) params.baseStreamerNo = baseNo;
+            const { data } = await axios.get("/ck/balance", { params, signal: controller.signal });
+            if (!Array.isArray(data)) throw new Error("Invalid response");
+            if (controller.signal.aborted || requestId !== requestIdRef.current) return;
+            cacheRef.current.set(key, data);
+            setCenter(nextCenter);
+            setRows(data);
+            setStatus("ready");
+        } catch {
+            if (controller.signal.aborted || requestId !== requestIdRef.current) return;
+            setStatus("error");
+        }
+    }, [baseNo]);
+
+    useEffect(() => {
+        setStatus("loading");
+        load(rootRef.current, null);
+        return () => requestRef.current?.abort();
+    }, [baseNo, load]);
+
+    const filteredRows = useMemo(() => positionFilter === "ALL" ? rows : rows.filter(row => row.position === positionFilter), [positionFilter, rows]);
+    const onSelect = useCallback(row => {
+        if (status === "loading") return;
+        setPositionFilter("ALL");
+        load({ streamerNo: row.opponentNo, streamerName: row.opponentName, streamerSoopId: row.opponentSoopId }, row.position);
+    }, [load, status]);
+    const goToRoot = useCallback(() => {
+        setPositionFilter("ALL");
+        load(root, null);
+    }, [load, root]);
+    const retry = useCallback(() => load(requestTarget.target, requestTarget.position), [load, requestTarget]);
+    const listRows = useMemo(() => POSITIONS.flatMap(position => filteredRows.filter(row => row.position === position)), [filteredRows]);
+    const displayCenter = Number(center.streamerNo) === Number(baseNo) ? root : center;
+    if (!baseNo) return <section className="balance-panel balance-results-panel"><h2><span>2</span> 맞라인 네트워크</h2><p className="balance-muted">기준 스트리머를 선택하면 맞라인 기록이 표시됩니다.</p></section>;
     return <>
-        <section className="balance-panel" aria-labelledby="balance-opponents">
-            <h2 id="balance-opponents"><span>2</span> 맞라인 상대</h2>
-            {baseNo && <div className="balance-selected-wrap">
-                <p className="balance-selected">기준: {knownName || `스트리머 #${baseNo}`}</p>
+        <section className="balance-panel balance-results-panel" aria-labelledby="balance-opponents">
+            <div className="balance-results-heading">
+                <div><h2 id="balance-opponents"><span>2</span> 맞라인 네트워크</h2>
+                    <p className="balance-muted">상대 노드를 선택하면 해당 스트리머를 중심으로 맞라인을 탐색합니다.</p></div>
+                <div className="balance-view-toggle" role="group" aria-label="결과 보기 방식">
+                    <button type="button" className={view === "graph" ? "is-active" : ""} aria-pressed={view === "graph"} onClick={() => setView("graph")}>그래프 보기</button>
+                    <button type="button" className={view === "list" ? "is-active" : ""} aria-pressed={view === "list"} onClick={() => setView("list")}>목록 보기</button>
+                </div>
+            </div>
+            <div className="balance-selected-wrap">
+                <div className="balance-current-center"><span className="balance-muted">현재 기준</span><strong>{displayCenter.streamerName || root.streamerName}</strong>
+                    {Number(displayCenter.streamerNo) !== Number(baseNo) && <button type="button" className="balance-back-button" onClick={goToRoot} disabled={status === "loading"}>처음 기준으로 돌아가기</button>}
+                </div>
                 <div className="balance-position-filter" aria-label="맞라인 포지션 필터">
                     <button type="button" className={`balance-filter-button ${positionFilter === "ALL" ? "is-active" : ""}`} onClick={() => setPositionFilter("ALL")}>전체</button>
                     {POSITIONS.map(position => <button key={position} type="button" className={`balance-filter-button ${positionFilter === position ? "is-active" : ""}`} onClick={() => setPositionFilter(position)}>{LABELS[position]}</button>)}
                 </div>
+            </div>
+            {status === "error" && <div className="balance-error" role="alert"><span>맞라인 기록을 불러오지 못했습니다.</span><button type="button" className="btn btn-outline-light btn-sm" onClick={retry}>다시 시도</button></div>}
+            {status === "ready" && !filteredRows.length && <p className="balance-empty">{rows.length ? "선택한 포지션에서 확인된 맞라인 상대가 없습니다." : "등록된 맞라인 기록이 없습니다."}</p>}
+            {view === "graph" && filteredRows.length > 0 && <>
+                <div className="balance-flow-legend" aria-label="포지션별 연결선 범례">{POSITIONS.map(position => <span key={position}><i style={{ background: POSITION_COLORS[position] }} />{LABELS[position]}</span>)}</div>
+                <ReactFlowProvider><BalanceFlow center={displayCenter} rows={filteredRows} loading={status === "loading"} onSelect={onSelect} positionFilter={positionFilter} /></ReactFlowProvider>
+            </>}
+            {view === "list" && <div className="balance-list-results">
+                {status === "loading" && <p className="balance-muted" role="status">맞라인 기록을 불러오는 중입니다.</p>}
+                {listRows.map(row => <MatchRow key={balanceNodeId(row)} row={row} onClick={() => onSelect(row)} />)}
             </div>}
-            {!baseNo ? <p className="balance-muted">기준 스트리머를 선택해주세요.</p>
-                : result.status === "loading" ? <p role="status">맞라인 기록을 불러오는 중입니다.</p>
-                : result.status === "error" ? <div role="alert"><p className="text-danger">기록을 불러오지 못했습니다.</p><button type="button" className="btn btn-outline-light btn-sm" onClick={() => { setResult(emptyRequest); setRetry(value => value + 1); }}>다시 시도</button></div>
-                : result.rows.length === 0 ? <p className="balance-muted">등록된 맞라인 기록이 없습니다.</p>
-                : visiblePositions.map(position => {
-                    const rows = result.rows.filter(row => row.position === position);
-                    const visibleRows = expandedPositions[position] ? rows : rows.slice(0, 5);
-                    return <section className="balance-position" key={position}>
-                        <h3>{position} <span>{LABELS[position]}</span></h3>
-                        {rows.length ? <>
-                            {visibleRows.map(row => <MatchRow key={`${row.opponentNo}-${position}`} row={row}
-                                active={selected?.opponentNo === row.opponentNo && selected?.position === position}
-                                onClick={() => { setSelected(row); setSelectionVersion(value => value + 1); }} />)}
-                            {rows.length > 5 && <button type="button" className="balance-more-button" onClick={() => {
-                                setExpandedPositions(previous => ({ ...previous, [position]: !previous[position] }));
-                            }}>{expandedPositions[position] ? "접기" : "더보기"}</button>}
-                        </> : <p className="balance-muted">맞라인 기록이 없습니다.</p>}
-                    </section>;
-                })}
-        </section>
-        <section className="balance-panel" aria-labelledby="balance-expanded">
-            <h2 id="balance-expanded"><span>3</span> 선택 상대의 맞라인</h2>
-            {selected ? <ExpandedMatches key={`${baseNo}-${selected.opponentNo}-${selected.position}-${selectionVersion}`} baseNo={baseNo} selected={selected} />
-                : <p className="balance-muted">맞라인 상대를 선택해주세요.</p>}
         </section>
     </>;
 }
@@ -198,11 +324,17 @@ export default function CkBalance() {
     const rawNo = params.get("streamerNo");
     const baseNo = /^[1-9]\d*$/.test(rawNo || "") && Number.isSafeInteger(Number(rawNo)) ? Number(rawNo) : null;
     const [chosen, setChosen] = useState(null);
+    const [resolvedBase, setResolvedBase] = useState(null);
     const [keyword, setKeyword] = useState("");
     const [search, setSearch] = useState({ status: "idle", rows: [] });
     const [searchOpen, setSearchOpen] = useState(false);
     const [highlight, setHighlight] = useState(-1);
     const trimmed = keyword.trim();
+    const knownName = Number(chosen?.streamerNo) === baseNo ? chosen.streamerName : resolvedBase?.streamerNo === baseNo ? resolvedBase.streamerName : "";
+    const knownSoopId = Number(chosen?.streamerNo) === baseNo ? chosen.streamerSoopId : resolvedBase?.streamerNo === baseNo ? resolvedBase.streamerSoopId : null;
+    const handleBaseResolved = useCallback((streamerName, streamerSoopId) => {
+        setResolvedBase({ streamerNo: baseNo, streamerName, streamerSoopId });
+    }, [baseNo]);
     // 기존 스트리머 자동완성 API/필드 및 300ms debounce를 재사용한다.
     useEffect(() => {
         if (!searchOpen || !trimmed) return;
@@ -226,7 +358,6 @@ export default function CkBalance() {
         setSearch({ status: "idle", rows: [] });
         setParams(previous => { const next = new URLSearchParams(previous); next.set("streamerNo", streamer.streamerNo); return next; }, { replace: true });
     };
-    const knownName = Number(chosen?.streamerNo) === baseNo ? chosen.streamerName : "";
     return <div className="balance-page">
         <section className="balance-hero">
             <p className="balance-eyebrow">SOOPLOL BALANCE</p>
@@ -261,23 +392,28 @@ export default function CkBalance() {
                     {search.status === "loading" ? "검색 중입니다." : search.status === "error" ? "검색에 실패했습니다. 이름을 다시 입력해주세요." : search.status === "ready" && !search.rows.length ? "검색 결과가 없습니다." : null}
                 </div>}
                 {rawNo && !baseNo && <p className="text-danger" role="alert">스트리머 번호가 올바르지 않습니다. 이름으로 다시 선택해주세요.</p>}
-                {baseNo && <SelectedBase key={`${baseNo}-${knownName}`} baseNo={baseNo} knownName={knownName} knownSoopId={chosen?.streamerNo && Number(chosen.streamerNo) === baseNo ? chosen.streamerSoopId : null} />}
+                {baseNo && <SelectedBase key={`${baseNo}-${knownName}`} baseNo={baseNo} knownName={knownName} knownSoopId={knownSoopId} onResolved={handleBaseResolved} />}
             </section>
-            <BalanceResults key={`${baseNo}-${knownName}`} baseNo={baseNo} knownName={knownName} />
+            <BalanceResults key={baseNo} baseNo={baseNo} knownName={knownName} knownSoopId={knownSoopId} />
         </div>
     </div>;
 }
 
-function SelectedBase({ baseNo, knownName, knownSoopId }) {
+function SelectedBase({ baseNo, knownName, knownSoopId, onResolved }) {
     const [name, setName] = useState(knownName);
     const [soopId, setSoopId] = useState(knownSoopId);
     useEffect(() => {
         if (knownName && knownSoopId) return;
         const controller = new AbortController();
         axios.get(`/streamer/${baseNo}`, { signal: controller.signal }).then(({ data }) => {
-            if (!controller.signal.aborted) { setName(data.streamerName || "이름 확인 불가"); setSoopId(data.streamerSoopId); }
+            if (!controller.signal.aborted) {
+                const resolvedName = data.streamerName || "이름 확인 불가";
+                setName(resolvedName);
+                setSoopId(data.streamerSoopId);
+                onResolved(resolvedName, data.streamerSoopId);
+            }
         }).catch(() => { if (!controller.signal.aborted) setName("이름을 불러오지 못했습니다."); });
         return () => controller.abort();
-    }, [baseNo, knownName, knownSoopId]);
+    }, [baseNo, knownName, knownSoopId, onResolved]);
     return <div className="balance-base-selection"><span className="balance-muted">선택한 스트리머</span><span className="balance-person"><ProfileImage soopId={soopId} /><strong>{name || "이름 확인 중…"}</strong></span></div>;
 }
