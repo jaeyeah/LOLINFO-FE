@@ -163,11 +163,10 @@ button.balance-match:hover, .balance-match.is-active { background: rgba(13,110,2
   .balance-results-heading { align-items: flex-start; flex-direction: column; }
   .balance-view-toggle { align-self: flex-end; }
   .balance-view-toggle button { min-height: 42px; }
-  .balance-flow { height: 490px; }
   .balance-flow-legend { gap: .4rem .65rem; }
   .balance-flow-legend span { font-size: .75rem; }
-  .balance-node { width: 144px; min-height: 106px; padding: .45rem; }
-  .balance-node-root { width: 170px; min-height: 140px; }
+  .balance-node { width: 128px; min-height: 100px; padding: .4rem; }
+  .balance-node-root { width: 160px; min-height: 136px; }
   .balance-node-name { font-size: .78rem; }
   .balance-node-root .balance-node-name { font-size: .9rem; }
   .balance-node-meta { font-size: .62rem; }

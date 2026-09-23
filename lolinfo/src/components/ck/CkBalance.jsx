@@ -117,7 +117,7 @@ function MatchRow({ row, onClick, active = false }) {
 }
 
 const BalanceGraphNode = memo(function BalanceGraphNode({ data }) {
-    const { streamer, root, loading, onSelect } = data;
+    const { streamer, root, loading, onSelect, nodeWidth } = data;
     const name = root ? streamer.streamerName : streamer.opponentName;
     const soopId = root ? streamer.streamerSoopId : streamer.opponentSoopId;
     const label = root ? "기준 스트리머" : `${name}, ${LABELS[streamer.position] || streamer.position}, ${Number(streamer.matchCount || 0)}경기`;
@@ -130,8 +130,8 @@ const BalanceGraphNode = memo(function BalanceGraphNode({ data }) {
         </>}
     </>;
     return root
-        ? <div className="balance-node balance-node-root" role="img" aria-label={label}>{content}</div>
-        : <button type="button" className="balance-node balance-node-opponent" aria-label={label} disabled={loading}
+        ? <div className="balance-node balance-node-root" style={nodeWidth ? { width: nodeWidth } : undefined} role="img" aria-label={label}>{content}</div>
+        : <button type="button" className="balance-node balance-node-opponent" style={nodeWidth ? { width: nodeWidth } : undefined} aria-label={label} disabled={loading}
             onClick={event => { event.stopPropagation(); onSelect(streamer); }}>{content}</button>;
 });
 
@@ -155,12 +155,31 @@ function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
         observer.observe(element);
         return () => observer.disconnect();
     }, []);
+    const isMobileLayout = size.width < 576;
+    const mobileGraphHeight = Math.max(430, 382 + Math.max(0, Math.ceil(rows.length / 2) - 1) * 138);
 
     const nodes = useMemo(() => {
         const { width, height } = size;
         const centerX = width / 2;
         const centerY = height / 2;
         const outer = Math.max(1, rows.length);
+        if (isMobileLayout) {
+            const rootWidth = Math.min(160, width - 32);
+            const opponentWidth = Math.max(96, Math.min(128, width / 2 - 18));
+            const mobileItems = [{ id: "balance-center", type: "balanceStreamer", position: { x: centerX - rootWidth / 2, y: 44 }, data: { streamer: center, root: true, loading, onSelect, nodeWidth: rootWidth } }];
+            rows.forEach((row, index) => {
+                const rowIndex = Math.floor(index / 2);
+                const isLastSingle = outer % 2 === 1 && index === outer - 1 && outer > 1;
+                const nodeCenterX = outer === 1 || isLastSingle ? centerX : index % 2 === 0 ? width / 4 : (width * 3) / 4;
+                mobileItems.push({
+                    id: balanceNodeId(row),
+                    type: "balanceStreamer",
+                    position: { x: nodeCenterX - opponentWidth / 2, y: 226 + rowIndex * 138 },
+                    data: { streamer: row, root: false, loading, onSelect, nodeWidth: opponentWidth },
+                });
+            });
+            return mobileItems;
+        }
         const xRadius = Math.max(170, Math.min(width * 0.36, 320));
         const yRadius = Math.max(145, Math.min(height * 0.35, 230));
         const items = [{ id: "balance-center", type: "balanceStreamer", position: { x: centerX - 96, y: centerY - 76 }, data: { streamer: center, root: true, loading, onSelect } }];
@@ -183,7 +202,7 @@ function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
             items.push({ id: balanceNodeId(row), type: "balanceStreamer", position: { x: x - 78, y: y - 56 }, data: { streamer: row, root: false, loading, onSelect } });
         });
         return items;
-    }, [center, loading, onSelect, rows, size]);
+    }, [center, isMobileLayout, loading, onSelect, rows, size]);
 
     const maxCount = useMemo(() => Math.max(1, ...rows.map(row => Number(row.matchCount || 0))), [rows]);
     const edges = useMemo(() => rows.map(row => {
@@ -210,7 +229,8 @@ function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
         return () => cancelAnimationFrame(frame);
     }, [fitView, nodes, edges, positionFilter]);
 
-    return <div className="balance-flow" ref={flowRef} aria-label="맞라인 상대 네트워크 그래프">
+    return <div className="balance-flow" ref={flowRef} aria-label="맞라인 상대 네트워크 그래프"
+        style={isMobileLayout ? { height: `${mobileGraphHeight}px` } : undefined}>
         <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView fitViewOptions={{ padding: 0.12, minZoom: 0.35, maxZoom: 1 }}
             nodesDraggable={false} nodesConnectable={false} elementsSelectable={false} panOnDrag zoomOnScroll zoomOnPinch
             proOptions={{ hideAttribution: true }}>
