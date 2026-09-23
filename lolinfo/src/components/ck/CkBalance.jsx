@@ -165,7 +165,10 @@ const BalanceLaneNode = memo(function BalanceLaneNode({ data }) {
                 </span>
             </button>)}
         </div> : <p className="balance-lane-empty">맞라인 상대 없음</p>}
-        {totalCount > rows.length && <button type="button" className="balance-lane-more nowheel nopan" onClick={event => { event.stopPropagation(); onShowMore(position); }}>
+        {totalCount > rows.length && <button type="button" className="balance-lane-more nowheel nopan"
+            aria-label={`${LABELS[position]} 포지션의 나머지 ${totalCount - rows.length}명 전체 보기`}
+            onPointerDown={event => event.stopPropagation()}
+            onClick={event => { event.stopPropagation(); onShowMore(position); }}>
             나머지 {totalCount - rows.length}명 더보기
         </button>}
         </section>
@@ -209,9 +212,9 @@ function BalanceFlow({ center, rows, loading, onSelect, onShowMore, positionFilt
             const laneLayout = {
                 TOP: { x: sideX.center, y: 0 },
                 JUG: { x: sideX.right, y: 30 },
-                MID: { x: sideX.right, y: 420 },
-                AD: { x: sideX.center, y: 490 },
-                SUP: { x: sideX.left, y: 420 },
+                MID: { x: sideX.right, y: 448 },
+                AD: { x: sideX.center, y: 510 },
+                SUP: { x: sideX.left, y: 448 },
             };
             POSITIONS.forEach(position => mobileItems.push({
                 id: `balance-lane-${position}`,
@@ -321,7 +324,7 @@ function BalanceFlow({ center, rows, loading, onSelect, onShowMore, positionFilt
 
     return <div className="balance-flow" ref={flowRef} aria-label="맞라인 상대 네트워크 그래프">
         <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView fitViewOptions={{ padding: 0.12, minZoom: 0.35, maxZoom: 1 }}
-            nodesDraggable={false} nodesConnectable={false} elementsSelectable={false} panOnDrag zoomOnScroll zoomOnPinch
+            nodesDraggable={false} nodesConnectable={false} elementsSelectable={false} panOnDrag={!isMobileLayout} zoomOnScroll={!isMobileLayout} zoomOnPinch
             preventScrolling={false}
             proOptions={{ hideAttribution: true }}>
         </ReactFlow>
