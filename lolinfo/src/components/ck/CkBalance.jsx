@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ReactFlow, ReactFlowProvider, useReactFlow } from "@xyflow/react";
+import { Handle, Position, ReactFlow, ReactFlowProvider, useReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import axios from "../../utils/axios";
 import "./CkBalance.css";
@@ -129,13 +129,48 @@ const BalanceGraphNode = memo(function BalanceGraphNode({ data }) {
             <span className="balance-node-meta">{Number(streamer.matchCount || 0).toLocaleString("ko-KR")}전 · {streamer.lastMatchDate?.toString().slice(0, 10) || "날짜 없음"}</span>
         </>}
     </>;
-    return root
-        ? <div className="balance-node balance-node-root" style={nodeWidth ? { width: nodeWidth } : undefined} role="img" aria-label={label}>{content}</div>
-        : <button type="button" className="balance-node balance-node-opponent" style={nodeWidth ? { width: nodeWidth } : undefined} aria-label={label} disabled={loading}
-            onClick={event => { event.stopPropagation(); onSelect(streamer); }}>{content}</button>;
+    return root ? <>
+        <div className="balance-node balance-node-root" style={nodeWidth ? { width: nodeWidth } : undefined} role="img" aria-label={label}>{content}</div>
+        <Handle id="source-top" type="source" position={Position.Top} isConnectable={false} />
+        <Handle id="source-right" type="source" position={Position.Right} isConnectable={false} />
+        <Handle id="source-bottom" type="source" position={Position.Bottom} isConnectable={false} />
+        <Handle id="source-left" type="source" position={Position.Left} isConnectable={false} />
+    </> : <>
+        <button type="button" className="balance-node balance-node-opponent" style={nodeWidth ? { width: nodeWidth } : undefined} aria-label={label} disabled={loading}
+            onClick={event => { event.stopPropagation(); onSelect(streamer); }}>{content}</button>
+        <Handle id="target-top" type="target" position={Position.Top} isConnectable={false} />
+        <Handle id="target-right" type="target" position={Position.Right} isConnectable={false} />
+        <Handle id="target-bottom" type="target" position={Position.Bottom} isConnectable={false} />
+        <Handle id="target-left" type="target" position={Position.Left} isConnectable={false} />
+    </>;
 });
 
-const nodeTypes = { balanceStreamer: BalanceGraphNode };
+const BalanceLaneNode = memo(function BalanceLaneNode({ data }) {
+    const { position, rows, loading, onSelect, nodeWidth } = data;
+    const targetSide = { TOP: "bottom", JUG: "left", MID: "left", AD: "top", SUP: "right" }[position];
+    const targetPosition = { top: Position.Top, right: Position.Right, bottom: Position.Bottom, left: Position.Left }[targetSide];
+    return <>
+        <section className="balance-lane-node" style={{ width: nodeWidth }} role="group" aria-label={`${LABELS[position]} 맞라인 상대`}>
+        <div className="balance-lane-heading" style={{ "--balance-position-color": POSITION_COLORS[position] }}>
+            <strong>{position} <span>{LABELS[position]}</span></strong><span>{rows.length}명</span>
+        </div>
+        {rows.length ? <div className="balance-lane-list nowheel nopan">
+            {rows.map(row => <button type="button" key={balanceNodeId(row)} disabled={loading}
+                aria-label={`${row.opponentName}, ${LABELS[position]}, ${Number(row.matchCount || 0)}경기, 최근 ${row.lastMatchDate?.toString().slice(0, 10) || "날짜 없음"}`}
+                onClick={event => { event.stopPropagation(); onSelect(row); }}>
+                <ProfileImage soopId={row.opponentSoopId} />
+                <span className="balance-lane-details">
+                    <span className="balance-lane-main"><span className="balance-lane-name" title={row.opponentName}>{row.opponentName}</span><span className="balance-lane-count">{Number(row.matchCount || 0)}전</span></span>
+                    <span className="balance-lane-date">최근 {row.lastMatchDate?.toString().slice(0, 10) || "날짜 없음"}</span>
+                </span>
+            </button>)}
+        </div> : <p className="balance-lane-empty">맞라인 상대 없음</p>}
+        </section>
+        <Handle id={`target-${targetSide}`} type="target" position={targetPosition} isConnectable={false} />
+    </>;
+});
+
+const nodeTypes = { balanceStreamer: BalanceGraphNode, balanceLane: BalanceLaneNode };
 
 function balanceNodeId(row) {
     return `${row.opponentNo}-${row.position}`;
@@ -156,7 +191,7 @@ function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
         return () => observer.disconnect();
     }, []);
     const isMobileLayout = size.width < 576;
-    const mobileGraphHeight = Math.max(430, 382 + Math.max(0, Math.ceil(rows.length / 2) - 1) * 138);
+    const rowsByPosition = useMemo(() => Object.fromEntries(POSITIONS.map(position => [position, rows.filter(row => row.position === position)])), [rows]);
 
     const nodes = useMemo(() => {
         const { width, height } = size;
@@ -164,20 +199,23 @@ function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
         const centerY = height / 2;
         const outer = Math.max(1, rows.length);
         if (isMobileLayout) {
-            const rootWidth = Math.min(160, width - 32);
-            const opponentWidth = Math.max(96, Math.min(128, width / 2 - 18));
-            const mobileItems = [{ id: "balance-center", type: "balanceStreamer", position: { x: centerX - rootWidth / 2, y: 44 }, data: { streamer: center, root: true, loading, onSelect, nodeWidth: rootWidth } }];
-            rows.forEach((row, index) => {
-                const rowIndex = Math.floor(index / 2);
-                const isLastSingle = outer % 2 === 1 && index === outer - 1 && outer > 1;
-                const nodeCenterX = outer === 1 || isLastSingle ? centerX : index % 2 === 0 ? width / 4 : (width * 3) / 4;
-                mobileItems.push({
-                    id: balanceNodeId(row),
-                    type: "balanceStreamer",
-                    position: { x: nodeCenterX - opponentWidth / 2, y: 226 + rowIndex * 138 },
-                    data: { streamer: row, root: false, loading, onSelect, nodeWidth: opponentWidth },
-                });
-            });
+            const rootWidth = Math.min(116, width - 28);
+            const laneWidth = Math.min(122, (width - 24) / 2);
+            const sideX = { left: 8, right: width - laneWidth - 8, center: centerX - laneWidth / 2 };
+            const mobileItems = [{ id: "balance-center", type: "balanceStreamer", position: { x: centerX - rootWidth / 2, y: 192 }, data: { streamer: center, root: true, loading, onSelect, nodeWidth: rootWidth } }];
+            const laneLayout = {
+                TOP: { x: sideX.center, y: -4 },
+                JUG: { x: sideX.right, y: 96 },
+                MID: { x: sideX.right, y: 334 },
+                AD: { x: sideX.center, y: 434 },
+                SUP: { x: sideX.left, y: 334 },
+            };
+            POSITIONS.forEach(position => mobileItems.push({
+                id: `balance-lane-${position}`,
+                type: "balanceLane",
+                position: laneLayout[position],
+                data: { position, rows: rowsByPosition[position], loading, onSelect, nodeWidth: laneWidth },
+            }));
             return mobileItems;
         }
         const xRadius = Math.max(170, Math.min(width * 0.36, 320));
@@ -202,35 +240,83 @@ function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
             items.push({ id: balanceNodeId(row), type: "balanceStreamer", position: { x: x - 78, y: y - 56 }, data: { streamer: row, root: false, loading, onSelect } });
         });
         return items;
-    }, [center, isMobileLayout, loading, onSelect, rows, size]);
+    }, [center, isMobileLayout, loading, onSelect, rows, rowsByPosition, size]);
 
     const maxCount = useMemo(() => Math.max(1, ...rows.map(row => Number(row.matchCount || 0))), [rows]);
-    const edges = useMemo(() => rows.map(row => {
-        const matchCount = Number(row.matchCount || 0);
-        const width = 1.5 + (Math.log1p(matchCount) / Math.log1p(maxCount)) * 3.5;
-        const color = POSITION_COLORS[row.position] || "#adb5bd";
-        return {
-            id: `edge-${balanceNodeId(row)}`,
-            source: "balance-center",
-            target: balanceNodeId(row),
-            type: "straight",
-            label: `${matchCount}전`,
-            style: { stroke: color, strokeWidth: width, opacity: 0.8 },
-            labelStyle: { fill: "#f8f9fa", fontWeight: 700, fontSize: 12 },
-            labelBgStyle: { fill: "#15191f", fillOpacity: 0.94 },
-            labelBgPadding: [5, 3],
-            labelBgBorderRadius: 4,
-            selectable: false,
-        };
-    }), [maxCount, rows]);
+    const edges = useMemo(() => {
+        if (isMobileLayout) return POSITIONS.flatMap(position => {
+            const laneRows = rowsByPosition[position];
+            if (!laneRows.length) return [];
+            const matchCount = laneRows.reduce((sum, row) => sum + Number(row.matchCount || 0), 0);
+            const color = POSITION_COLORS[position] || "#adb5bd";
+            const sourceSide = { TOP: "top", JUG: "right", MID: "right", AD: "bottom", SUP: "left" }[position];
+            const targetSide = { top: "bottom", right: "left", bottom: "top", left: "right" }[sourceSide];
+            return [{
+                id: `edge-lane-${position}`,
+                source: "balance-center",
+                target: `balance-lane-${position}`,
+                sourceHandle: `source-${sourceSide}`,
+                targetHandle: `target-${targetSide}`,
+                type: "straight",
+                label: `${laneRows.length}명`,
+                style: { stroke: color, strokeWidth: 1.5 + (Math.log1p(matchCount) / Math.log1p(Math.max(1, rows.reduce((sum, row) => sum + Number(row.matchCount || 0), 0)))) * 3.5, opacity: 0.8 },
+                labelStyle: { fill: "#f8f9fa", fontWeight: 700, fontSize: 11 },
+                labelBgStyle: { fill: "#15191f", fillOpacity: 0.94 },
+                labelBgPadding: [4, 2],
+                labelBgBorderRadius: 4,
+                selectable: false,
+            }];
+        });
+        return rows.map((row, index) => {
+            const matchCount = Number(row.matchCount || 0);
+            const width = 1.5 + (Math.log1p(matchCount) / Math.log1p(maxCount)) * 3.5;
+            const color = POSITION_COLORS[row.position] || "#adb5bd";
+            const { width: graphWidth, height: graphHeight } = size;
+            const centerX = graphWidth / 2;
+            const centerY = graphHeight / 2;
+            const outer = Math.max(1, rows.length);
+            let angle;
+            let ring = 0;
+            if (outer === 1) angle = 0;
+            else if (outer === 2) angle = index === 0 ? Math.PI : 0;
+            else if (outer <= 8) angle = (2 * Math.PI * index) / outer - Math.PI / 2;
+            else {
+                const innerCount = Math.ceil(outer / 2);
+                ring = index >= innerCount ? 1 : 0;
+                const count = ring ? outer - innerCount : innerCount;
+                const ringIndex = ring ? index - innerCount : index;
+                angle = (2 * Math.PI * ringIndex) / count - Math.PI / 2 + (ring ? Math.PI / count : 0);
+            }
+            const x = centerX + Math.cos(angle) * Math.max(170, Math.min(graphWidth * 0.36, 320)) * (ring ? 1.55 : 1);
+            const y = centerY + Math.sin(angle) * Math.max(145, Math.min(graphHeight * 0.35, 230)) * (ring ? 1.55 : 1);
+            const dx = x - centerX;
+            const dy = y - centerY;
+            const sourceSide = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "bottom" : "top");
+            const targetSide = { top: "bottom", right: "left", bottom: "top", left: "right" }[sourceSide];
+            return {
+                id: `edge-${balanceNodeId(row)}`,
+                source: "balance-center",
+                target: balanceNodeId(row),
+                sourceHandle: `source-${sourceSide}`,
+                targetHandle: `target-${targetSide}`,
+                type: "straight",
+                label: `${matchCount}전`,
+                style: { stroke: color, strokeWidth: width, opacity: 0.8 },
+                labelStyle: { fill: "#f8f9fa", fontWeight: 700, fontSize: 12 },
+                labelBgStyle: { fill: "#15191f", fillOpacity: 0.94 },
+                labelBgPadding: [5, 3],
+                labelBgBorderRadius: 4,
+                selectable: false,
+            };
+        });
+    }, [isMobileLayout, maxCount, rows, rowsByPosition, size]);
 
     useEffect(() => {
-        const frame = requestAnimationFrame(() => fitView({ padding: 0.12, duration: 180, minZoom: 0.35, maxZoom: 1 }));
+        const frame = requestAnimationFrame(() => fitView({ padding: isMobileLayout ? 0.035 : 0.12, duration: 180, minZoom: 0.35, maxZoom: 1 }));
         return () => cancelAnimationFrame(frame);
-    }, [fitView, nodes, edges, positionFilter]);
+    }, [fitView, isMobileLayout, nodes, edges, positionFilter]);
 
-    return <div className="balance-flow" ref={flowRef} aria-label="맞라인 상대 네트워크 그래프"
-        style={isMobileLayout ? { height: `${mobileGraphHeight}px` } : undefined}>
+    return <div className="balance-flow" ref={flowRef} aria-label="맞라인 상대 네트워크 그래프">
         <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView fitViewOptions={{ padding: 0.12, minZoom: 0.35, maxZoom: 1 }}
             nodesDraggable={false} nodesConnectable={false} elementsSelectable={false} panOnDrag zoomOnScroll zoomOnPinch
             proOptions={{ hideAttribution: true }}>

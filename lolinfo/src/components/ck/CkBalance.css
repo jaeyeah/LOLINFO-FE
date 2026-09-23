@@ -175,3 +175,23 @@ button.balance-match:hover, .balance-match.is-active { background: rgba(13,110,2
   .balance-position-filter { max-width: 100%; flex-wrap: nowrap; overflow-x: auto; padding: .2rem 0 .4rem; }
   .balance-filter-button { min-height: 40px; flex: 0 0 auto; }
 }
+.balance-lane-node { box-sizing: border-box; display: flex; height: 90px; flex-direction: column; gap: .2rem; overflow: hidden; padding: .3rem; border: 1px solid color-mix(in srgb, var(--balance-position-color) 58%, rgba(255,255,255,.12)); border-top: 3px solid var(--balance-position-color); border-radius: .65rem; background: rgba(29,37,48,.97); box-shadow: 0 .3rem .85rem rgba(0,0,0,.32); }
+.balance-lane-heading { display: flex; min-height: 16px; align-items: center; justify-content: space-between; gap: .2rem; color: var(--balance-position-color); font-size: .66rem; line-height: 1; }
+.balance-lane-heading strong span { color: #d8dee8; font-weight: 600; }
+.balance-lane-heading > span { color: #ced4da; font-variant-numeric: tabular-nums; }
+.balance-lane-list { display: flex; min-height: 0; flex: 1; flex-direction: column; gap: 1px; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; }
+.balance-lane-list button { display: flex; width: 100%; min-height: 28px; flex: 0 0 28px; align-items: center; gap: .2rem; overflow: hidden; padding: 0 .08rem; border: 0; border-radius: .25rem; background: transparent; color: #f1f3f5; text-align: left; cursor: pointer; }
+.balance-lane-list button:hover:not(:disabled) { background: rgba(117,182,255,.18); }
+.balance-lane-list button:disabled { cursor: wait; opacity: .6; }
+.balance-lane-list button:focus-visible { outline: 2px solid #9dceff; outline-offset: -2px; }
+.balance-lane-list .balance-profile { width: 19px; height: 19px; flex: 0 0 19px; }
+.balance-lane-details { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: .08rem; line-height: 1; }
+.balance-lane-main { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: .15rem; }
+.balance-lane-name { min-width: 0; flex: 1; overflow: hidden; font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
+.balance-lane-count { flex: 0 0 auto; color: #cbd5e1; font-size: .58rem; font-variant-numeric: tabular-nums; }
+.balance-lane-date { overflow: hidden; color: #9ca9b8; font-size: .52rem; text-overflow: ellipsis; white-space: nowrap; }
+.balance-lane-empty { margin: auto 0; overflow: hidden; color: #aeb8c5; font-size: .62rem; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.balance-flow .react-flow__handle { width: 8px; height: 8px; border: 0; background: transparent; opacity: 0; pointer-events: none; }
+@media (max-width: 575.98px) {
+  .balance-flow { height: 540px; }
+}
