@@ -129,28 +129,27 @@ const BalanceGraphNode = memo(function BalanceGraphNode({ data }) {
             <span className="balance-node-meta">{Number(streamer.matchCount || 0).toLocaleString("ko-KR")}전 · {streamer.lastMatchDate?.toString().slice(0, 10) || "날짜 없음"}</span>
         </>}
     </>;
-    return root ? <>
-        <div className="balance-node balance-node-root" style={nodeWidth ? { width: nodeWidth } : undefined} role="img" aria-label={label}>{content}</div>
+    return root ? <div className="balance-node balance-node-root" style={nodeWidth ? { width: nodeWidth } : undefined} role="img" aria-label={label}>
+        {content}
         <Handle id="source-top" type="source" position={Position.Top} isConnectable={false} />
         <Handle id="source-right" type="source" position={Position.Right} isConnectable={false} />
         <Handle id="source-bottom" type="source" position={Position.Bottom} isConnectable={false} />
         <Handle id="source-left" type="source" position={Position.Left} isConnectable={false} />
-    </> : <>
-        <button type="button" className="balance-node balance-node-opponent" style={nodeWidth ? { width: nodeWidth } : undefined} aria-label={label} disabled={loading}
-            onClick={event => { event.stopPropagation(); onSelect(streamer); }}>{content}</button>
+    </div> : <button type="button" className="balance-node balance-node-opponent" style={nodeWidth ? { width: nodeWidth } : undefined} aria-label={label} disabled={loading}
+        onClick={event => { event.stopPropagation(); onSelect(streamer); }}>
+        {content}
         <Handle id="target-top" type="target" position={Position.Top} isConnectable={false} />
         <Handle id="target-right" type="target" position={Position.Right} isConnectable={false} />
         <Handle id="target-bottom" type="target" position={Position.Bottom} isConnectable={false} />
         <Handle id="target-left" type="target" position={Position.Left} isConnectable={false} />
-    </>;
+    </button>;
 });
 
 const BalanceLaneNode = memo(function BalanceLaneNode({ data }) {
     const { position, rows, totalCount, loading, onSelect, onShowMore, nodeWidth, active } = data;
     const targetSide = { TOP: "bottom", JUG: "left", MID: "left", AD: "top", SUP: "right" }[position];
     const targetPosition = { top: Position.Top, right: Position.Right, bottom: Position.Bottom, left: Position.Left }[targetSide];
-    return <>
-        <section className={`balance-lane-node ${active ? "" : "is-inactive"}`} style={{ width: nodeWidth }} role="group" aria-label={`${LABELS[position]} 맞라인 상대`} aria-disabled={!active}>
+    return <section className={`balance-lane-node ${active ? "" : "is-inactive"}`} style={{ width: nodeWidth }} role="group" aria-label={`${LABELS[position]} 맞라인 상대`} aria-disabled={!active}>
         <div className="balance-lane-heading" style={{ "--balance-position-color": POSITION_COLORS[position] }}>
             <strong>{position} <span>{LABELS[position]}</span></strong><span>{totalCount}명</span>
         </div>
@@ -160,8 +159,8 @@ const BalanceLaneNode = memo(function BalanceLaneNode({ data }) {
                 onClick={event => { event.stopPropagation(); onSelect(row); }}>
                 <ProfileImage soopId={row.opponentSoopId} />
                 <span className="balance-lane-details">
-                    <span className="balance-lane-main"><span className="balance-lane-name" title={row.opponentName}>{row.opponentName}</span><span className="balance-lane-count">{Number(row.matchCount || 0)}전</span></span>
-                    <span className="balance-lane-date">최근 {row.lastMatchDate?.toString().slice(0, 10) || "날짜 없음"}</span>
+                    <span className="balance-lane-main"><span className="balance-lane-name" title={row.opponentName}>{row.opponentName}</span><span className="balance-lane-count">{Number(row.matchCount || 0)}전 · {normalizeRate(row.winRate)}%</span></span>
+                    <span className="balance-lane-progress" aria-label={`${row.opponentName} 승률 ${normalizeRate(row.winRate)}%`}><span style={{ width: `${normalizeRate(row.winRate)}%`, backgroundColor: getWinRateColor(normalizeRate(row.winRate)) }} /></span>
                 </span>
             </button>)}
         </div> : <p className="balance-lane-empty">맞라인 상대 없음</p>}
@@ -171,9 +170,8 @@ const BalanceLaneNode = memo(function BalanceLaneNode({ data }) {
             onClick={event => { event.stopPropagation(); onShowMore(position); }}>
             나머지 {totalCount - rows.length}명 더보기
         </button>}
-        </section>
         <Handle id={`target-${targetSide}`} type="target" position={targetPosition} isConnectable={false} />
-    </>;
+    </section>;
 });
 
 const nodeTypes = { balanceStreamer: BalanceGraphNode, balanceLane: BalanceLaneNode };
@@ -263,7 +261,7 @@ function BalanceFlow({ center, rows, loading, onSelect, onShowMore, positionFilt
                 target: `balance-lane-${position}`,
                 sourceHandle: `source-${sourceSide}`,
                 targetHandle: `target-${targetSide}`,
-                type: "straight",
+                type: "bezier",
                 label: `${laneRows.length}명`,
                 style: { stroke: color, strokeWidth: 1.5 + (Math.log1p(matchCount) / Math.log1p(Math.max(1, rows.reduce((sum, row) => sum + Number(row.matchCount || 0), 0)))) * 3.5, opacity: 0.8 },
                 labelStyle: { fill: "#f8f9fa", fontWeight: 700, fontSize: 11 },
