@@ -146,13 +146,13 @@ const BalanceGraphNode = memo(function BalanceGraphNode({ data }) {
 });
 
 const BalanceLaneNode = memo(function BalanceLaneNode({ data }) {
-    const { position, rows, loading, onSelect, nodeWidth, active } = data;
+    const { position, rows, totalCount, loading, onSelect, onShowMore, nodeWidth, active } = data;
     const targetSide = { TOP: "bottom", JUG: "left", MID: "left", AD: "top", SUP: "right" }[position];
     const targetPosition = { top: Position.Top, right: Position.Right, bottom: Position.Bottom, left: Position.Left }[targetSide];
     return <>
         <section className={`balance-lane-node ${active ? "" : "is-inactive"}`} style={{ width: nodeWidth }} role="group" aria-label={`${LABELS[position]} 맞라인 상대`} aria-disabled={!active}>
         <div className="balance-lane-heading" style={{ "--balance-position-color": POSITION_COLORS[position] }}>
-            <strong>{position} <span>{LABELS[position]}</span></strong><span>{rows.length}명</span>
+            <strong>{position} <span>{LABELS[position]}</span></strong><span>{totalCount}명</span>
         </div>
         {rows.length ? <div className="balance-lane-list nowheel nopan">
             {rows.map(row => <button type="button" key={balanceNodeId(row)} disabled={loading}
@@ -165,6 +165,9 @@ const BalanceLaneNode = memo(function BalanceLaneNode({ data }) {
                 </span>
             </button>)}
         </div> : <p className="balance-lane-empty">맞라인 상대 없음</p>}
+        {totalCount > rows.length && <button type="button" className="balance-lane-more nowheel nopan" onClick={event => { event.stopPropagation(); onShowMore(position); }}>
+            나머지 {totalCount - rows.length}명 더보기
+        </button>}
         </section>
         <Handle id={`target-${targetSide}`} type="target" position={targetPosition} isConnectable={false} />
     </>;
@@ -176,7 +179,7 @@ function balanceNodeId(row) {
     return `${row.opponentNo}-${row.position}`;
 }
 
-function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
+function BalanceFlow({ center, rows, loading, onSelect, onShowMore, positionFilter }) {
     const flowRef = useRef(null);
     const { fitView } = useReactFlow();
     const [size, setSize] = useState({ width: 900, height: 560 });
@@ -200,21 +203,21 @@ function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
         const outer = Math.max(1, rows.length);
         if (isMobileLayout) {
             const rootWidth = Math.min(116, width - 28);
-            const laneWidth = Math.min(122, (width - 24) / 2);
-            const sideX = { left: 8, right: width - laneWidth - 8, center: centerX - laneWidth / 2 };
-            const mobileItems = [{ id: "balance-center", type: "balanceStreamer", position: { x: centerX - rootWidth / 2, y: 192 }, data: { streamer: center, root: true, loading, onSelect, nodeWidth: rootWidth } }];
+            const laneWidth = Math.min(104, (width - 12) / 3);
+            const sideX = { left: 4, right: width - laneWidth - 4, center: centerX - laneWidth / 2 };
+            const mobileItems = [{ id: "balance-center", type: "balanceStreamer", position: { x: centerX - rootWidth / 2, y: centerY - 68 }, data: { streamer: center, root: true, loading, onSelect, nodeWidth: rootWidth } }];
             const laneLayout = {
-                TOP: { x: sideX.center, y: -4 },
-                JUG: { x: sideX.right, y: 96 },
-                MID: { x: sideX.right, y: 334 },
-                AD: { x: sideX.center, y: 434 },
-                SUP: { x: sideX.left, y: 334 },
+                TOP: { x: sideX.center, y: 0 },
+                JUG: { x: sideX.right, y: 30 },
+                MID: { x: sideX.right, y: 420 },
+                AD: { x: sideX.center, y: 490 },
+                SUP: { x: sideX.left, y: 420 },
             };
             POSITIONS.forEach(position => mobileItems.push({
                 id: `balance-lane-${position}`,
                 type: "balanceLane",
                 position: laneLayout[position],
-                data: { position, rows: rowsByPosition[position], loading, onSelect, nodeWidth: laneWidth, active: positionFilter === "ALL" || positionFilter === position },
+                data: { position, rows: rowsByPosition[position].slice(0, 5), totalCount: rowsByPosition[position].length, loading, onSelect, onShowMore, nodeWidth: laneWidth, active: positionFilter === "ALL" || positionFilter === position },
             }));
             return mobileItems;
         }
@@ -240,7 +243,7 @@ function BalanceFlow({ center, rows, loading, onSelect, positionFilter }) {
             items.push({ id: balanceNodeId(row), type: "balanceStreamer", position: { x: x - 78, y: y - 56 }, data: { streamer: row, root: false, loading, onSelect } });
         });
         return items;
-    }, [center, isMobileLayout, loading, onSelect, positionFilter, rows, rowsByPosition, size]);
+    }, [center, isMobileLayout, loading, onSelect, onShowMore, positionFilter, rows, rowsByPosition, size]);
 
     const maxCount = useMemo(() => Math.max(1, ...rows.map(row => Number(row.matchCount || 0))), [rows]);
     const edges = useMemo(() => {
@@ -385,6 +388,10 @@ function BalanceResults({ baseNo, knownName, knownSoopId }) {
         setPositionFilter("ALL");
         load({ streamerNo: row.opponentNo, streamerName: row.opponentName, streamerSoopId: row.opponentSoopId }, row.position);
     }, [load, status]);
+    const showLineList = useCallback(position => {
+        setPositionFilter(position);
+        setView("list");
+    }, []);
     const goToRoot = useCallback(() => {
         setPositionFilter("ALL");
         load(root, null);
@@ -416,9 +423,10 @@ function BalanceResults({ baseNo, knownName, knownSoopId }) {
             {status === "ready" && !filteredRows.length && <p className="balance-empty">{rows.length ? "선택한 포지션에서 확인된 맞라인 상대가 없습니다." : "등록된 맞라인 기록이 없습니다."}</p>}
             {view === "graph" && filteredRows.length > 0 && <>
                 <div className="balance-flow-legend" aria-label="포지션별 연결선 범례">{POSITIONS.map(position => <span key={position}><i style={{ background: POSITION_COLORS[position] }} />{LABELS[position]}</span>)}</div>
-                <ReactFlowProvider><BalanceFlow center={displayCenter} rows={filteredRows} loading={status === "loading"} onSelect={onSelect} positionFilter={positionFilter} /></ReactFlowProvider>
+                <ReactFlowProvider><BalanceFlow center={displayCenter} rows={filteredRows} loading={status === "loading"} onSelect={onSelect} onShowMore={showLineList} positionFilter={positionFilter} /></ReactFlowProvider>
             </>}
             {view === "list" && <div className="balance-list-results">
+                <h3 className="balance-list-heading">{positionFilter === "ALL" ? "전체 포지션 맞라인 상대" : `${LABELS[positionFilter]} 맞라인 상대`} <span>{listRows.length}명</span></h3>
                 {status === "loading" && <p className="balance-muted" role="status">맞라인 기록을 불러오는 중입니다.</p>}
                 {listRows.map(row => <MatchRow key={balanceNodeId(row)} row={row} onClick={() => onSelect(row)} />)}
             </div>}

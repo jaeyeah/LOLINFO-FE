@@ -153,6 +153,8 @@ button.balance-match:hover, .balance-match.is-active { background: rgba(13,110,2
 .balance-empty { margin: 1rem 0; padding: 1rem; border: 1px dashed rgba(255,255,255,.2); border-radius: .7rem; color: #ced4da; text-align: center; }
 .balance-error { display: flex; align-items: center; gap: .7rem; margin: .8rem 0; color: #ff8787; }
 .balance-list-results { max-width: 900px; }
+.balance-list-heading { display: flex; align-items: center; gap: .5rem; margin: .25rem 0 .75rem; color: #f1f3f5; font-size: 1rem; font-weight: 800; }
+.balance-list-heading span { color: #adb5bd; font-size: .82rem; font-weight: 600; }
 .balance-match-position { flex: 0 0 auto; padding: .12rem .4rem; border-radius: 999px; background: rgba(117,182,255,.14); color: #9dceff; font-size: .72rem; font-weight: 800; }
 .balance-node-opponent:focus-visible, .balance-view-toggle button:focus-visible, .balance-back-button:focus-visible { outline: 3px solid #9dceff; outline-offset: 3px; }
 @media (max-width: 991.98px) {
@@ -175,11 +177,13 @@ button.balance-match:hover, .balance-match.is-active { background: rgba(13,110,2
   .balance-position-filter { max-width: 100%; flex-wrap: nowrap; overflow-x: auto; padding: .2rem 0 .4rem; }
   .balance-filter-button { min-height: 40px; flex: 0 0 auto; }
 }
-.balance-lane-node { box-sizing: border-box; display: flex; height: 90px; flex-direction: column; gap: .2rem; overflow: hidden; padding: .3rem; border: 1px solid color-mix(in srgb, var(--balance-position-color) 58%, rgba(255,255,255,.12)); border-top: 3px solid var(--balance-position-color); border-radius: .65rem; background: rgba(29,37,48,.97); box-shadow: 0 .3rem .85rem rgba(0,0,0,.32); }
+.balance-lane-node { box-sizing: border-box; display: flex; height: 208px; flex-direction: column; gap: .2rem; overflow: hidden; padding: .3rem; border: 1px solid color-mix(in srgb, var(--balance-position-color) 58%, rgba(255,255,255,.12)); border-top: 3px solid var(--balance-position-color); border-radius: .65rem; background: rgba(29,37,48,.97); box-shadow: 0 .3rem .85rem rgba(0,0,0,.32); }
 .balance-lane-heading { display: flex; min-height: 16px; align-items: center; justify-content: space-between; gap: .2rem; color: var(--balance-position-color); font-size: .66rem; line-height: 1; }
 .balance-lane-heading strong span { color: #d8dee8; font-weight: 600; }
 .balance-lane-heading > span { color: #ced4da; font-variant-numeric: tabular-nums; }
-.balance-lane-list { display: flex; min-height: 0; flex: 1; flex-direction: column; gap: 1px; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: rgba(190,205,222,.55) transparent; touch-action: pan-y pinch-zoom; }
+.balance-lane-list { display: flex; min-height: 0; flex: 1; flex-direction: column; gap: 1px; overflow: hidden; }
+.balance-lane-more { flex: 0 0 24px; min-width: 0; min-height: 24px; padding: 0 .25rem; border: 1px solid rgba(255,255,255,.14); border-radius: .3rem; background: rgba(255,255,255,.07); color: #d4e7ff; font-size: .58rem; font-weight: 700; line-height: 1; white-space: nowrap; cursor: pointer; }
+.balance-lane-more:hover, .balance-lane-more:focus-visible { border-color: rgba(117,182,255,.7); background: rgba(117,182,255,.18); color: #fff; outline: none; }
 .balance-lane-node.is-inactive { border-color: rgba(148,163,184,.22); background: rgba(23,28,36,.88); box-shadow: none; filter: grayscale(.72); opacity: .48; }
 .balance-lane-node.is-inactive .balance-lane-heading { color: #8792a0 !important; }
 .balance-lane-list button { display: flex; width: 100%; min-height: 28px; flex: 0 0 28px; align-items: center; gap: .2rem; overflow: hidden; padding: 0 .08rem; border: 0; border-radius: .25rem; background: transparent; color: #f1f3f5; text-align: left; cursor: pointer; }
@@ -195,5 +199,5 @@ button.balance-match:hover, .balance-match.is-active { background: rgba(13,110,2
 .balance-lane-empty { margin: auto 0; overflow: hidden; color: #aeb8c5; font-size: .62rem; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
 .balance-flow .react-flow__handle { width: 8px; height: 8px; border: 0; background: transparent; opacity: 0; pointer-events: none; }
 @media (max-width: 575.98px) {
-  .balance-flow { height: 540px; }
+  .balance-flow { height: 700px; }
 }
