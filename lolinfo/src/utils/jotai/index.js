@@ -1,11 +1,17 @@
 import { atom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
+import { atomWithStorage, createJSONStorage } from "jotai/utils";
 
-export const loginIdState = atomWithStorage("loginIdState", "", sessionStorage);
-export const loginLevelState = atomWithStorage("loginLevelState", "", sessionStorage);
-export const loginNicknameState = atomWithStorage("loginNicknameStoreage","", sessionStorage);
-export const accessTokenState = atomWithStorage("accessTokenState", "", sessionStorage);
-export const refreshTokenState= atomWithStorage("refreshTokenState", "", sessionStorage);
+
+// sessionStorage의 문자열을 JSON으로 저장하고 복원
+const tokenStorage = createJSONStorage(() => sessionStorage);
+export const loginIdState = atomWithStorage("loginIdState", "", tokenStorage,{ getOnInit: true });
+export const loginLevelState = atomWithStorage("loginLevelState", "", tokenStorage,{ getOnInit: true });
+export const loginNicknameState = atomWithStorage("loginNicknameStoreage","", tokenStorage,{ getOnInit: true });
+export const accessTokenState = atomWithStorage("accessTokenState", "", tokenStorage,{ getOnInit: true });
+export const refreshTokenState= atomWithStorage("refreshTokenState", "", tokenStorage,{ getOnInit: true });
+
+
+
 
 export const loginState = atom(get=>{
     const loginId = get(loginIdState);
