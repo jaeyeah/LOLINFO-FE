@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../utils/axios";
 import { useCallback, useEffect, useState } from "react";
 import { Link, NavLink, useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
 import "./Streamer.css";
@@ -26,18 +26,28 @@ export default function StreamerDetail() {
     //로딩중 설정
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const loadData = useCallback( async() => {
+    const [loadedStreamerId, setLoadedStreamerId] = useState(null);
+    const loadData = useCallback( async(signal) => {
         try {
             setLoading(true);
             setError(null);
-            const {data} = await axios.get(`/streamer/${streamerId}`);
+            const {data} = await axios.get(`/streamer/${streamerId}`, { signal });
+            if (signal.aborted) return;
+            if (!data?.streamerName) {
+                setError("스트리머 정보를 찾을 수 없습니다.");
+                return;
+            }
             setStreamer(data);
         } catch (error) {
+            if (signal.aborted) return;
             console.error("Error fetching streamer detail:", error);
             setError("스트리머 정보를 불러오지 못했습니다.");
         }
         finally {
-          setLoading(false);
+          if (!signal.aborted) {
+            setLoadedStreamerId(streamerId);
+            setLoading(false);
+          }
         }
     }, [streamerId]);
 
@@ -74,8 +84,46 @@ export default function StreamerDetail() {
 
 
     useEffect(()=>{
-        loadData();
+        const controller = new AbortController();
+        loadData(controller.signal);
+        return () => controller.abort();
     },[streamerId, loadData]);
+
+    if (loading || loadedStreamerId !== streamerId) {
+        return (<>
+            <Helmet>
+                <title>스트리머 정보 | SOOPLOL</title>
+                <meta name="description" content="SOOP LOL 스트리머의 CK 전적, 대회 참가 기록 및 활동 정보를 확인하세요." />
+            </Helmet>
+            <section className="streamer-wrapper">
+                <h1 className="page-title p-3 text-center">SOOP LOL 스트리머 정보</h1>
+                <p className="streamer-description">
+                    SOOPLOL에서 스트리머의 CK 전적, 대회 참가 기록, 팀메이트 및 월간 활동 통계를 확인할 수 있습니다.
+                </p>
+                <div className="d-flex justify-content-center py-5">
+                    <div className="spinner-border" role="status">
+                        <span className="visually-hidden">스트리머 정보를 불러오는 중입니다.</span>
+                    </div>
+                </div>
+            </section>
+        </>);
+    }
+
+    if (error) {
+        return (<>
+            <Helmet>
+                <title>스트리머 정보 | SOOPLOL</title>
+                <meta name="description" content="SOOP LOL 스트리머의 CK 및 대회 기록을 확인하세요." />
+            </Helmet>
+            <section className="streamer-wrapper">
+                <h1 className="page-title p-3 text-center">SOOP LOL 스트리머 정보</h1>
+                <p className="streamer-description">
+                    SOOPLOL은 SOOP 스트리머의 LoL 대회 및 CK 경기 기록을 제공합니다.
+                </p>
+                <p className="text-danger text-center" role="alert">{error}</p>
+            </section>
+        </>);
+    }
 
     const streamerName = streamer?.streamerName;
     const ckPlayCount = Number(streamer?.ckPlayCount ?? 0);
@@ -127,17 +175,14 @@ export default function StreamerDetail() {
 
     <div className="row">
         <div className="col text-center">
-            <h2 className="page-title p-3">{streamer.streamerName} : 상세</h2>
+            <h1 className="page-title p-3">{streamer.streamerName} LoL 기록</h1>
+            <p className="streamer-description">
+                {ckPlayCount > 0
+                    ? `${streamerName}의 SOOP LoL CK 기록입니다. 현재 SOOPLOL에 등록된 CK는 총 ${ckPlayCount}경기이며 ${ckWinCount}승 ${ckLoseCount}패, 승률 ${ckWinRate.toFixed(1)}%입니다. 대회 참가 기록과 함께한 스트리머도 확인할 수 있습니다.`
+                    : `${streamerName}의 SOOP LoL 활동 및 대회 참가 기록을 확인할 수 있습니다.`}
+            </p>
         </div>
     </div>
-    {/* 로딩중 or 에러 */}
-    {loading && (
-        <div className="d-flex justify-content-center py-5">
-            <div className="spinner-border" role="status" />
-        </div>
-    )}
-
-    {error && <p className="text-danger">{error}</p>}
     {/* 스트리머 상세 */}
     <div className="streamer-wrapper">
       <div className="card streamer-card">

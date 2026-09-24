@@ -9,6 +9,7 @@ import "./Scrim.css";
 import Swal from "sweetalert2";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import FeedbackModal from "../etc/FeedbackModal";
+import { Helmet } from "react-helmet-async";
 
 export default function TournamentDetail() {
   const isLogin = useAtomValue(loginState);
@@ -21,32 +22,44 @@ export default function TournamentDetail() {
   const [hostList, setHostList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loadedTournamentId, setLoadedTournamentId] = useState(null);
   const [bookmarked, setBookmarked] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
 
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (signal) => {
     if (!tournamentId) return;
 
     try {
       setLoading(true);
       setError(null);
-      const { data } = await axios.get(`/tournament/${tournamentId}`);
+      const { data } = await axios.get(`/tournament/${tournamentId}`, { signal });
+      if (signal.aborted) return;
+      if (!data?.tournamentName) {
+        setError("대회 정보를 찾을 수 없습니다.");
+        return;
+      }
       setTournament(data);
     } catch (err) {
+      if (signal.aborted) return;
       console.error("대회 정보 조회 실패", err);
       setError("대회 정보를 불러오지 못했습니다.");
     } finally {
-      setLoading(false);
+      if (!signal.aborted) {
+        setLoadedTournamentId(tournamentId);
+        setLoading(false);
+      }
     }
   }, [tournamentId]);
 
-  const loadHostData = useCallback(async () => {
+  const loadHostData = useCallback(async (signal) => {
     if (!tournamentId) return;
 
     try {
-      const { data } = await axios.get(`/host/tournament/${tournamentId}`);
+      const { data } = await axios.get(`/host/tournament/${tournamentId}`, { signal });
+      if (signal?.aborted) return;
       setHostList(data);
     } catch (err) {
+      if (signal?.aborted) return;
       console.error("개최자 로딩 실패", err);
     }
   }, [tournamentId]);
@@ -54,8 +67,11 @@ export default function TournamentDetail() {
   useEffect(() => {
     if (!tournamentId) return;
 
-    loadData();
-    loadHostData();
+    const controller = new AbortController();
+    setHostList([]);
+    loadData(controller.signal);
+    loadHostData(controller.signal);
+    return () => controller.abort();
   }, [loadData, loadHostData, tournamentId]);
 
   const deleteHost = useCallback(async (hostStreamer, hostTournament) => {
@@ -99,15 +115,62 @@ export default function TournamentDetail() {
 
   const hasTierBoard = tournament?.tournamentName?.includes("멸망전");
 
+  if (loading || loadedTournamentId !== tournamentId) {
+    return (
+      <>
+        <Helmet>
+          <title>SOOP LoL 대회 정보 | SOOPLOL</title>
+          <meta name="description" content="SOOP LoL 스트리머 대회의 일정, 참가 정보, 주최자 및 관련 기록을 확인하세요." />
+        </Helmet>
+        <section className="tournament-detail-wrapper">
+          <h1 className="text-center page-title tournament-detail-title">SOOP LoL 대회 정보</h1>
+          <p className="text-center tournament-detail-description">
+            SOOPLOL에서 스트리머 대회의 일정, 참가 정보, 주최자 및 관련 기록을 확인할 수 있습니다.
+          </p>
+          <div className="d-flex justify-content-center py-5">
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">대회 정보를 불러오는 중입니다.</span>
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Helmet>
+          <title>SOOP LoL 대회 정보 | SOOPLOL</title>
+          <meta name="description" content="SOOP LoL 스트리머 대회의 일정과 참가 정보를 확인하세요." />
+        </Helmet>
+        <section className="tournament-detail-wrapper">
+          <h1 className="text-center page-title tournament-detail-title">SOOP LoL 대회 정보</h1>
+          <p className="text-center tournament-detail-description">
+            SOOPLOL은 SOOP에서 진행되는 LoL 스트리머 대회의 일정과 참가 기록을 제공합니다.
+          </p>
+          <p className="text-danger text-center" role="alert">{error}</p>
+        </section>
+      </>
+    );
+  }
+
+  const tournamentName = tournament.tournamentName;
+  const tournamentDescription = [
+    `${tournamentName}의 SOOP LoL 대회 정보입니다.`,
+    tournament.tournamentStart && `시작일은 ${tournament.tournamentStart}입니다.`,
+    tournament.tournamentTierType && `티어 구분은 ${tournament.tournamentTierType}입니다.`,
+    "주최자, 일정, 참가 및 관련 기록을 확인할 수 있습니다.",
+  ].filter(Boolean).join(" ");
+
   return (
     <>
-      <h2 className="text-center page-title tournament-detail-title">{tournament.tournamentName} : 대회 상세</h2>
-
-      {loading && (
-        <div className="d-flex justify-content-center py-5">
-          <div className="spinner-border" role="status" />
-        </div>
-      )}
+      <Helmet>
+        <title>{`${tournamentName} 일정·참가 정보 | SOOPLOL`}</title>
+        <meta name="description" content={tournamentDescription} />
+      </Helmet>
+      <h1 className="text-center page-title tournament-detail-title">{tournamentName}</h1>
+      <p className="text-center tournament-detail-description">{tournamentDescription}</p>
 
       <div className="row tournament-detail-navigation">
         <div className="col-12">
@@ -123,8 +186,6 @@ export default function TournamentDetail() {
           </div>
         </div>
       </div>
-
-      {error && <p className="text-danger">{error}</p>}
 
       <div className="streamer-card tournament-detail-card mb-2">
         <div className="row g-0">

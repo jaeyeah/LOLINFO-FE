@@ -5,6 +5,17 @@
   padding-bottom: 1rem;
 }
 
+.streamer-description {
+  max-width: 760px;
+  margin: 0 auto 1.5rem;
+  padding: 0 0.75rem;
+  color: #adb5bd;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
 /* 카드 호버 효과 */
 .streamer-card {
   background-color: rgba(165, 165, 165, 0.404) !important;

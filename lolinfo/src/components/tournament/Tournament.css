@@ -357,6 +357,18 @@
   margin: 0;
   padding: 1.25rem 1rem 0.75rem !important;
   line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.tournament-detail-description {
+  max-width: 760px;
+  margin: 0 auto 1rem;
+  padding: 0 0.75rem;
+  color: #adb5bd;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .tournament-detail-navigation {

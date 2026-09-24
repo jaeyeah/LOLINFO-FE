@@ -15,9 +15,18 @@ const urls = [
     "https://sooplol.com/streamer",
     "https://sooplol.com/ck",
     "https://sooplol.com/tournament",
-    "https://sooplol.com/about",
     "https://sooplol.com/board",
     "https://sooplol.com/blog",
+    
+    "https://sooplol.com/ranking/ck",
+    "https://sooplol.com/ranking/myeolmang",
+    "https://sooplol.com/stat",
+    "https://sooplol.com/balance",
+    
+    "https://sooplol.com/devhistory",
+    "https://sooplol.com/about",
+    "https://sooplol.com/privacy",
+    "https://sooplol.com/terms",
 ];
 
 // 스트리머 기본 상세: 등록된 전체 스트리머
@@ -26,24 +35,24 @@ for (const streamerNo of data.streamers) {
 }
 
 // 대회 참가 기록이 있을 때만
-for (const streamerNo of data.tournamentStreamers) {
-    urls.push(`https://sooplol.com/streamer/${streamerNo}/tournaments`);
-}
+// for (const streamerNo of data.tournamentStreamers) {
+//     urls.push(`https://sooplol.com/streamer/${streamerNo}/tournaments`);
+// }
 
 // CK 기록이 있을 때만
-for (const streamerNo of data.ckStreamers) {
-    urls.push(`https://sooplol.com/streamer/${streamerNo}/ck-records`);
-}
+// for (const streamerNo of data.ckStreamers) {
+//     urls.push(`https://sooplol.com/streamer/${streamerNo}/ck-records`);
+// }
 
 // 대회 또는 CK 기록이 있으면 동료 전적 화면도 생성
-const withStreamerNos = new Set([
-    ...data.tournamentStreamers,
-    ...data.ckStreamers,
-]);
+// const withStreamerNos = new Set([
+//     ...data.tournamentStreamers,
+//     ...data.ckStreamers,
+// ]);
 
-for (const streamerNo of withStreamerNos) {
-    urls.push(`https://sooplol.com/streamer/${streamerNo}/streamerWith`);
-}
+// for (const streamerNo of withStreamerNos) {
+//     urls.push(`https://sooplol.com/streamer/${streamerNo}/streamerWith`);
+// }
 
 for (const tournamentId of data.tournaments) {
     urls.push(`https://sooplol.com/tournament/${tournamentId}`);
