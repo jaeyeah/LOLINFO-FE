@@ -77,9 +77,9 @@ function SideAd({ position }) {
 export default function SideAdLayout({ children }) {
     return (
         <div className="side-ad-layout">
-            <SideAd position="왼쪽" />
+            {/* <SideAd position="왼쪽" /> */}
             <main className="side-ad-layout-content">{children}</main>
-            <SideAd position="오른쪽" />
+            {/* <SideAd position="오른쪽" /> */}
         </div>
     );
 }
