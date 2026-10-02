@@ -210,6 +210,12 @@ export default function TournamentMain() {
   return "tier-none";
 };
 
+  const activeTeams = team.filter((teamItem) => !["임시", "해체"].includes(teamItem.teamRanking));
+  const archivedTeams = team.filter((teamItem) => ["임시", "해체"].includes(teamItem.teamRanking));
+  const teamGroups = [
+    { key: "active", title: null, teams: activeTeams },
+    { key: "archived", title: "임시 · 해체 팀", teams: archivedTeams },
+  ];
 
   return (
     <>
@@ -306,8 +312,11 @@ export default function TournamentMain() {
 
         <div className="col-lg-8 col-12">
           <h4 className="mb-3 detail-section-title">Team</h4>
-          <div className="team-list">
-            {team.map((teamItem) => (
+          {teamGroups.map((group) => group.teams.length > 0 && (
+            <section className="team-list-section" key={group.key}>
+              {group.title && <h5 className="team-list-subtitle">{group.title}</h5>}
+              <div className="team-list">
+            {group.teams.map((teamItem) => (
               <div
                 className={`team-card ${teamItem.teamRanking === "우승" ? "is-champion" : ""} ${teamItem.teamRanking === "준우승" ? "is-second" : ""} ${teamItem.teamRanking === "예선탈락" ? "is-failed" : ""} ${teamItem.teamRanking === "임시" ? "is-empty" : ""}`}
                 key={teamItem.teamId}
@@ -396,7 +405,9 @@ export default function TournamentMain() {
                 </div>
               </div>
             ))}
-          </div>
+              </div>
+            </section>
+          ))}
         </div>
       </div>
 
