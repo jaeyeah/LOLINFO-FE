@@ -247,7 +247,7 @@ export default function StreamerDetailInfo() {
 
       <div className="row g-3 mt-2">
         {sections.map((section) => {
-          const filteredTeams = section.teams;
+          const filteredTeams = section.teams.filter((team) => team.teamRanking !== "해체");
 
           return (
             <div className="col-md-6" key={section.key}>
