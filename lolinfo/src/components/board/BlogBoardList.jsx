@@ -4,7 +4,7 @@ import axios from "../../utils/axios";
 
 const BLOG_BOARD_CATEGORY = "blog";
 
-export default function BlogBoardList() {
+export default function BlogBoardList({ fromPath = "/blog" }) {
     const [boards, setBoards] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
@@ -44,7 +44,7 @@ export default function BlogBoardList() {
                 <Link
                     key={board.boardId}
                     to={`/board/${board.boardId}`}
-                    state={{ from: "/blog" }}
+                    state={{ from: fromPath }}
                     className="board-monthly-item"
                 >
                     <time className="board-monthly-date" dateTime={board.boardWtime}>
