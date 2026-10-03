@@ -6,9 +6,16 @@ import "./Board.css";
 import { adminState, loginIdState, loginState } from "../../utils/jotai";
 import { useAtomValue } from "jotai";
 import { renderContentWithLinks } from "./renderContentWithLinks";
+import { Helmet } from "react-helmet-async";
 
 const CATEGORIES = ["자유", "제보", "문의", "정보"];
 const getByteLength = (value) => new TextEncoder().encode(value).length;
+const getDescription = (content) => (content || "")
+    .replace(/\[[^\]]+\]/g, "")
+    .replace(/https?:\/\/\S+/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 155);
 
 export default function BoardDetail() {
     const { boardId } = useParams();
@@ -174,8 +181,16 @@ export default function BoardDetail() {
         return <div className="board-empty">게시글이 없습니다.</div>;
     }
 
+    const pageTitle = `${board.boardTitle} | SOOPLOL`;
+    const pageDescription = getDescription(board.boardContent) || `${board.boardTitle} 게시글을 SOOPLOL에서 확인하세요.`;
+
     return (
         <div className="board-detail-container">
+            <Helmet>
+                <title>{pageTitle}</title>
+                <meta name="description" content={pageDescription} />
+                <link rel="canonical" href={`https://sooplol.com/board/${board.boardId}`} />
+            </Helmet>
             <div className="board-detail-card">
                 {isEditMode && canManage ? (
                     <form onSubmit={handleEdit} className="board-write-form">
