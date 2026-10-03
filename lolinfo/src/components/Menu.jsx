@@ -142,7 +142,7 @@ export default function Menu() {
                                        └ 대회 목록
                                     </Link>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <Link className="dropdown-item sub-item" to="/streamer/654" onClick={closeMenu}>
                                        └ 멸망전
                                     </Link>
@@ -151,7 +151,7 @@ export default function Menu() {
                                     <Link className="dropdown-item sub-item" to="/streamer/655" onClick={closeMenu}>
                                        └ SLL
                                     </Link>
-                                </li>
+                                </li> */}
                             </ul>
                         </li>
                         <li className="nav-item" onClick={closeMenu}>

@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import axios from "../../utils/axios";
-import { Helmet } from "react-helmet-async";
 import { useParams, useOutletContext } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FaTrophy } from "react-icons/fa";
@@ -79,24 +78,13 @@ export default function StreamerTournaments() {
   // 데이터가 전혀 없을 때
   if (streamerTeam.length === 0) {
     return (
-      <>
-        <Helmet>
-          <meta name="robots" content="noindex,follow" />
-          <link rel="canonical" href={`https://sooplol.com/streamer/${streamerId}`} />
-        </Helmet>
-        <div className="alert alert-info mt-3">
-          참여한 대회가 존재하지 않습니다.
-        </div>
-      </>
+      <div className="alert alert-info mt-3">
+        참여한 대회가 존재하지 않습니다.
+      </div>
     );
   }
 
   return (
-    <>
-      <Helmet>
-        <meta name="robots" content="index,follow" />
-        <link rel="canonical" href={`https://sooplol.com/streamer/${streamerId}/tournaments`} />
-      </Helmet>
     <div className="streamer-tournaments">
       {/* 공식 대회 */}
       <div className="streamer-tournaments-section">
@@ -295,6 +283,5 @@ export default function StreamerTournaments() {
         </div>
       )}
     </div>
-    </>
   );
 }
