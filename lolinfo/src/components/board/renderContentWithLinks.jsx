@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export const renderContentWithLinks = (text) => {
+const renderInlineWithLinks = (text, keyPrefix = "") => {
     if (!text) return text;
 
     const parts = [];
@@ -39,11 +39,11 @@ export const renderContentWithLinks = (text) => {
         const isInternal = url.hostname === "sooplol.com" || url.hostname === "www.sooplol.com";
 
         parts.push(isInternal ? (
-            <Link key={match.index} to={{ pathname: url.pathname, search: url.search, hash: url.hash }}>
+            <Link key={`${keyPrefix}-${match.index}`} to={{ pathname: url.pathname, search: url.search, hash: url.hash }}>
                 {href}
             </Link>
         ) : (
-            <a key={match.index} href={href} target="_blank" rel="noopener noreferrer">
+            <a key={`${keyPrefix}-${match.index}`} href={href} target="_blank" rel="noopener noreferrer">
                 {href}
             </a>
         ));
@@ -52,4 +52,17 @@ export const renderContentWithLinks = (text) => {
 
     parts.push(text.slice(lastIndex));
     return parts;
+};
+
+export const renderContentWithLinks = (text) => {
+    if (!text) return text;
+
+    return text.split("\n").map((line, index) => {
+        const subtitle = line.match(/^\[([^\]]+)\]\s*$/);
+        if (subtitle) {
+            return <h2 className="board-content-subtitle" key={`subtitle-${index}`}>{subtitle[1]}</h2>;
+        }
+
+        return <span key={`line-${index}`}>{renderInlineWithLinks(line, `line-${index}`)}{"\n"}</span>;
+    });
 };
