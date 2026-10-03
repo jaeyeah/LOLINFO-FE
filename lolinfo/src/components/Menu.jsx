@@ -110,11 +110,11 @@ export default function Menu() {
                                        └ 서비스 소개
                                     </Link>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <Link className="dropdown-item sub-item" to="/data-criteria" onClick={closeMenu}>
                                        └ 데이터 집계 기준
                                     </Link>
-                                </li>
+                                </li> */}
                                 <li>
                                     <Link className="dropdown-item sub-item" to="/devhistory" onClick={closeMenu}>
                                        └ 패치노트
