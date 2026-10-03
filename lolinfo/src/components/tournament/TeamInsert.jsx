@@ -259,6 +259,7 @@ return(<>
                     <option value="예선탈락">예선탈락</option>
                     <option value="참가">참가</option>
                     <option value="임시">임시</option>
+                    <option value="해체">해체</option>
                 </select>
                 <div className="valid-feedback"></div>
                 <div className="invalid-feedback"></div>

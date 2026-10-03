@@ -1,49 +1,43 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import axios from "../../utils/axios";
 import { useParams, useOutletContext } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FaTrophy } from "react-icons/fa";
 import { MdLooksTwo } from "react-icons/md";
 import { buildProfileUrl } from "../../utils/profileUrl";
+import axios from "axios";
 
 export default function StreamerTournaments() {
   const { streamer, streamerId } = useOutletContext();
   const [streamerTeam, setStreamerTeam] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [visibleTeamCount, setVisibleTeamCount] = useState(6);
   const loadMoreRef = useRef(null);
-  const officialTeams = streamerTeam.filter(team => team.tournamentIsOfficial === "Y");
-  const streamerHostTeams = streamerTeam.filter(team => team.tournamentIsOfficial === "N");
+  const displayedTeams = streamerTeam.filter(team => team.teamRanking !== "해체");
+  const officialTeams = displayedTeams.filter(team => team.tournamentIsOfficial === "Y");
+  const streamerHostTeams = displayedTeams.filter(team => team.tournamentIsOfficial === "N");
   const visibleOfficialTeams = officialTeams.slice(0, visibleTeamCount);
   const visibleStreamerHostTeams = streamerHostTeams.slice(0, visibleTeamCount);
   const hasMoreTeams = visibleTeamCount < Math.max(officialTeams.length, streamerHostTeams.length);
 
   // 스트리머의 참여 대회 정보 불러오기
-  const loadData = useCallback(async (signal) => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      setError(null);
 
-      const { data } = await axios.get(`/team/streamer/${streamerId}`, { signal });
-      if (signal.aborted) return;
+      const { data } = await axios.get(`/team/streamer/${streamerId}`);
       setStreamerTeam(data);
       setVisibleTeamCount(6);
     }
     catch(err){
-      if (signal.aborted) return;
       console.error(err);
-      setError("대회 참가 기록을 불러오지 못했습니다.");
     }
     finally{
-      if (!signal.aborted) setLoading(false);
+      setLoading(false);
     }
   }, [streamerId]);
 
   useEffect(() => {
-    const controller = new AbortController();
-    loadData(controller.signal);
-    return () => controller.abort();
+    loadData();
   }, [loadData]);
 
   useEffect(() => {
@@ -68,15 +62,8 @@ export default function StreamerTournaments() {
       </div>
     );
   }
-  if (error) {
-    return (
-      <div className="alert alert-danger mt-3">
-        {error}
-      </div>
-    );
-  }
   // 데이터가 전혀 없을 때
-  if (streamerTeam.length === 0) {
+  if (displayedTeams.length === 0) {
     return (
       <div className="alert alert-info mt-3">
         참여한 대회가 존재하지 않습니다.
@@ -84,8 +71,7 @@ export default function StreamerTournaments() {
     );
   }
 
-  return (
-    <div className="streamer-tournaments">
+  return (<div className="streamer-tournaments">
       {/* 공식 대회 */}
       <div className="streamer-tournaments-section">
         <span className="section-title-isofficial text-center mt-2"> 공식 </span>
