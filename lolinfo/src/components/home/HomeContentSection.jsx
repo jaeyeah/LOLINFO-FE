@@ -102,7 +102,7 @@ export default function HomeContentSection() {
                     <h2 id="home-content-title">SOOPLOL 이야기</h2>
                     <p>CK와 멸망전, SOOP LoL 콘텐츠의 다양한 이야기를 만나보세요.</p>
                 </div>
-                <Link to="/board" className="home-content-all-link">전체 이야기 보기 <span aria-hidden="true">→</span></Link>
+                <Link to="/board?tab=blog" className="home-content-all-link">전체 이야기 보기 <span aria-hidden="true">→</span></Link>
             </div>
 
             {isLoading && <ContentSkeleton />}
@@ -118,7 +118,7 @@ export default function HomeContentSection() {
                         <article className="home-content-card" key={post.boardId}>
                             <span className="home-content-category">{post.boardCategory === "blog" ? "멸망전·CK" : "월간 기록"}</span>
                             <h3>
-                                <Link to={`/board/${post.boardId}`} state={{ from: "/board" }}>
+                                <Link to={`/board/${post.boardId}`} state={{ from: post.boardCategory === "blog" ? "/board?tab=blog" : "/board" }}>
                                     {post.boardTitle}
                                 </Link>
                             </h3>
