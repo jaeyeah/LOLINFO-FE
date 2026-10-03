@@ -14,7 +14,7 @@ export default function BoardDetail() {
     const { boardId } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    const returnPath = location.state?.from === "/blog" ? "/blog" : "/board";
+    const returnPath = location.state?.from || "/board";
     const loginId = useAtomValue(loginIdState);
     const isAdmin = useAtomValue(adminState);
     const categories = isAdmin ? [...CATEGORIES, "blog"] : CATEGORIES;
@@ -55,7 +55,7 @@ export default function BoardDetail() {
         } finally {
             if (!signal.aborted) setIsLoading(false);
         }
-    }, [boardId, navigate]);
+    }, [boardId, navigate, returnPath]);
 
     useEffect(() => {
         const controller = new AbortController();
