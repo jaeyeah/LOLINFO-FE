@@ -26,22 +26,28 @@ export default function StreamerDetail() {
     //로딩중 설정
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [notFound, setNotFound] = useState(false);
     const [loadedStreamerId, setLoadedStreamerId] = useState(null);
     const loadData = useCallback( async(signal) => {
         try {
             setLoading(true);
             setError(null);
+        setNotFound(false);
             const {data} = await axios.get(`/streamer/${streamerId}`, { signal });
             if (signal.aborted) return;
             if (!data?.streamerName) {
-                setError("스트리머 정보를 찾을 수 없습니다.");
+          setNotFound(true);
                 return;
             }
             setStreamer(data);
         } catch (error) {
             if (signal.aborted) return;
-            console.error("Error fetching streamer detail:", error);
-            setError("스트리머 정보를 불러오지 못했습니다.");
+        if (error.response?.status === 404) {
+          setNotFound(true);
+        } else {
+          console.error("Error fetching streamer detail:", error);
+          setError("스트리머 정보를 일시적으로 불러오지 못했습니다.");
+        }
         }
         finally {
           if (!signal.aborted) {
@@ -109,18 +115,41 @@ export default function StreamerDetail() {
         </>);
     }
 
+    if (notFound) {
+      return (<>
+        <Helmet>
+          <title>스트리머 정보를 찾을 수 없습니다 | SOOPLOL</title>
+          <meta name="description" content="요청한 스트리머 정보를 확인할 수 없습니다." />
+          <meta name="robots" content="noindex, follow" />
+        </Helmet>
+        <section className="streamer-wrapper">
+          <h1 className="page-title p-3 text-center">스트리머 정보를 확인할 수 없습니다.</h1>
+          <p className="streamer-description text-center">
+            요청한 스트리머가 존재하지 않거나<br />
+            SOOPLOL에 등록되지 않은 스트리머입니다.
+          </p>
+          <div className="text-center">
+            <Link to="/streamer" className="btn btn-primary">스트리머 목록으로</Link>
+          </div>
+        </section>
+      </>);
+    }
+
     if (error) {
         return (<>
             <Helmet>
                 <title>스트리머 정보 | SOOPLOL</title>
                 <meta name="description" content="SOOP LOL 스트리머의 CK 및 대회 기록을 확인하세요." />
+          <meta name="robots" content="noindex, follow" />
             </Helmet>
             <section className="streamer-wrapper">
-                <h1 className="page-title p-3 text-center">SOOP LOL 스트리머 정보</h1>
-                <p className="streamer-description">
-                    SOOPLOL은 SOOP 스트리머의 LoL 대회 및 CK 경기 기록을 제공합니다.
+          <h1 className="page-title p-3 text-center">스트리머 정보를 일시적으로 불러오지 못했습니다.</h1>
+          <p className="streamer-description text-center" role="alert">
+            잠시 후 다시 시도해주세요.
                 </p>
-                <p className="text-danger text-center" role="alert">{error}</p>
+          <div className="text-center">
+            <Link to="/streamer" className="btn btn-primary">스트리머 목록으로</Link>
+          </div>
             </section>
         </>);
     }
@@ -151,6 +180,7 @@ export default function StreamerDetail() {
         : location.pathname.endsWith("/streamerWith")
           ? "streamerWith"
           : "default";
+        const isSubPage = routeKey !== "default";
 
 
     //render
@@ -169,6 +199,8 @@ export default function StreamerDetail() {
               : 'SOOP 롤 스트리머 정보를 확인하세요.'
           }
         />
+        <link rel="canonical" href={`https://sooplol.com/streamer/${streamerId}`} />
+        {isSubPage && <meta name="robots" content="noindex, follow" />}
       </Helmet>
 
 

@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import axios from "axios";
 import { useParams, useOutletContext } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FaTrophy } from "react-icons/fa";
 import { MdLooksTwo } from "react-icons/md";
 import { buildProfileUrl } from "../../utils/profileUrl";
+import axios from "axios";
 
 export default function StreamerTournaments() {
   const { streamer, streamerId } = useOutletContext();
@@ -71,9 +71,7 @@ export default function StreamerTournaments() {
     );
   }
 
-  return (
-
-    <div className="streamer-tournaments">
+  return (<div className="streamer-tournaments">
       {/* 공식 대회 */}
       <div className="streamer-tournaments-section">
         <span className="section-title-isofficial text-center mt-2"> 공식 </span>
