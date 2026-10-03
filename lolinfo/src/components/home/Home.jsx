@@ -4,6 +4,7 @@ import { loginState } from "../../utils/jotai";
 import HomeStreamerSearch from "./HomeStreamerSearch";
 import HomeBookmark from "./HomeBookmark";
 import HomeStats from "./HomeStats";
+import HomeContentSection from "./HomeContentSection";
 import "./Home.css";
 
 const features = [
@@ -121,6 +122,7 @@ export default function Home() {
                 <HomeInlineAd />
                 <HomeBookmark isLogin={isLogin} />
                 <HomeFeatures />
+                <HomeContentSection />
             </main>
         </div>
     );
