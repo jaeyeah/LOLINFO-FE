@@ -9,6 +9,7 @@ import "./Scrim.css";
 import Swal from "sweetalert2";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import FeedbackModal from "../etc/FeedbackModal";
+import { Helmet } from "react-helmet-async";
 
 export default function TournamentDetail() {
   const isLogin = useAtomValue(loginState);
@@ -98,9 +99,25 @@ export default function TournamentDetail() {
 
 
   const hasTierBoard = tournament?.tournamentName?.includes("멸망전");
+  const tournamentName = tournament?.tournamentName;
+  const tournamentType = tournament?.tournamentIsofficial === "Y" ? "공식" : "스트리머 개최";
+  const tournamentPeriod = tournament?.tournamentStart
+    ? `${tournament.tournamentStart}${tournament.tournamentEnd ? `부터 ${tournament.tournamentEnd}까지` : ""}`
+    : "";
+  const pageTitle = tournamentName
+    ? `${tournamentName} 대회 정보·참가팀·기록 | SOOPLOL`
+    : "대회 정보 | SOOPLOL";
+  const pageDescription = tournamentName
+    ? `${tournamentName}의 ${tournamentType} 대회 정보${tournamentPeriod ? `, ${tournamentPeriod} 일정` : ""}, 참가팀과 경기 기록을 SOOPLOL에서 확인하세요.`
+    : "SOOP LOL 대회의 일정, 참가팀과 경기 기록을 확인하세요.";
 
   return (
     <>
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <link rel="canonical" href={`https://sooplol.com/tournament/${tournamentId}`} />
+      </Helmet>
       <h2 className="text-center page-title tournament-detail-title">{tournament.tournamentName} : 대회 상세</h2>
 
       {loading && (
