@@ -827,6 +827,20 @@
     color: #043c7c;
 }
 
+.board-content-subtitle {
+    margin: 2rem 0 0.85rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid rgba(7, 89, 181, 0.2);
+    color: #123d72;
+    font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.board-content-subtitle:first-child {
+    margin-top: 0;
+}
+
 .board-detail-content::selection {
     background: rgba(234, 134, 133, 0.35);
 }
