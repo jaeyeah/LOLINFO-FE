@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import "./Board.css";
 import { adminState, loginIdState, loginState } from "../../utils/jotai";
 import { useAtomValue } from "jotai";
-import { renderContentWithLinks } from "./renderContentWithLinks";
+import BoardContent from "./BoardContent";
 import { Helmet } from "react-helmet-async";
 
 const CATEGORIES = ["자유", "제보", "문의", "정보"];
@@ -251,7 +251,7 @@ export default function BoardDetail() {
                 </div>
 
                 <div className="board-detail-content">
-                    {renderContentWithLinks(board.boardContent)}
+                    <BoardContent content={board.boardContent} />
                 </div>
 
                 <div className="board-detail-footer">

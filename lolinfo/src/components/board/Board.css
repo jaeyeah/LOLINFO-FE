@@ -827,7 +827,32 @@
     color: #043c7c;
 }
 
-.board-content-subtitle {
+.board-content {
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+.board-content h2 {
+    margin: 2rem 0 0.9rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.board-content h3 {
+    margin: 1.5rem 0 0.7rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.board-content p {
+    margin: 0 0 1rem;
+    white-space: pre-wrap;
+}
+
+.board-content .board-content-subtitle {
     margin: 2rem 0 0.85rem;
     padding-bottom: 0.55rem;
     border-bottom: 1px solid rgba(7, 89, 181, 0.2);
