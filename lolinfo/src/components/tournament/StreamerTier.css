@@ -474,14 +474,16 @@
   display: inline-flex;
   align-items: center;
   max-width: 100%;
-  min-height: 32px;
-  padding: 6px 10px;
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid rgba(125, 211, 252, 0.45);
   border-radius: 9px;
-  background-color: rgba(30, 41, 59, 0.72);
-  color: #e2e8f0;
-  font-size: 0.9rem;
-  font-weight: 600;
+  background-color: #243b53;
+  color: #f8fafc;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
   text-decoration: none;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   transition:
@@ -492,10 +494,15 @@
 }
 
 .tier-streamer-chip:hover {
-  border-color: rgba(56, 189, 248, 0.5);
-  background-color: rgba(14, 165, 233, 0.14);
-  color: #bae6fd;
+  border-color: #7dd3fc;
+  background-color: #304e6b;
+  color: #fff;
   transform: translateY(-1px);
+}
+
+.tier-streamer-chip:focus-visible {
+  outline: 2px solid #7dd3fc;
+  outline-offset: 2px;
 }
 
 .streamer-chip-dot {
@@ -759,6 +766,8 @@
 /* ///// 스트리머 티어 수정 */
 .tier-streamer-item {
   display: flex;
+  min-width: 0;
+  max-width: 100%;
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
