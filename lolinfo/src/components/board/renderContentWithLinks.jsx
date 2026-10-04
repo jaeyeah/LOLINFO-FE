@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const renderInlineWithLinks = (text, keyPrefix = "") => {
+export const renderInlineWithLinks = (text, keyPrefix = "") => {
     if (!text) return text;
 
     const parts = [];
