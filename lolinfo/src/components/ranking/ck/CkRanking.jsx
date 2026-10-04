@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { FaInfoCircle } from "react-icons/fa";
 import axios from "../../../utils/axios";
 import { getKoreaToday } from "../../../utils/ckPeriod";
 import CkMonthRanking from "../../ck/CkMonthRanking";
@@ -25,6 +27,25 @@ export default function CkRanking() {
 
   return (
     <div className="ck-ranking-page">
+      <header className="ck-ranking-intro">
+        <h2 className="h4">CK 랭킹</h2>
+        <p>SOOPLOL에 등록된 CK 기록을 바탕으로 스트리머의 다승, 승률, 연승·연패 기록을 확인할 수 있습니다. 역대·연간·월간 기록을 비교하며 기간별로 활발하게 참여한 스트리머와 성적의 변화를 살펴보세요.</p>
+        <p>다승은 경기 참여 횟수의 영향을 받고, 승률은 경기 수와 상대·팀 구성에 따라 달라질 수 있습니다. 순위와 함께 경기 수, 승패 기록을 확인해 주세요.</p>
+        <details className="ck-ranking-info">
+          <summary><FaInfoCircle aria-hidden="true" /> 집계 기준</summary>
+          <div className="ck-ranking-info-content">
+            <h3 className="h6">CK 랭킹 집계 기준</h3>
+            <ul>
+              <li>SOOPLOL에 등록된 CK 기록만 반영하므로 실제 전체 경기 기록과 차이가 있을 수 있습니다.</li>
+              <li>CK 승패는 개별 세트가 아닌 매치 결과를 기준으로 집계합니다. 예를 들어 2:1로 승리한 매치는 1승으로 기록합니다.</li>
+              <li>다승은 승리 횟수를, 승률은 경기 수 대비 승리 비율을 보여줍니다. 경기 수가 적은 스트리머의 승률은 소수 경기 결과에 따라 크게 달라질 수 있습니다.</li>
+              <li>현재 연속 기록은 최근 경기까지 이어진 연승·연패를, 역대 연속 기록은 등록된 기록에서 가장 길게 이어진 연승·연패를 의미합니다.</li>
+              <li>누락 기록 추가나 경기 결과 수정에 따라 순위와 통계가 달라질 수 있습니다.</li>
+            </ul>
+            <p>자세한 기준은 <Link to="/about#data-criteria">서비스 소개의 데이터 집계 기준</Link>에서 확인할 수 있습니다. 잘못된 기록이나 누락 경기는 <Link to="/about#report-title">오류·누락 제보</Link>로 알려주세요.</p>
+          </div>
+        </details>
+      </header>
       <div className="ck-ranking-page-types mb-3" role="group" aria-label="CK 랭킹 종류">
         {RANKING_TYPES.map(([value, label]) => (
           <button key={value} type="button" aria-pressed={rankingType === value}

@@ -176,7 +176,7 @@ export default function AdminVisitUsePage() {
                 teammate: Number(item.teammate ?? 0),
                 ranking: Number(item.ranking ?? 0),
                 balance: Number(item.balance ?? 0),
-                monthlyStat: Number(item.balance ?? 0),
+                monthlyStat: Number(item.monthlyStat ?? 0),
             }));
 
             setUseData(normalized);
