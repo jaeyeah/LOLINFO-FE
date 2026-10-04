@@ -1,7 +1,12 @@
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useOutletContext, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import StreamerTierModal from "./StreamerTierModal";
+import {
+  isTierBoardAvailable,
+  normalizeTournamentId,
+} from "./tierBoardConfig";
 
 
 
@@ -53,13 +58,16 @@ const TIER_GRADES = [
 export default function TournamentTier() {
   const { tournamentId } = useParams();
   const { tournament, isAdmin } = useOutletContext();
+  const tierBoardAvailable = isTierBoardAvailable(tournamentId);
+  const normalizedTournamentId = normalizeTournamentId(tournamentId);
+  const tournamentUrl = `https://sooplol.com/tournament/${normalizedTournamentId}`;
   const [tierList, setTierList] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(() => tierBoardAvailable);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   const loadTierList = useCallback(async () => {
-    if (!tournamentId) return;
+    if (!tournamentId || !tierBoardAvailable) return;
     try {
       setLoading(true);
       setError(null);
@@ -71,11 +79,13 @@ export default function TournamentTier() {
     } finally {
       setLoading(false);
     }
-  }, [tournamentId]);
+  }, [tierBoardAvailable, tournamentId]);
 
   useEffect(() => {
+    if (!tierBoardAvailable) return;
+
     loadTierList();
-  }, [loadTierList]);
+  }, [loadTierList, tierBoardAvailable]);
 
   const openTierModal = useCallback(() => {
     setShowModal(true);
@@ -143,9 +153,43 @@ export default function TournamentTier() {
     }
   };
 
+  if (!tierBoardAvailable) {
+    return (
+      <section className="tournament-tier-page">
+        <Helmet>
+          <title>티어표 미제공 대회 | SOOPLOL</title>
+          <meta name="robots" content="noindex, follow" />
+          <link rel="canonical" href={tournamentUrl} />
+        </Helmet>
+
+        <div className="tier-unavailable-card">
+          <span className="tier-unavailable-eyebrow">STREAMER TIER BOARD</span>
+          <h2>이 대회는 티어표를 제공하지 않습니다.</h2>
+          <p>
+            SOOPLOL의 스트리머 티어표는 2026 LoL 멸망전 with Gen.G부터
+            제공하고 있습니다. 이 대회의 참가팀과 성적은 대회 정보에서
+            확인해 주세요.
+          </p>
+          <Link to={`/tournament/${normalizedTournamentId}`} className="btn btn-primary">
+            대회 정보 보기
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
+  const hasNoTierData = !loading && !error && tierList.length === 0;
+  const shouldNoIndex = Boolean(error) || hasNoTierData;
+
 
   return (
   <section className="tournament-tier-page">
+    {shouldNoIndex && (
+      <Helmet>
+        <meta name="robots" content="noindex, follow" />
+        <link rel="canonical" href={tournamentUrl} />
+      </Helmet>
+    )}
     <div className="tier-board">
       <header className="tier-board-header">
         <div className="tier-board-heading">
@@ -215,7 +259,14 @@ export default function TournamentTier() {
         </div>
       )}
 
-      {!loading && !error && (
+      {hasNoTierData && (
+        <div className="tier-empty-state" role="status">
+          <strong>등록된 티어표 정보가 없습니다.</strong>
+          <p>티어 정보가 등록되면 이곳에 표시됩니다.</p>
+        </div>
+      )}
+
+      {!loading && !error && tierList.length > 0 && (
         <div className="tier-table-container">
           <table className="tier-board-table">
             <thead>
