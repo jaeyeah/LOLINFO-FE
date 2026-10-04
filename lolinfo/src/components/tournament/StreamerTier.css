@@ -175,6 +175,59 @@
   font-size: 0.8rem;
 }
 
+.tier-empty-state,
+.tier-unavailable-card {
+  padding: 40px 30px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.62);
+  color: #cbd5e1;
+  text-align: center;
+}
+
+.tier-empty-state {
+  margin: 22px 30px 30px;
+}
+
+.tier-empty-state strong,
+.tier-unavailable-card h2 {
+  display: block;
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+
+.tier-empty-state p,
+.tier-unavailable-card p {
+  margin: 8px 0 0;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.tier-unavailable-card {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 48px 32px;
+  background:
+    radial-gradient(circle at top right, rgba(56, 189, 248, 0.1), transparent 42%),
+    rgba(15, 23, 42, 0.72);
+}
+
+.tier-unavailable-eyebrow {
+  display: block;
+  margin-bottom: 10px;
+  color: #38bdf8;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
+.tier-unavailable-card .btn {
+  margin-top: 24px;
+}
+
 /* 테이블 */
 
 .tier-table-container {

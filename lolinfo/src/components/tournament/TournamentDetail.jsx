@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import FeedbackModal from "../etc/FeedbackModal";
 import { Helmet } from "react-helmet-async";
+import { isTierBoardAvailable } from "./tierBoardConfig";
 
 export default function TournamentDetail() {
   const isLogin = useAtomValue(loginState);
@@ -160,7 +161,6 @@ export default function TournamentDetail() {
     }
   };
 
-
   const isCurrentDetail = detailState.requestKey === requestKey;
   const status = !hasValidTournamentId
     ? "not-found"
@@ -168,7 +168,8 @@ export default function TournamentDetail() {
       ? detailState.status
       : "loading";
   const tournament = status === "success" ? detailState.tournament : null;
-  const hasTierBoard = tournament?.tournamentName?.includes("멸망전");
+  const hasTierBoard = isTierBoardAvailable(tournamentId);
+
   const tournamentName = tournament?.tournamentName;
   const tournamentType = tournament?.tournamentIsofficial === "Y" ? "공식" : "스트리머 개최";
   const tournamentPeriod = tournament?.tournamentStart
