@@ -194,38 +194,39 @@ export default function Menu() {
                         <li className="nav-item" onClick={closeMenu}>
                             <Link className="nav-link" to="/balance">밸런스찾기</Link>
                         </li>
-                        {/* {isLogin === true ? (<>  로그인 시 나와야 하는 화면 */}
-                            <li className={`nav-item dropdown ${boardOpen ? 'show' : ''}`}>
-                                <div className="dropdown-nav">
-                                    <Link className="nav-link dropdown-parent-link" to="/board" onClick={closeMenu}>
-                                        <span>게시판</span>
+                        <li className={`nav-item dropdown ${boardOpen ? 'show' : ''}`}>
+                            <div className="dropdown-nav">
+                                <Link className="nav-link dropdown-parent-link" to="/board" onClick={closeMenu}>
+                                    <span>게시판</span>
+                                </Link>
+                                <button type="button" className="dropdown-toggle dropdown-trigger"
+                                    aria-label="게시판 하위 메뉴 열기" aria-haspopup="true" aria-expanded={boardOpen}
+                                    onClick={() => {
+                                        if (window.innerWidth < 992) {
+                                            setBoardOpen(prev => !prev);
+                                            setHomeOpen(false);
+                                            setTournamentOpen(false);
+                                            setStatOpen(false);
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <ul className={`dropdown-menu dropdown-menu-dark ${boardOpen ? 'show' : ''}`}>
+                                <li>
+                                    <Link className="dropdown-item sub-item" to="/board" onClick={closeMenu}>
+                                        └ 월간 소식
                                     </Link>
-                                    <button type="button" className="dropdown-toggle dropdown-trigger"
-                                        aria-label="게시판 하위 메뉴 열기" aria-haspopup="true" aria-expanded={boardOpen}
-                                        onClick={() => {
-                                            if (window.innerWidth < 992) {
-                                                setBoardOpen(prev => !prev);
-                                                setHomeOpen(false);
-                                                setTournamentOpen(false);
-                                                setStatOpen(false);
-                                            }
-                                        }}
-                                    />
-                                </div>
-                                <ul className={`dropdown-menu dropdown-menu-dark ${boardOpen ? 'show' : ''}`}>
-                                    <li>
-                                        <Link className="dropdown-item sub-item" to="/board" onClick={closeMenu}>
-                                            └ 월간 소식
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link className="dropdown-item sub-item" to="/board?tab=feedback" onClick={closeMenu}>
-                                            └ 피드백 게시판
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </li>
-                        {/* </>) : (<> </> )} 비로그인 시 나와야 하는 화면 */}
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item sub-item" to="/board?tab=feedback" onClick={closeMenu}>
+                                        └ 피드백 게시판
+                                    </Link>
+                                </li>
+                            </ul>
+                        </li>
+                        <li className="nav-item" onClick={closeMenu}>
+                            <Link className="nav-link" to="/tournament/115/tier">티어표</Link>
+                        </li>
                     </ul>
                     <ul className="navbar-nav ms-auto">
                         {/* 우측 메뉴 */}
