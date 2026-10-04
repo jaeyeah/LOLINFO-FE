@@ -35,19 +35,19 @@ const features = [
     },
 ];
 
-function HomeInlineAd() {
-    return (
-        <div className="home-inline-ad" aria-label="쿠팡 파트너스 광고">
-            <iframe
-                src="https://ads-partners.coupang.com/widgets.html?id=1031238&template=carousel&trackingCode=AF6484702&subId=&width=1000&height=150&tsource="
-                width="1000" height="150"
-                frameBorder="0"scrolling="no"
-                referrerPolicy="unsafe-url"
-                title="쿠팡 파트너스 carousel 광고"
-            />
-        </div>
-    );
-}
+// function HomeInlineAd() {
+//     return (
+//         <div className="home-inline-ad" aria-label="쿠팡 파트너스 광고">
+//             <iframe
+//                 src="https://ads-partners.coupang.com/widgets.html?id=1031238&template=carousel&trackingCode=AF6484702&subId=&width=1000&height=150&tsource="
+//                 width="1000" height="150"
+//                 frameBorder="0"scrolling="no"
+//                 referrerPolicy="unsafe-url"
+//                 title="쿠팡 파트너스 carousel 광고"
+//             />
+//         </div>
+//     );
+// }
 
 function HomeHero() {
     return (
@@ -119,7 +119,7 @@ export default function Home() {
                 <HomeHero />
                 <HomeStats />
                 <HomeNavigation />
-                <HomeInlineAd />
+                {/* <HomeInlineAd /> */}
                 <HomeBookmark isLogin={isLogin} />
                 <HomeFeatures />
                 <HomeContentSection />

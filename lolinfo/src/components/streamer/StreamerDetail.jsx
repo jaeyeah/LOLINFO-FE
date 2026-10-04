@@ -285,8 +285,8 @@ export default function StreamerDetail() {
             </div>
         )}
 
-        {/* 콘텐츠 중간광고 */}
-        <AdArea className="mt-3" variant="content" />
+        {/* 콘텐츠 중간광고
+        <AdArea className="mt-3" variant="content" /> */}
         {/* 중첩 라우트 렌더링 */}
         <Outlet context={{ streamer, streamerId }} />
       </div>
