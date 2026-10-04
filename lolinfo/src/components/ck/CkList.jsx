@@ -46,52 +46,53 @@ const MONTHLY_CHART_OPTIONS = {
 const POSITION_ORDER = ["TOP", "JUG", "MID", "AD", "SUP"];
 const EMPTY_PARTICIPANTS = [];
 
-function MobonBanner() {
-   const bannerRef = useRef(null);
+// 광고배너 (주석처리)
+// function MobonBanner() {
+//    const bannerRef = useRef(null);
 
-   useEffect(() => {
-      let disposed = false;
-      let scriptElement;
+//    useEffect(() => {
+//       let disposed = false;
+//       let scriptElement;
 
-      const initializeBanner = () => {
-         if (disposed || !bannerRef.current || typeof window.HawkEyes !== "function") return;
-         if (bannerRef.current.dataset.initialized === "true") return;
+//       const initializeBanner = () => {
+//          if (disposed || !bannerRef.current || typeof window.HawkEyes !== "function") return;
+//          if (bannerRef.current.dataset.initialized === "true") return;
 
-         new window.HawkEyes({
-            type: "banner",
-            responsive: "Y",
-            platform: "W",
-            scriptCode: "1069955",
-            frameCode: "60",
-            width: "728",
-            height: "90",
-            settings: { cntad: "1", cntsr: "1" },
-         });
-         bannerRef.current.dataset.initialized = "true";
-      };
+//          new window.HawkEyes({
+//             type: "banner",
+//             responsive: "Y",
+//             platform: "W",
+//             scriptCode: "1069955",
+//             frameCode: "60",
+//             width: "728",
+//             height: "90",
+//             settings: { cntad: "1", cntsr: "1" },
+//          });
+//          bannerRef.current.dataset.initialized = "true";
+//       };
 
-      const existingScript = document.querySelector("script[data-mobon-hawk-eyes]");
-      if (existingScript) {
-         existingScript.addEventListener("load", initializeBanner);
-         initializeBanner();
-      } else {
-         scriptElement = document.createElement("script");
-         scriptElement.src = "//img.mobon.net/js/common/HawkEyesMaker.js";
-         scriptElement.async = true;
-         scriptElement.dataset.mobonHawkEyes = "true";
-         scriptElement.addEventListener("load", initializeBanner);
-         document.body.appendChild(scriptElement);
-      }
+//       const existingScript = document.querySelector("script[data-mobon-hawk-eyes]");
+//       if (existingScript) {
+//          existingScript.addEventListener("load", initializeBanner);
+//          initializeBanner();
+//       } else {
+//          scriptElement = document.createElement("script");
+//          scriptElement.src = "//img.mobon.net/js/common/HawkEyesMaker.js";
+//          scriptElement.async = true;
+//          scriptElement.dataset.mobonHawkEyes = "true";
+//          scriptElement.addEventListener("load", initializeBanner);
+//          document.body.appendChild(scriptElement);
+//       }
 
-      return () => {
-         disposed = true;
-         existingScript?.removeEventListener("load", initializeBanner);
-         scriptElement?.removeEventListener("load", initializeBanner);
-      };
-   }, []);
+//       return () => {
+//          disposed = true;
+//          existingScript?.removeEventListener("load", initializeBanner);
+//          scriptElement?.removeEventListener("load", initializeBanner);
+//       };
+//    }, []);
 
-   return <div ref={bannerRef} className="ck-mobon-banner" aria-label="광고" />;
-}
+//    return <div ref={bannerRef} className="ck-mobon-banner" aria-label="광고" />;
+// }
 
 export default function CkList() {
    const loginId = useAtomValue(loginIdState);
@@ -497,7 +498,7 @@ export default function CkList() {
 
             
                {/* 콘텐츠 중간광고 */}
-               <AdArea className="ck-list-ad mt-1" variant="default" />
+               {/* <AdArea className="ck-list-ad mt-1" variant="default" /> */}
                {/* 콘텐츠 중간광고 */}
 
                <section className="ck-list-section">
@@ -814,7 +815,7 @@ export default function CkList() {
                   </div>
                )}
                {/* 배너광고 */}
-               <MobonBanner />
+               {/* <MobonBanner /> */}
                </section>
                </section>
             </div>
