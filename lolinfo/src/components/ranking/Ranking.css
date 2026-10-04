@@ -59,6 +59,60 @@
   background: rgba(0, 204, 255, 0.08);
 }
 
+.ck-ranking-intro {
+  margin-bottom: 1.5rem;
+  color: #cbd3da;
+  font-size: 0.9rem;
+  line-height: 1.75;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.ck-ranking-intro h2,
+.ck-ranking-info h3 {
+  color: #f8f9fa;
+}
+
+.ck-ranking-info {
+  border: 1px solid rgba(0, 204, 255, 0.25);
+  border-radius: 0.75rem;
+  background: rgba(0, 204, 255, 0.04);
+}
+
+.ck-ranking-info summary {
+  padding: 0.7rem 1rem;
+  color: #6edff6;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ck-ranking-info summary:focus-visible {
+  outline: 2px solid #00ccff;
+  outline-offset: 3px;
+  border-radius: 0.75rem;
+}
+
+.ck-ranking-info-content {
+  padding: 0.5rem 1rem 1rem;
+}
+
+.ck-ranking-info-content ul {
+  padding-left: 1.25rem;
+}
+
+.ck-ranking-info-content li + li {
+  margin-top: 0.5rem;
+}
+
+.ck-ranking-info-content p {
+  margin-bottom: 0;
+}
+
+.ck-ranking-info-content a {
+  color: #6edff6;
+  text-underline-offset: 3px;
+}
+
 .ck-ranking-page-types {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
