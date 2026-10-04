@@ -1,5 +1,5 @@
 import axios from "../../utils/axios";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate, useParams } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import { useAtomValue } from "jotai";
@@ -18,46 +18,109 @@ export default function TournamentDetail() {
 
   const navigate = useNavigate();
   const { tournamentId } = useParams();
-  const [tournament, setTournament] = useState({});
+  const [detailState, setDetailState] = useState({ requestKey: null, status: "loading", tournament: null });
   const [hostList, setHostList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [bookmarked, setBookmarked] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const hostControllerRef = useRef(null);
+  const currentTournamentIdRef = useRef(tournamentId);
+  currentTournamentIdRef.current = tournamentId;
 
-  const loadData = useCallback(async () => {
-    if (!tournamentId) return;
-
-    try {
-      setLoading(true);
-      setError(null);
-      const { data } = await axios.get(`/tournament/${tournamentId}`);
-      setTournament(data);
-    } catch (err) {
-      console.error("대회 정보 조회 실패", err);
-      setError("대회 정보를 불러오지 못했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  }, [tournamentId]);
-
-  const loadHostData = useCallback(async () => {
-    if (!tournamentId) return;
-
-    try {
-      const { data } = await axios.get(`/host/tournament/${tournamentId}`);
-      setHostList(data);
-    } catch (err) {
-      console.error("개최자 로딩 실패", err);
-    }
-  }, [tournamentId]);
+  const numericTournamentId = /^\d+$/.test(tournamentId ?? "") ? Number(tournamentId) : NaN;
+  const hasValidTournamentId = Number.isSafeInteger(numericTournamentId) && numericTournamentId > 0;
+  const requestKey = `${tournamentId}:${retryCount}`;
 
   useEffect(() => {
-    if (!tournamentId) return;
+    const controller = new AbortController();
+    let hostController;
 
-    loadData();
-    loadHostData();
-  }, [loadData, loadHostData, tournamentId]);
+    setHostList([]);
+    setBookmarked(false);
+    setShowFeedback(false);
+
+    if (!hasValidTournamentId) {
+      setDetailState({ requestKey, status: "not-found", tournament: null });
+      return () => controller.abort();
+    }
+
+    setDetailState({ requestKey, status: "loading", tournament: null });
+
+    const loadTournament = async () => {
+      try {
+        const { data } = await axios.get(`/tournament/${tournamentId}`, { signal: controller.signal });
+
+        if (data === null || data === undefined || data === "" || (data && typeof data === "object" && !Array.isArray(data) && Object.keys(data).length === 0)) {
+          setDetailState({ requestKey, status: "not-found", tournament: null });
+          return;
+        }
+
+        if (
+          !data ||
+          typeof data !== "object" ||
+          Array.isArray(data) ||
+          Number(data.tournamentId) !== numericTournamentId ||
+          typeof data.tournamentName !== "string" ||
+          !data.tournamentName.trim()
+        ) {
+          setDetailState({ requestKey, status: "error", tournament: null });
+          return;
+        }
+
+        setDetailState({ requestKey, status: "success", tournament: data });
+
+        hostController = new AbortController();
+        hostControllerRef.current = hostController;
+        try {
+          const { data: hosts } = await axios.get(`/host/tournament/${tournamentId}`, { signal: hostController.signal });
+          if (!hostController.signal.aborted && currentTournamentIdRef.current === tournamentId) {
+            if (Array.isArray(hosts)) {
+              setHostList(hosts);
+            } else {
+              console.error("개최자 응답 형식 오류");
+            }
+          }
+        } catch (err) {
+          if (!hostController.signal.aborted) console.error("개최자 로딩 실패", err);
+        }
+      } catch (err) {
+        if (controller.signal.aborted) return;
+        if (err.response?.status === 404) {
+          setDetailState({ requestKey, status: "not-found", tournament: null });
+        } else {
+          console.error("대회 정보 조회 실패", err);
+          setDetailState({ requestKey, status: "error", tournament: null });
+        }
+      }
+    };
+
+    loadTournament();
+    return () => {
+      controller.abort();
+      hostController?.abort();
+      hostControllerRef.current?.abort();
+    };
+  }, [hasValidTournamentId, numericTournamentId, retryCount, tournamentId]);
+
+  const loadHostData = useCallback(async () => {
+    if (!hasValidTournamentId || currentTournamentIdRef.current !== tournamentId) return;
+
+    hostControllerRef.current?.abort();
+    const controller = new AbortController();
+    hostControllerRef.current = controller;
+    try {
+      const { data } = await axios.get(`/host/tournament/${tournamentId}`, { signal: controller.signal });
+      if (!controller.signal.aborted && currentTournamentIdRef.current === tournamentId) {
+        if (Array.isArray(data)) {
+          setHostList(data);
+        } else {
+          console.error("개최자 응답 형식 오류");
+        }
+      }
+    } catch (err) {
+      if (!controller.signal.aborted) console.error("개최자 로딩 실패", err);
+    }
+  }, [hasValidTournamentId, tournamentId]);
 
   const deleteHost = useCallback(async (hostStreamer, hostTournament) => {
     try {
@@ -91,13 +154,20 @@ export default function TournamentDetail() {
       const { data } = await axios.post("/bookmark/tournament", null, {
          params : {tournamentId : tournamentId}
       });
-      setBookmarked(data);
+      if (currentTournamentIdRef.current === tournamentId) setBookmarked(data);
     } catch (err) {
       console.error(err);
     }
   };
 
 
+  const isCurrentDetail = detailState.requestKey === requestKey;
+  const status = !hasValidTournamentId
+    ? "not-found"
+    : isCurrentDetail
+      ? detailState.status
+      : "loading";
+  const tournament = status === "success" ? detailState.tournament : null;
   const hasTierBoard = tournament?.tournamentName?.includes("멸망전");
   const tournamentName = tournament?.tournamentName;
   const tournamentType = tournament?.tournamentIsofficial === "Y" ? "공식" : "스트리머 개최";
@@ -111,6 +181,61 @@ export default function TournamentDetail() {
     ? `${tournamentName}의 ${tournamentType} 대회 정보${tournamentPeriod ? `, ${tournamentPeriod} 일정` : ""}, 참가팀과 경기 기록을 SOOPLOL에서 확인하세요.`
     : "SOOP LOL 대회의 일정, 참가팀과 경기 기록을 확인하세요.";
 
+  if (status === "loading") {
+    return (
+      <>
+        <Helmet>
+          <title>대회 정보 불러오는 중 | SOOPLOL</title>
+          <meta name="description" content="대회 정보를 불러오고 있습니다." />
+        </Helmet>
+        <h2 className="text-center page-title tournament-detail-title">대회 정보</h2>
+        <div className="d-flex justify-content-center align-items-center gap-2 py-5" role="status">
+          <div className="spinner-border" aria-hidden="true" />
+          <span>대회 정보를 불러오는 중입니다.</span>
+        </div>
+      </>
+    );
+  }
+
+  if (status === "not-found") {
+    return (
+      <>
+        <Helmet>
+          <title>대회를 찾을 수 없습니다 | SOOPLOL</title>
+          <meta name="description" content="요청하신 대회가 존재하지 않거나 삭제되었습니다." />
+          <meta name="robots" content="noindex, follow" />
+        </Helmet>
+        <section className="text-center py-5" role="status">
+          <h2 className="page-title tournament-detail-title">대회를 찾을 수 없습니다</h2>
+          <p>요청하신 대회가 존재하지 않거나 삭제되었습니다.</p>
+          <Link to="/tournament" className="btn btn-outline-primary">대회 목록</Link>
+        </section>
+      </>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <>
+        <Helmet>
+          <title>대회 정보를 불러올 수 없습니다 | SOOPLOL</title>
+          <meta name="description" content="일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요." />
+          <meta name="robots" content="noindex, follow" />
+        </Helmet>
+        <section className="text-center py-5" role="alert">
+          <h2 className="page-title tournament-detail-title">대회 정보를 불러올 수 없습니다</h2>
+          <p>일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p>
+          <div className="d-flex justify-content-center gap-2">
+            <button type="button" className="btn btn-primary" onClick={() => setRetryCount((count) => count + 1)}>
+              다시 시도
+            </button>
+            <Link to="/tournament" className="btn btn-outline-primary">대회 목록</Link>
+          </div>
+        </section>
+      </>
+    );
+  }
+
   return (
     <>
       <Helmet>
@@ -119,12 +244,6 @@ export default function TournamentDetail() {
         <link rel="canonical" href={`https://sooplol.com/tournament/${tournamentId}`} />
       </Helmet>
       <h2 className="text-center page-title tournament-detail-title">{tournament.tournamentName} : 대회 상세</h2>
-
-      {loading && (
-        <div className="d-flex justify-content-center py-5">
-          <div className="spinner-border" role="status" />
-        </div>
-      )}
 
       <div className="row tournament-detail-navigation">
         <div className="col-12">
@@ -140,8 +259,6 @@ export default function TournamentDetail() {
           </div>
         </div>
       </div>
-
-      {error && <p className="text-danger">{error}</p>}
 
       <div className="streamer-card tournament-detail-card mb-2">
         <div className="row g-0">
