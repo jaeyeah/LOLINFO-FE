@@ -30,12 +30,14 @@ const STATUS_LABELS = {
     CHECKING: "확인 중",
     DUPLICATE: "중복접수",
     DONE: "처리 완료",
+    REJECTED: "반려",
 };
 
 const STATUS_CLASSES = {
     WAITING: "bg-warning text-dark",
     CHECKING: "bg-info text-dark",
     DONE: "bg-success",
+    REJECTED: "bg-danger",
 };
 
 const DEFAULT_PAGE_DATA = {
@@ -202,6 +204,7 @@ export default function AdminFeedback() {
                                                 <option value="CHECKING">확인 중</option>
                                                 <option value="DUPLICATE">중복접수</option>
                                                 <option value="DONE">처리 완료</option>
+                                                <option value="REJECTED">반려</option>
                                             </select>
                                         ) : (
                                             <span
@@ -212,6 +215,8 @@ export default function AdminFeedback() {
                                                         ? "bg-info text-dark"
                                                         : feedback.feedbackStatus === "DONE"
                                                         ? "bg-success"
+                                                        : feedback.feedbackStatus === "REJECTED"
+                                                        ? "bg-danger"
                                                         : "bg-secondary"
                                                 }`}
                                             >

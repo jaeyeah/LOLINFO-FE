@@ -10,6 +10,7 @@ const FEEDBACK_TYPE_LABELS = {
     MISSING: "정보 누락",
     SUGGESTION: "개선 의견",
     ETC: "기타",
+    REJECTED: "반려",
 };
 
 const STATUS_LABELS = {
@@ -17,6 +18,7 @@ const STATUS_LABELS = {
     CHECKING: "확인 중",
     DUPLICATE: "중복접수",
     DONE: "처리 완료",
+    REJECTED: "반려",
 };
 
 const STATUS_CLASSES = {
@@ -24,6 +26,7 @@ const STATUS_CLASSES = {
     CHECKING: "board-feedback-status-checking",
     DUPLICATE: "board-feedback-status-duplicate",
     DONE: "board-feedback-status-done",
+    REJECTED: "board-feedback-status-rejected",
 };
 
 const FEEDBACK_TYPE_CLASSES = {
@@ -31,6 +34,7 @@ const FEEDBACK_TYPE_CLASSES = {
     MISSING: "board-feedback-type-missing",
     SUGGESTION: "board-feedback-type-suggestion",
     ETC: "board-feedback-type-etc",
+    REJECTED: "board-feedback-type-rejected",
 };
 
 const formatDate = (value) => {
