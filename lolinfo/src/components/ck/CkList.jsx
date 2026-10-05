@@ -453,7 +453,7 @@ export default function CkList() {
 
             <meta
                name="description"
-               content="SOOP 롤 스트리머들의 CK 기록, 팀 구성, 승리 결과 및 월간 CK 랭킹을 확인하세요."
+               content="SOOP 롤 스트리머들의 CK 전적, 팀 구성, 승리 결과 및 월간 CK 랭킹을 확인하세요."
             />
          </Helmet>
 
