@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import axios from "../../utils/axios";
 import { formatScheduleDate, getScheduleUrl } from "../../utils/ckSchedule";
 import "./HomeCkSchedule.css";
+import FeedbackModal from "../etc/FeedbackModal";
 
 export default function HomeCkSchedule() {
     const [schedules, setSchedules] = useState([]);
     const [status, setStatus] = useState("loading");
+    const [showFeedback, setShowFeedback] = useState(false);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -25,11 +27,15 @@ export default function HomeCkSchedule() {
         <section className="home-ck-schedule" aria-labelledby="home-ck-schedule-title">
             <div className="home-ck-schedule-heading">
                 <div>
-                    <p className="home-ck-schedule-eyebrow">UP NEXT</p>
-                    {/* <h2 id="home-ck-schedule-title">예정 CK</h2> */}
+                    <p className="fs-5 home-ck-schedule-eyebrow">UP NEXT
+                        <span className="ms-2 home-ck-schedule-count" aria-label={`${schedules.length}개 일정`}>{schedules.length} 일정</span>
+                    </p>
                     <p className="home-ck-schedule-intro">곧 시작될 CK 일정을 미리 확인해보세요.</p>
                 </div>
-                <span className="home-ck-schedule-count" aria-label={`${schedules.length}개 일정`}>{schedules.length} 일정</span>
+                <button type="button" className="home-ck-schedule-count btn-outline-light"
+                    onClick={() => setShowFeedback(true)} >
+                    오류·누락 제보
+                </button>
             </div>
             {status === "loading" && <p role="status">예정 CK를 불러오는 중입니다.</p>}
             {status === "error" && <p role="alert">예정 CK를 불러오지 못했습니다. 잠시 후 다시 확인해주세요.</p>}
@@ -72,6 +78,12 @@ export default function HomeCkSchedule() {
                     })}
                 </div>
             )}
+            {/* 피드백 모달 */}
+            <FeedbackModal show={showFeedback}
+                onClose={() => setShowFeedback(false)}
+                targetType="CK" targetId="" targetName="CK"
+            />
         </section>
+        
     );
 }
