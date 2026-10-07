@@ -1019,6 +1019,9 @@
 
 /* URL 기반 게시판 내비게이션과 콘텐츠 허브 */
 .board-category-filter a.category-btn { text-decoration: none; }
+.board-schedule-fields { display: grid; gap: 1rem; min-width: 0; margin: 1rem 0; padding: 1rem; border: 1px solid #495057; border-radius: 0.5rem; }
+.board-schedule-fields legend { float: none; width: auto; margin: 0; font-size: 1rem; color: #a8edbd; }
+.board-schedule-fields input { min-width: 0; max-width: 100%; color-scheme: dark; }
 .board-hub-sections { display: grid; gap: 24px; }
 .board-hub-section { padding: 20px 0; border-bottom: 1px solid #343a40; overflow-wrap: anywhere; }
 .board-hub-section h2 { font-size: 1.2rem; }

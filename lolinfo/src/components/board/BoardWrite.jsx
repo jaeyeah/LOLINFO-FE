@@ -2,16 +2,19 @@ import { useAtomValue } from "jotai";
 import { adminState, loginState } from "../../utils/jotai";
 import { useCallback, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../utils/axios";
 import Swal from "sweetalert2";
 import "./Board.css";
 import BoardSeo from "./BoardSeo";
+import BoardScheduleFields from "./BoardScheduleFields";
+import { CK_SCHEDULE_CATEGORY, createBoardRequest, validateSchedule } from "../../utils/ckSchedule";
 
 const CATEGORIES = [
     { value: "자유", label: "자유" },
     { value: "제보", label: "제보" },
     { value: "문의", label: "문의" },
     { value: "정보", label: "정보" },
+    { value: CK_SCHEDULE_CATEGORY, label: CK_SCHEDULE_CATEGORY },
 ];
 
 // Byte 기준 상수
@@ -43,6 +46,8 @@ export default function BoardWrite() {
         boardTitle: "",
         boardContent: "",
     });
+
+    const [schedule, setSchedule] = useState({ ckDate: "", ckUrl: "" });
 
     // Loading state
     const [isLoading, setIsLoading] = useState(false);
@@ -95,6 +100,11 @@ export default function BoardWrite() {
                 return;
             }
 
+            const scheduleError = validateSchedule(form.boardCategory, schedule);
+            if (scheduleError) {
+                await Swal.fire({ icon: "warning", text: scheduleError, confirmButtonText: "확인" });
+                return;
+            }
             setIsLoading(true);
 
             try {
@@ -104,7 +114,7 @@ export default function BoardWrite() {
                     boardContent: form.boardContent,
                 };
 
-                const response = await axios.post("/board/", requestData);
+                await axios.post("/board/", createBoardRequest(requestData, schedule));
 
                 Swal.fire({
                     icon: "success",
@@ -144,7 +154,7 @@ export default function BoardWrite() {
                 setIsLoading(false);
             }
         },
-        [form, isLoggedIn, navigate]
+        [form, schedule, isLoggedIn, navigate]
     );
 
     if (!isLoggedIn) {
@@ -180,6 +190,10 @@ export default function BoardWrite() {
                         </select>
                     </div>
                 </div>
+
+                {form.boardCategory === CK_SCHEDULE_CATEGORY && (
+                    <BoardScheduleFields schedule={schedule} setSchedule={setSchedule} disabled={isLoading} />
+                )}
 
                 {/* 제목 */}
                 <div className="row mt-2">
