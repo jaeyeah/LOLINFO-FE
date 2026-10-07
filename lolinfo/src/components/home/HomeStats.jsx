@@ -52,7 +52,7 @@ export default function HomeStats() {
     return (
         <section className="home-stats" aria-labelledby="home-stats-title">
             <div className="home-stats-heading">
-                <p className="home-stats-eyebrow">SOOPLOL DATA</p>
+                <p className="home-stats-eyebrow fs-6">SOOPLOL DATA</p>
                 <h2 id="home-stats-title">SOOPLOL 데이터 현황</h2>
             </div>
 

@@ -67,7 +67,7 @@ function HomeNavigation() {
     return (
         <section className="home-navigation" aria-labelledby="home-navigation-title">
             <div className="home-section-heading">
-                <p className="home-eyebrow">EXPLORE SOOPLOL</p>
+                <p className="home-eyebrow fs-6">EXPLORE SOOPLOL</p>
             </div>
             <div className="home-navigation-grid">
                 <Link to="/streamer" className="home-navigation-card">
@@ -91,7 +91,7 @@ function HomeFeatures() {
     return (
         <section className="home-features" aria-labelledby="home-features-title">
             <div className="home-section-heading">
-                <p className="home-eyebrow">WHAT YOU CAN FIND</p>
+                <p className="home-eyebrow fs-6">WHAT YOU CAN FIND</p>
             </div>
             <div className="home-feature-list">
                 {features.map((feature) => (
