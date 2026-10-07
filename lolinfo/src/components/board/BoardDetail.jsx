@@ -7,11 +7,13 @@ import { adminState, loginIdState, loginState } from "../../utils/jotai";
 import { useAtomValue } from "jotai";
 import BoardContent from "./BoardContent";
 import BoardSeo from "./BoardSeo";
+import BoardScheduleFields from "./BoardScheduleFields";
+import { CK_SCHEDULE_CATEGORY, createBoardRequest, toDatetimeLocal, validateSchedule } from "../../utils/ckSchedule";
 
 import BoardNotFound from "./BoardNotFound";
 import { getBoardCategoryPath, getBoardCategoryLabel } from "./boardCategories";
 
-const CATEGORIES = ["자유", "제보", "문의", "정보"];
+const CATEGORIES = ["자유", "제보", "문의", "정보", CK_SCHEDULE_CATEGORY];
 const getByteLength = (value) => new TextEncoder().encode(value).length;
 const getDescription = (content) => (content || "")
     .replace(/\[[^\]]+\]/g, "")
@@ -36,6 +38,8 @@ export default function BoardDetail() {
         boardId: 0, boardCategory: "", boardTitle: "", boardContent: "",
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [schedule, setSchedule] = useState({ ckDate: "", ckUrl: "" });
+    const [isScheduleLoading, setIsScheduleLoading] = useState(false);
     const actionPending = useRef(false);
     const pageController = useRef(null);
     // UI 노출용이며 실제 작성자/관리자 권한은 서버에서 검증한다.
@@ -87,15 +91,31 @@ export default function BoardDetail() {
         if (status === 404 && !signal.aborted) navigate(returnPath);
     };
 
-    const startEdit = () => {
+    const startEdit = async () => {
         if (!canManage || actionPending.current) return;
-        setEditForm({
-            boardId: board.boardId,
-            boardCategory: board.boardCategory || "",
-            boardTitle: board.boardTitle || "",
-            boardContent: board.boardContent || "",
-        });
-        setIsEditMode(true);
+        const { signal } = pageController.current;
+        actionPending.current = true;
+        setIsScheduleLoading(true);
+        try {
+            const { data } = await axios.get(`/ck/schedule/${board.boardId}`, { signal });
+            if (signal.aborted) return;
+            setSchedule({ ckDate: toDatetimeLocal(data?.ckDate), ckUrl: data?.ckUrl ?? "" });
+            setEditForm({
+                boardId: board.boardId,
+                boardCategory: data?.ckDate ? CK_SCHEDULE_CATEGORY : board.boardCategory || "",
+                boardTitle: board.boardTitle || "",
+                boardContent: board.boardContent || "",
+            });
+            setIsEditMode(true);
+        } catch (error) {
+            if (signal.aborted || axios.isCancel(error)) return;
+            await Swal.fire({ icon: "error", text: "CK 일정 정보를 불러오지 못했습니다. 잠시 후 수정을 다시 시도해주세요.", confirmButtonText: "확인" });
+        } finally {
+            if (!signal.aborted) {
+                actionPending.current = false;
+                setIsScheduleLoading(false);
+            }
+        }
     };
 
     const handleEditChange = (event) => {
@@ -110,7 +130,8 @@ export default function BoardDetail() {
             : !editForm.boardTitle.trim() ? "제목을 입력해주세요."
                 : !editForm.boardContent.trim() ? "내용을 입력해주세요."
                     : getByteLength(editForm.boardTitle) > 50 ? "제목은 50 Byte 이내로 입력해주세요."
-                        : getByteLength(editForm.boardContent) > 3000 ? "내용은 3000 Byte 이내로 입력해주세요." : "";
+                        : getByteLength(editForm.boardContent) > 3000 ? "내용은 3000 Byte 이내로 입력해주세요."
+                            : validateSchedule(editForm.boardCategory, schedule);
         if (validation) {
             await Swal.fire({ icon: "warning", text: validation, confirmButtonText: "확인" });
             return;
@@ -120,7 +141,7 @@ export default function BoardDetail() {
         setIsSubmitting(true);
         try {
             const { boardId, boardCategory, boardTitle, boardContent } = editForm;
-            await axios.put("/board/", { boardId, boardCategory, boardTitle, boardContent });
+            await axios.put("/board/", createBoardRequest({ boardId, boardCategory, boardTitle, boardContent }, schedule));
             if (signal.aborted) return;
             await Swal.fire({ icon: "success", text: "게시글이 수정되었습니다.", confirmButtonText: "확인" });
             if (signal.aborted) return;
@@ -207,6 +228,9 @@ export default function BoardDetail() {
                             </select>
                         </div>
                         <div>
+                            {editForm.boardCategory === CK_SCHEDULE_CATEGORY && (
+                                <BoardScheduleFields schedule={schedule} setSchedule={setSchedule} disabled={isSubmitting} />
+                            )}
                             <label htmlFor="board-edit-title" className="form-label">제목</label>
                             <input id="board-edit-title" name="boardTitle" type="text" className="form-control board-input"
                                 value={editForm.boardTitle} onChange={handleEditChange} disabled={isSubmitting}
@@ -258,8 +282,8 @@ export default function BoardDetail() {
                 <div className="board-detail-footer">
                     {canManage && (
                         <>
-                            <button type="button" className="btn btn-primary" onClick={startEdit} disabled={isSubmitting}>수정</button>
-                            <button type="button" className="btn btn-danger" onClick={handleDelete} disabled={isSubmitting}>삭제</button>
+                            <button type="button" className="btn btn-primary" onClick={startEdit} disabled={isSubmitting || isScheduleLoading}>{isScheduleLoading ? "일정 불러오는 중..." : "수정"}</button>
+                            <button type="button" className="btn btn-danger" onClick={handleDelete} disabled={isSubmitting || isScheduleLoading}>삭제</button>
                         </>
                     )}
                     <Link className="btn btn-secondary" to={returnPath}>목록</Link>

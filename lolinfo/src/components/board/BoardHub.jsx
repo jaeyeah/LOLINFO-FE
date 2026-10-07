@@ -30,9 +30,24 @@ export default function BoardHub() {
                         {category && status === "loading" && <p role="status">최근 게시글을 불러오는 중입니다.</p>}
                         {category && status === "error" && <p role="alert">최근 게시글을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</p>}
                         {category && status === "ready" && (recent.length ? (
-                            <ul>{recent.map((board) => <li key={board.boardId}>
-                                <Link to={`/board/${board.boardId}`}>{board.boardTitle}</Link>
-                            </li>)}</ul>
+                            <>
+                                <div className="board-monthly-list-header" aria-hidden="true">
+                                    <span>작성일자</span>
+                                    <span>제목</span>
+                                    <span>분류</span>
+                                </div>
+                                <div className="board-monthly-list">
+                                    {recent.map((board) => (
+                                        <Link key={board.boardId} to={`/board/${board.boardId}`} className="board-monthly-item">
+                                            <time className="board-monthly-date" dateTime={board.boardWtime}>
+                                                {new Date(board.boardWtime).toLocaleDateString()}
+                                            </time>
+                                            <span className="board-monthly-title">{board.boardTitle}</span>
+                                            <span className="board-monthly-category">{page.label}</span>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </>
                         ) : <p>등록된 게시글이 없습니다.</p>)}
                     </section>
                 );

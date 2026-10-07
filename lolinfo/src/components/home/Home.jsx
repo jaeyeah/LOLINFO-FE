@@ -5,6 +5,7 @@ import HomeStreamerSearch from "./HomeStreamerSearch";
 import HomeBookmark from "./HomeBookmark";
 import HomeStats from "./HomeStats";
 import HomeContentSection from "./HomeContentSection";
+import HomeCkSchedule from "./HomeCkSchedule";
 import "./Home.css";
 
 const features = [
@@ -119,6 +120,7 @@ export default function Home() {
                 <HomeHero />
                 <HomeStats />
                 <HomeNavigation />
+                <HomeCkSchedule />
                 {/* <HomeInlineAd /> */}
                 <HomeBookmark isLogin={isLogin} />
                 <HomeFeatures />
