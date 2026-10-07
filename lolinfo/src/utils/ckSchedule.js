@@ -1,4 +1,4 @@
-export const CK_SCHEDULE_CATEGORY = "CK 예정";
+export const CK_SCHEDULE_CATEGORY = "CK예정";
 
 export function toDatetimeLocal(value) {
     return typeof value === "string" ? value.slice(0, 16) : "";
@@ -15,8 +15,8 @@ export function getScheduleUrl(value) {
 
 export function validateSchedule(category, schedule) {
     if (category !== CK_SCHEDULE_CATEGORY) return "";
-    if (!schedule.ckDate) return "CK 예정일시를 입력해주세요.";
-    if (Number.isNaN(new Date(schedule.ckDate).getTime())) return "CK 예정일시를 확인해주세요.";
+    if (!schedule.ckDate) return "CK 예정 일시를 입력해주세요.";
+    if (Number.isNaN(new Date(schedule.ckDate).getTime())) return "CK 예정 일시를 확인해주세요.";
     if (schedule.ckUrl.trim() && !getScheduleUrl(schedule.ckUrl.trim())) {
         return "관련 링크는 http 또는 https URL로 입력해주세요.";
     }

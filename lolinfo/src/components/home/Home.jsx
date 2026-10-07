@@ -119,8 +119,8 @@ export default function Home() {
             <main className="home-page">
                 <HomeHero />
                 <HomeStats />
-                <HomeCkSchedule />
                 <HomeNavigation />
+                <HomeCkSchedule />
                 {/* <HomeInlineAd /> */}
                 <HomeBookmark isLogin={isLogin} />
                 <HomeFeatures />
