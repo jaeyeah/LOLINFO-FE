@@ -16,7 +16,8 @@ const urls = [
     "https://sooplol.com/ck",
     "https://sooplol.com/tournament",
     "https://sooplol.com/board",
-    "https://sooplol.com/blog",
+    "https://sooplol.com/board/news",
+    "https://sooplol.com/board/story",
     
     "https://sooplol.com/ranking/ck",
     "https://sooplol.com/ranking/myeolmang",
@@ -56,6 +57,22 @@ for (const streamerNo of data.streamers) {
 
 for (const tournamentId of data.tournaments) {
     urls.push(`https://sooplol.com/tournament/${tournamentId}`);
+}
+
+// 공개 콘텐츠만 포함한다. 비로그인 상세 조회가 성공하는 글만 수록한다.
+const boardResponse = await fetch(`${API_URL}/api/board/`);
+if (!boardResponse.ok) throw new Error(`board sitemap load failed: ${boardResponse.status}`);
+const boardData = await boardResponse.json();
+const boards = Array.isArray(boardData) ? boardData : boardData?.list || [];
+for (const board of boards) {
+    if (!["정보", "blog"].includes(board.boardCategory) || !/^[1-9]\d*$/.test(String(board.boardId))) continue;
+    const detailResponse = await fetch(`${API_URL}/api/board/${board.boardId}`);
+    if ([401, 403, 404].includes(detailResponse.status)) continue;
+    if (!detailResponse.ok) throw new Error(`board detail sitemap load failed: ${detailResponse.status}`);
+    const detail = await detailResponse.json();
+    if (String(detail?.boardId) === String(board.boardId) && detail.boardTitle && detail.boardContent) {
+        urls.push(`https://sooplol.com/board/${board.boardId}`);
+    }
 }
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>

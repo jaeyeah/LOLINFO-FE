@@ -4,7 +4,7 @@ import axios from "../../utils/axios";
 
 const BLOG_BOARD_CATEGORY = "blog";
 
-export default function BlogBoardList({ fromPath = "/blog" }) {
+export default function BlogBoardList({ fromPath = "/board/story" }) {
     const [boards, setBoards] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");

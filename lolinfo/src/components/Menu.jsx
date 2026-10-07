@@ -218,7 +218,7 @@ export default function Menu() {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item sub-item" to="/board?tab=feedback" onClick={closeMenu}>
+                                    <Link className="dropdown-item sub-item" to="/board/feedback" onClick={closeMenu}>
                                         └ 피드백 게시판
                                     </Link>
                                 </li>

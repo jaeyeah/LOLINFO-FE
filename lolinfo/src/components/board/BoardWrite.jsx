@@ -5,6 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "./Board.css";
+import BoardSeo from "./BoardSeo";
 
 const CATEGORIES = [
     { value: "자유", label: "자유" },
@@ -152,6 +153,7 @@ export default function BoardWrite() {
 
     return (
         <div className="insert-form d-f board-write-page">
+            <BoardSeo><title>게시글 작성 | SOOPLOL</title><meta name="robots" content="noindex,follow" /></BoardSeo>
             <div className="row">
                 <div className="col text-center">
                     <h2>게시글 작성</h2>

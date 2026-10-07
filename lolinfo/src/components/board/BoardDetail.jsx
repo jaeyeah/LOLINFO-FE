@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "../../utils/axios";
 import Swal from "sweetalert2";
 import "./Board.css";
 import { adminState, loginIdState, loginState } from "../../utils/jotai";
 import { useAtomValue } from "jotai";
 import BoardContent from "./BoardContent";
-import { Helmet } from "react-helmet-async";
+import BoardSeo from "./BoardSeo";
+
+import BoardNotFound from "./BoardNotFound";
+import { getBoardCategoryPath, getBoardCategoryLabel } from "./boardCategories";
 
 const CATEGORIES = ["자유", "제보", "문의", "정보"];
 const getByteLength = (value) => new TextEncoder().encode(value).length;
@@ -20,13 +23,13 @@ const getDescription = (content) => (content || "")
 export default function BoardDetail() {
     const { boardId } = useParams();
     const navigate = useNavigate();
-    const location = useLocation();
-    const returnPath = location.state?.from || "/board";
     const loginId = useAtomValue(loginIdState);
     const isAdmin = useAtomValue(adminState);
     const categories = isAdmin ? [...CATEGORIES, "blog"] : CATEGORIES;
     const isLoggedIn = useAtomValue(loginState);
     const [board, setBoard] = useState(null);
+    const returnPath = getBoardCategoryPath(board?.boardCategory);
+    const [loadError, setLoadError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editForm, setEditForm] = useState({
@@ -41,6 +44,7 @@ export default function BoardDetail() {
     const loadBoard = useCallback(async (signal) => {
         try {
             setIsLoading(true);
+            setLoadError(null);
 
             const { data } = await axios.get(`/board/${boardId}`, { signal });
             if (signal.aborted) return;
@@ -49,20 +53,12 @@ export default function BoardDetail() {
             if (signal.aborted || axios.isCancel(error)) return;
             console.error("게시글 상세 조회 오류:", error);
 
-            await Swal.fire({
-                icon: "error",
-                title: "게시글 조회 실패",
-                text: error.response?.status === 404
-                    ? "존재하지 않는 게시글입니다." : "게시글을 불러오지 못했습니다.",
-                confirmButtonText: "확인",
-                confirmButtonColor: "#ea8685",
-            });
-
-            if (!signal.aborted) navigate(returnPath);
+            setLoadError(error.response?.status === 404 ? "notFound" : "error");
+            setBoard(null);
         } finally {
             if (!signal.aborted) setIsLoading(false);
         }
-    }, [boardId, navigate, returnPath]);
+    }, [boardId]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -174,23 +170,28 @@ export default function BoardDetail() {
     };
 
     if (isLoading) {
-        return <div className="board-loading">로딩 중...</div>;
+        return <section className="board-loading"><BoardSeo><title>게시글 불러오는 중 | SOOPLOL</title></BoardSeo><h1>SOOPLOL 게시글</h1><p role="status">게시글을 불러오는 중입니다.</p><Link to="/board">게시판 전체보기</Link></section>;
     }
 
-    if (!board) {
-        return <div className="board-empty">게시글이 없습니다.</div>;
-    }
+    if (loadError === "notFound" || (!board && !loadError)) return <BoardNotFound />;
+    if (loadError) return <section className="board-empty">
+        <BoardSeo><title>게시글 조회 오류 | SOOPLOL</title></BoardSeo>
+        <h1>SOOPLOL 게시글</h1><p role="alert">게시글을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</p>
+        <button className="btn btn-secondary" onClick={() => loadBoard(pageController.current.signal)}>다시 시도</button>{" "}
+        <Link to="/board">게시판 전체보기</Link>
+    </section>;
 
     const pageTitle = `${board.boardTitle} | SOOPLOL`;
     const pageDescription = getDescription(board.boardContent) || `${board.boardTitle} 게시글을 SOOPLOL에서 확인하세요.`;
 
     return (
         <div className="board-detail-container">
-            <Helmet>
+            <BoardSeo>
                 <title>{pageTitle}</title>
                 <meta name="description" content={pageDescription} />
+                <meta name="robots" content={isEditMode ? "noindex,follow" : "index,follow"} />
                 <link rel="canonical" href={`https://sooplol.com/board/${board.boardId}`} />
-            </Helmet>
+            </BoardSeo>
             <div className="board-detail-card">
                 {isEditMode && canManage ? (
                     <form onSubmit={handleEdit} className="board-write-form">
@@ -238,7 +239,7 @@ export default function BoardDetail() {
 
                     <div className="board-detail-info">
                         <span className="board-category-badge">
-                            {board.boardCategory}
+                            <Link to={returnPath}>{getBoardCategoryLabel(board.boardCategory)}</Link>
                         </span>
                         {/* <span>작성자: {board.boardWriter}</span> */}
                         <span>
@@ -261,7 +262,7 @@ export default function BoardDetail() {
                             <button type="button" className="btn btn-danger" onClick={handleDelete} disabled={isSubmitting}>삭제</button>
                         </>
                     )}
-                    <button type="button" className="btn btn-secondary" disabled={isSubmitting} onClick={() => navigate(returnPath)}>목록</button>
+                    <Link className="btn btn-secondary" to={returnPath}>목록</Link>
                 </div>
                     </>
                 )}

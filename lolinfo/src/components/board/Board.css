@@ -1016,3 +1016,11 @@
         width: 100%;
     }
 }
+
+/* URL 기반 게시판 내비게이션과 콘텐츠 허브 */
+.board-category-filter a.category-btn { text-decoration: none; }
+.board-hub-sections { display: grid; gap: 24px; }
+.board-hub-section { padding: 20px 0; border-bottom: 1px solid #343a40; overflow-wrap: anywhere; }
+.board-hub-section h2 { font-size: 1.2rem; }
+.board-hub-section a { color: #b9d9ff; }
+.board-hub-section li { margin: 12px 0; }

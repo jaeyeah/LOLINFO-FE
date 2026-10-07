@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import StreamerList from "./streamer/StreamerList";
 import StreamerTotalList from "./streamer/StreamerTotalList";
@@ -28,7 +28,7 @@ import MemberLogin from "./member/MemberLogin";
 import BoardWrite from "./board/BoardWrite";
 import BoardList from "./board/BoardList";
 import BoardDetail from "./board/BoardDetail";
-import BlogBoardList from "./board/BlogBoardList";
+import BoardNotFound from "./board/BoardNotFound";
 
 import AdminMain from "./admin/AdminMain";
 import AdminMemberPage from "./admin/AdminMemberPage";
@@ -52,6 +52,11 @@ import Ranking from "./ranking/Ranking";
 import CkRanking from "./ranking/ck/CkRanking";
 import MyeolmangRanking from "./ranking/myeolmang/MyeolmangRanking";
 import Stat from "./stat/Stat";
+
+function BoardDetailRoute() {
+    const { boardId } = useParams();
+    return /^[1-9]\d*$/.test(boardId) ? <BoardDetail key={boardId} /> : <BoardNotFound />;
+}
 
 export default function Content(){
 
@@ -135,10 +140,14 @@ return (<>
                 </Route>
 
                 {/* 게시판 */}
-                <Route path="/blog" element={<BlogBoardList/>}/>
+                <Route path="/blog" element={<Navigate to="/board/story" replace />}/>
                 <Route path="/board" element={<BoardList/>}/>
+                <Route path="/board/news" element={<BoardList category="news"/>}/>
+                <Route path="/board/story" element={<BoardList category="story"/>}/>
+                <Route path="/board/feedback" element={<BoardList category="feedback"/>}/>
+                <Route path="/board/*" element={<BoardNotFound/>}/>
                 <Route path="/board/write" element={<BoardWrite/>}/>
-                <Route path="/board/:boardId" element={<BoardDetail/>}/>
+                <Route path="/board/:boardId" element={<BoardDetailRoute/>}/>
             </Routes>
         </div>
     </div>
