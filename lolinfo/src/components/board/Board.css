@@ -1024,6 +1024,26 @@
 .board-schedule-fields input { min-width: 0; max-width: 100%; color-scheme: dark; }
 .board-hub-sections { display: grid; gap: 24px; }
 .board-hub-section { padding: 20px 0; border-bottom: 1px solid #343a40; overflow-wrap: anywhere; }
-.board-hub-section h2 { font-size: 1.2rem; }
-.board-hub-section a { color: #b9d9ff; }
-.board-hub-section li { margin: 12px 0; }
+.board-hub-section h2 { margin: 0 0 1rem; font-size: 1.35rem; }
+.board-hub-section h2 a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid rgba(0, 204, 255, 0.32);
+    border-left: 4px solid #00ccff;
+    border-radius: 0.4rem;
+    background: linear-gradient(100deg, rgba(0, 204, 255, 0.13), rgba(0, 204, 255, 0.025));
+    color: #f4fbff;
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+.board-hub-section h2 a::after { content: "→"; color: #4de1ff; font-size: 0.95em; }
+.board-hub-section h2 a:hover,
+.board-hub-section h2 a:focus-visible {
+    border-color: rgba(0, 204, 255, 0.72);
+    background-color: rgba(0, 204, 255, 0.12);
+    color: #ffffff;
+}
+.board-hub-section h2 a:focus-visible { outline: 2px solid #4de1ff; outline-offset: 3px; }
