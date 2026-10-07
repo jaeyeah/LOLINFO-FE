@@ -33,7 +33,17 @@ export default function HomeCkSchedule() {
             </div>
             {status === "loading" && <p role="status">예정 CK를 불러오는 중입니다.</p>}
             {status === "error" && <p role="alert">예정 CK를 불러오지 못했습니다. 잠시 후 다시 확인해주세요.</p>}
-            {status === "ready" && schedules.length === 0 && <p>현재 등록된 예정 CK가 없습니다.</p>}
+            {status === "ready" && schedules.length === 0 && (
+                <div className="home-ck-schedule-grid">
+                    <div className="home-ck-schedule-card home-ck-schedule-empty" role="status">
+                        <span className="home-ck-schedule-empty-icon" aria-hidden="true">✓</span>
+                        <div>
+                            <span className="home-ck-schedule-badge">NO UPCOMING CK</span>
+                            <p>현재 등록된 예정 CK가 없습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            )}
             {status === "ready" && schedules.length > 0 && (
                 <div className="home-ck-schedule-grid">
                     {schedules.map((item) => {
