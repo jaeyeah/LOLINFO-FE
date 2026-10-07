@@ -13,7 +13,7 @@ function BookmarkHeading({ description, showViewAll = false }) {
 	return (
 		<div className="home-bookmark-heading">
 			<div className="home-section-heading">
-				<p className="home-eyebrow">FAVORITE STREAMERS</p>
+				<p className="home-eyebrow fs-6">FAVORITE STREAMERS</p>
 				<p className="home-bookmark-description">{description}</p>
 			</div>
 			{showViewAll && (
