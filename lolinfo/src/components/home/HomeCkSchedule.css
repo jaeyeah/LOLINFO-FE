@@ -9,6 +9,11 @@
 .home-ck-schedule-card { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 218px; padding: 1.25rem; border: 1px solid rgba(255, 255, 255, 0.11); border-radius: 1rem; background: linear-gradient(145deg, rgba(52, 58, 64, 0.8), rgba(30, 35, 39, 0.95)); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.035); overflow: hidden; overflow-wrap: anywhere; transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
 .home-ck-schedule-card::before { position: absolute; top: 0; right: 1.25rem; left: 1.25rem; height: 2px; background: linear-gradient(90deg, #a8edbd, rgba(168, 237, 189, 0)); content: ""; opacity: 0.8; }
 .home-ck-schedule-card:hover, .home-ck-schedule-card:focus-within { transform: translateY(-4px); border-color: rgba(168, 237, 189, 0.38); box-shadow: 0 16px 32px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(168, 237, 189, 0.06); }
+.home-ck-schedule-empty { grid-column: 1 / -1; min-height: 112px; flex-direction: row; align-items: center; gap: 1rem; cursor: default; }
+.home-ck-schedule-empty:hover { transform: none; border-color: rgba(255, 255, 255, 0.11); }
+.home-ck-schedule-empty-icon { display: grid; width: 2.75rem; height: 2.75rem; flex: 0 0 auto; place-items: center; border: 1px solid rgba(168, 237, 189, 0.28); border-radius: 50%; background: rgba(168, 237, 189, 0.08); color: #a8edbd; font-size: 1.15rem; font-weight: 700; }
+.home-ck-schedule-empty .home-ck-schedule-badge { display: block; }
+.home-ck-schedule-empty p { margin: 0.4rem 0 0; color: #e0e5e8; font-size: 0.92rem; }
 .home-ck-schedule-card-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
 .home-ck-schedule-badge { color: #7f8b92; font-size: 0.62rem; font-weight: 800; letter-spacing: 1.1px; }
 .home-ck-schedule-card time { color: #a8edbd; font-size: 0.86rem; font-weight: 700; white-space: nowrap; }
