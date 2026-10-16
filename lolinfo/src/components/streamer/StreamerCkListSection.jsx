@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../utils/axios";
 import { useCallback, useEffect, useMemo, useRef, useState, memo } from "react";
 import { Link } from "react-router-dom";
 import { toPng } from "html-to-image";
@@ -21,6 +21,7 @@ const CkTableRow = memo(({ ck, onOpenModal, formatDate, getStatusClass }) => (
         {ck.ckResult || "-"}
       </span>
     </td>
+    <td className="text-center text-nowrap">{ck.ckPosition || "-"}</td>
     <td className="text-center">
       {ck.vsStreamerNo ? (
         <Link to={`/streamer/${ck.vsStreamerNo}`} className="text-decoration-none text-white">
@@ -83,7 +84,7 @@ const CkShareCapture = memo(({ ckList, captureRef, formatDate, streamerName, per
         key={ck.ckId}
         style={{
           display: "grid",
-          gridTemplateColumns: "140px 100px 1fr 1fr",
+          gridTemplateColumns: "120px 80px 80px 1fr 1fr",
           gap: "12px",
           alignItems: "center",
           padding: "12px 0",
@@ -118,6 +119,7 @@ const CkShareCapture = memo(({ ckList, captureRef, formatDate, streamerName, per
             </span>
           </div>
 
+        <div>포지션: {ck.ckPosition || "-"}</div>
         <div>{ck.vsStreamerName || "-"}</div>
 
         <div>{ck.ckMemo || "-"}</div>
@@ -163,6 +165,7 @@ const CkCard = memo(({ ck, onOpenModal, formatDate, getStatusClass }) => (
             {ck.ckResult || "-"}
           </span>
         </div>
+        <div className="small mb-2">참여 포지션: {ck.ckPosition || "-"}</div>
         <p className="text-secondary small mb-3">메모: {ck.ckMemo || "없음"}</p>
         <button type="button" className="btn btn-sm btn-outline-light w-100"
           onClick={() => onOpenModal(ck.ckId)}>
@@ -303,6 +306,8 @@ const StreamerCkListSection = memo(({ streamerId, streamerName, startDate = "", 
 
   const [selectedCkId, setSelectedCkId] = useState(null);
   const [participantCache, setParticipantCache] = useState({});
+  const participantCacheRef = useRef({});
+  const [positionError, setPositionError] = useState(false);
   const [participantLoading, setParticipantLoading] = useState(false);
   const [participantError, setParticipantError] = useState(null);
   const [isCapturing, setIsCapturing] = useState(false);
@@ -314,13 +319,49 @@ const StreamerCkListSection = memo(({ streamerId, streamerName, startDate = "", 
     const loadCkList = async () => {
       setLoading(true);
       setError(null);
+      setPositionError(false);
+      setSelectedCkId(null);
       try {
         const { data } = await axios.get(`/ck/streamer/${streamerId}`, {
           params: { page, ...(startDate ? { startDate, endDate } : {}) },
           signal: controller.signal,
         });
         if (controller.signal.aborted) return;
-        setCkList(data.list ?? []);
+        const records = data.list ?? [];
+        const resolvedRecords = new Array(records.length);
+        let nextIndex = 0;
+        let failed = false;
+        // 목록 API에 포지션이 없어 기존 참가자 API를 사용한다. 동시 요청은 4개로 제한한다.
+        const loadPositions = async () => {
+          while (nextIndex < records.length && !controller.signal.aborted) {
+            const index = nextIndex++;
+            const ck = records[index];
+            try {
+              let cached = participantCacheRef.current[ck.ckId];
+              if (!cached) {
+                const { data: participants } = await axios.get(`/ck/${ck.ckId}/participant`, {
+                  signal: controller.signal,
+                });
+                if (controller.signal.aborted) return;
+                cached = { participants, winner: participants[0]?.ckWinner ?? null };
+                participantCacheRef.current[ck.ckId] = cached;
+              }
+              const participant = cached.participants.find(
+                (item) => String(item.ckStreamer) === String(streamerId)
+              );
+              resolvedRecords[index] = { ...ck, ckPosition: participant?.ckPosition ?? null };
+            } catch {
+              if (controller.signal.aborted) return;
+              failed = true;
+              resolvedRecords[index] = { ...ck, ckPosition: null };
+            }
+          }
+        };
+        await Promise.all(Array.from({ length: Math.min(4, records.length) }, loadPositions));
+        if (controller.signal.aborted) return;
+        setParticipantCache({ ...participantCacheRef.current });
+        setPositionError(failed);
+        setCkList(resolvedRecords);
         setPageVO(data.pageVO ?? null);
         setPage(data.pageVO?.page ?? data.page ?? page);
         setTotalPage(data.pageVO?.totalPage ?? data.totalPage ?? 1);
@@ -342,6 +383,7 @@ const StreamerCkListSection = memo(({ streamerId, streamerName, startDate = "", 
     setPage(1);
     setSelectedCkId(null);
     setParticipantCache({});
+    participantCacheRef.current = {};
     setParticipantError(null);
   }, [streamerId]);
 
@@ -354,6 +396,7 @@ const StreamerCkListSection = memo(({ streamerId, streamerName, startDate = "", 
         setParticipantError(null);
         const { data } = await axios.get(`/ck/${ckId}/participant`);
         const winner = data[0]?.ckWinner ?? null;
+        participantCacheRef.current[ckId] = { participants: data, winner };
         setParticipantCache((prev) => ({
           ...prev,
           [ckId]: {
@@ -532,6 +575,13 @@ const StreamerCkListSection = memo(({ streamerId, streamerName, startDate = "", 
                   <span>{isCapturing ? "이미지 생성 중..." : "이미지 저장"}</span>
                 </button>
               </div>
+              {positionError && (
+                <div className="alert alert-warning py-2" role="alert">
+                  일부 참여 포지션을 불러오지 못해 -로 표시했습니다.
+                  <button type="button" className="btn btn-sm btn-outline-dark ms-2"
+                    onClick={() => setRetryCount((value) => value + 1)}>다시 시도</button>
+                </div>
+              )}
               {captureError && <div className="alert alert-danger py-2" role="alert">{captureError}</div>}
 
               <div className="card bg-dark border-secondary mb-3 d-none d-md-block">
@@ -541,6 +591,7 @@ const StreamerCkListSection = memo(({ streamerId, streamerName, startDate = "", 
                       <tr>
                         <th scope="col">날짜</th>
                         <th scope="col">결과</th>
+                        <th scope="col">참여 포지션</th>
                         <th scope="col">맞라인 상대</th>
                         <th scope="col">메모</th>
                         <th scope="col"></th>
