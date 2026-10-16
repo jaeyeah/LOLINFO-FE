@@ -170,8 +170,8 @@ const CkCard = memo(({ ck, onOpenModal, formatDate, getStatusClass }) => (
   <div className="col-12">
     <div className="card bg-dark border-secondary">
       <div className="card-body">
-        <div className="d-flex justify-content-between align-items-start mb-2">
-          <div>
+        <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
+          <div className="text-break" style={{ minWidth: 0 }}>
             <div className="text-secondary small">{formatDate(ck.ckDate)}</div>
             <div className="h6 mb-1">
               vs {ck.vsStreamerNo ? (
@@ -183,11 +183,13 @@ const CkCard = memo(({ ck, onOpenModal, formatDate, getStatusClass }) => (
               )}
             </div>
           </div>
-          <span className={`badge ${getStatusClass(ck.ckResult)}`}>
-            {ck.ckResult || "-"}
-          </span>
+          <div className="d-flex flex-nowrap flex-shrink-0 align-items-center gap-2 text-nowrap">
+            <PositionBadge position={ck.ckPosition} />
+            <span className={`badge ${getStatusClass(ck.ckResult)}`}>
+              {ck.ckResult || "-"}
+            </span>
+          </div>
         </div>
-        <div className="small mb-2">참여 포지션: <PositionBadge position={ck.ckPosition} /></div>
         <p className="text-secondary small mb-3">메모: {ck.ckMemo || "없음"}</p>
         <button type="button" className="btn btn-sm btn-outline-light w-100"
           onClick={() => onOpenModal(ck.ckId)}>
