@@ -525,15 +525,38 @@ export default function TournamentMain() {
                         </tr>
                       </thead>
                       <tbody>
-                        {vsRecordList.map((record) => (
-                          <tr key={record.vsTeam}>
-                            <td>{record.vsTeamName}</td>
-                            <td>
-                              {record.vsWinCount}승 {record.vsLoseCount}패
-                            </td>
-                            <td>{record.vsWinRate}%</td>
-                          </tr>
-                        ))}
+                        {vsRecordList.map((record) => {
+                          const parsedRate = Number(record.vsWinRate);
+                          const hasRate = record.vsWinRate !== null && record.vsWinRate !== undefined
+                            && String(record.vsWinRate).trim() !== "" && Number.isFinite(parsedRate);
+                          const rate = hasRate ? Math.min(100, Math.max(0, parsedRate)) : 0;
+                          return (
+                            <tr key={record.vsTeam}>
+                              <td>{record.vsTeamName}</td>
+                              <td className="text-nowrap">
+                                {record.vsWinCount}승 {record.vsLoseCount}패
+                              </td>
+                              <td style={{ width: "30%" }}>
+                                <div className="progress position-relative"
+                                  style={{ height: "24px", minWidth: "80px" }}
+                                  role="progressbar"
+                                  aria-label={`${record.vsTeamName} 상대 승률`}
+                                  aria-valuenow={hasRate ? rate : undefined}
+                                  aria-valuemin={0}
+                                  aria-valuemax={100}
+                                  aria-valuetext={hasRate ? `${rate}%` : "승률 정보 없음"}>
+                                  <div className="progress-bar" style={{
+                                    width: `${rate}%`,
+                                    backgroundColor: getWinRateColor(rate),
+                                  }} />
+                                  <span className="position-absolute top-50 start-50 translate-middle fw-bold text-dark text-nowrap">
+                                    {hasRate ? `${rate}%` : "-"}
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
