@@ -180,6 +180,15 @@ export default function TournamentMain() {
     }
   };
 
+  const vsTotals = vsRecordList.reduce((total, record) => ({
+    wins: total.wins + (Number(record.vsWinCount) || 0),
+    losses: total.losses + (Number(record.vsLoseCount) || 0),
+  }), { wins: 0, losses: 0 });
+  const vsTotalSets = vsTotals.wins + vsTotals.losses;
+  const vsTotalWinRate = vsTotalSets > 0
+    ? Math.round((vsTotals.wins / vsTotalSets) * 1000) / 10
+    : 0;
+
   const getWinRateColor = (rate) => {
     if (rate >= 70) return "#3bc9db";
     if (rate >= 60) return "#4dabf7";
@@ -510,6 +519,28 @@ export default function TournamentMain() {
                 <button type="button" className="btn-close btn-close-white" onClick={() => setShowVsRecordModal(false)}></button>
               </div>
               <div className="modal-body">
+                {!vsRecordLoading && vsRecordList.length > 0 && (
+                  <div className="border border-secondary rounded p-3 mb-3">
+                    <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                      <span className="fw-bold">총 스크림 전적</span>
+                      <span className="text-nowrap">
+                        총 {vsTotalSets}세트 · {vsTotals.wins}승 {vsTotals.losses}패
+                      </span>
+                    </div>
+                    <div className="progress position-relative" style={{ height: "24px" }}
+                      role="progressbar" aria-label="총 스크림 승률"
+                      aria-valuenow={vsTotalWinRate} aria-valuemin={0} aria-valuemax={100}
+                      aria-valuetext={`${vsTotalWinRate}%`}>
+                      <div className="progress-bar" style={{
+                        width: `${vsTotalWinRate}%`,
+                        backgroundColor: getWinRateColor(vsTotalWinRate),
+                      }} />
+                      <span className="position-absolute top-50 start-50 translate-middle fw-bold text-dark text-nowrap">
+                        {vsTotalWinRate}%
+                      </span>
+                    </div>
+                  </div>
+                )}
                 {vsRecordLoading ? (
                   <div className="text-center text-secondary py-3">상대전적을 불러오는 중입니다...</div>
                 ) : vsRecordList.length === 0 ? (
