@@ -701,6 +701,10 @@
   padding-inline: 0.7rem;
 }
 
+.streamer-wrapper .streamer-detail-tabs .btn {
+  border-radius: 6px;
+}
+
 .streamer-wrapper .btn-secondary {
     color : rgb(0, 0, 0); 
     font-weight: 600; 
