@@ -4,6 +4,7 @@ import { Link, useOutletContext } from "react-router-dom";
 import { buildProfileUrl } from "../../utils/profileUrl";
 import TeamStaffModal from "./TeamStaffModal";
 import ScrimList from "./ScrimList";
+import ScrimDailyChart from "./ScrimDailyChart";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import "./Tournament.css";
@@ -512,7 +513,7 @@ export default function TournamentMain() {
 
       {showVsRecordModal && (
         <div className="modal fade show d-block" id="vsRecordModal" style={{ backgroundColor: "rgba(0,0,0,0.5)" }} tabIndex="-1">
-          <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content bg-dark text-light border-secondary">
               <div className="modal-header border-secondary">
                 <h5 className="modal-title">{selectedScrimTeam?.teamName} 스크림 상대전적</h5>
@@ -541,6 +542,12 @@ export default function TournamentMain() {
                     </div>
                   </div>
                 )}
+                <ScrimDailyChart
+                  key={`${tournamentId}-${selectedScrimTeam?.teamId}`}
+                  tournamentId={tournamentId}
+                  teamId={selectedScrimTeam?.teamId}
+                  teamName={selectedScrimTeam?.teamName}
+                />
                 {vsRecordLoading ? (
                   <div className="text-center text-secondary py-3">상대전적을 불러오는 중입니다...</div>
                 ) : vsRecordList.length === 0 ? (
