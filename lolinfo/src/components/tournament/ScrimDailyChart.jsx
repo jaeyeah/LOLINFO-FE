@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend } from "chart.js";
 import { Line } from "react-chartjs-2";
 import axios from "../../utils/axios";
@@ -29,11 +29,27 @@ export default function ScrimDailyChart({ tournamentId, teamId, teamName }) {
     return () => controller.abort();
   }, [tournamentId, teamId, retry]);
 
+  const cumulativeRecords = useMemo(() => {
+    let wins = 0;
+    let losses = 0;
+    return [...records].sort((a, b) => a.scrimDate.localeCompare(b.scrimDate)).map((record) => {
+      wins += Number(record.winCount) || 0;
+      losses += Number(record.loseCount) || 0;
+      const total = wins + losses;
+      return {
+        scrimDate: record.scrimDate,
+        winCount: wins,
+        loseCount: losses,
+        winRate: total > 0 ? Math.round((wins / total) * 1000) / 10 : 0,
+      };
+    });
+  }, [records]);
+
   return (
-    <section className="border border-secondary rounded p-3 mb-3" aria-label="일자별 스크림 승률 변화">
-      <h6 className="fw-bold mb-2">일자별 스크림 승률 변화</h6>
+    <section className="border border-secondary rounded p-3 mb-3" aria-label="누적 스크림 승률 변화">
+      <h6 className="fw-bold mb-2">누적 스크림 승률 변화</h6>
       <p className="small text-secondary mb-3">
-        해당 날짜의 세트 승률입니다. 총전적과 동일하게 공식 경기 등을 포함하며, 경기 없는 날짜는 제외합니다.
+        해당 날짜까지의 누적 세트 승률입니다. 총전적과 동일하게 공식 경기 등을 포함하며, 경기 없는 날짜는 제외합니다.
       </p>
       {loading ? (
         <div className="text-center text-secondary py-4" role="status">일자별 전적을 불러오는 중입니다...</div>
@@ -48,12 +64,12 @@ export default function ScrimDailyChart({ tournamentId, teamId, teamName }) {
       ) : (
         <div style={{ height: "250px", minWidth: 0 }}>
           <Line
-            role="img" aria-label={`${teamName}의 경기일별 세트 승률 선그래프`}
+            role="img" aria-label={`${teamName}의 경기일별 누적 세트 승률 선그래프`}
             data={{
-              labels: records.map((record) => record.scrimDate),
+              labels: cumulativeRecords.map((record) => record.scrimDate),
               datasets: [{
-                label: "일별 승률",
-                data: records.map((record) => record.winRate),
+                label: "누적 승률",
+                data: cumulativeRecords.map((record) => record.winRate),
                 borderColor: "#91b9d9",
                 backgroundColor: "#91b9d9",
                 pointRadius: 4,
@@ -71,8 +87,8 @@ export default function ScrimDailyChart({ tournamentId, teamId, teamName }) {
                 tooltip: {
                   callbacks: {
                     label: (context) => {
-                      const record = records[context.dataIndex];
-                      return `승률 ${record.winRate}% · ${record.winCount}승 ${record.loseCount}패 (총 ${record.winCount + record.loseCount}세트)`;
+                      const record = cumulativeRecords[context.dataIndex];
+                      return `누적 승률 ${record.winRate}% · ${record.winCount}승 ${record.loseCount}패 (총 ${record.winCount + record.loseCount}세트)`;
                     },
                   },
                 },
